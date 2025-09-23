@@ -14,7 +14,7 @@
                             <div class="col-sm-6">
                                 <div class="mb-20">
                                     <label for="firebaseSecretKey" class="form-label fw-semibold text-primary-light text-sm mb-8">Firebase secret key</label>
-                                    <input type="text" class="form-control radius-8" id="firebaseSecretKey" placeholder="Firebase secret key" value="AAAAxGHw9lE:APA91bHKj6OsrD6EhnG5p26oTiQkXvOxTZwZEfVuuuipyUSNM-a8NB_CugVwfvvaosOvWgFAhQJOLMvxtv7e3Sw8DYpaWKwJIN3kjyIPoNRAe541sBz3x7E6sXZkA-ebueqnQiqNtbdP">
+                                    <!-- <input type="text" class="form-control radius-8" id="firebaseSecretKey" placeholder="Firebase secret key" value="AAAAxGHw9lE:APA91bHKj6OsrD6EhnG5p26oTiQkXvOxTZwZEfVuuuipyUSNM-a8NB_CugVwfvvaosOvWgFAhQJOLMvxtv7e3Sw8DYpaWKwJIN3kjyIPoNRAe541sBz3x7E6sXZkA-ebueqnQiqNtbdP"> -->
                                 </div>
                             </div>
                             <div class="col-sm-6">
@@ -26,7 +26,7 @@
                             <div class="col-sm-6">
                                 <div class="mb-20">
                                     <label for="firebaseAPIKey" class="form-label fw-semibold text-primary-light text-sm mb-8">Firebase API Key</label>
-                                    <input type="text" class="form-control radius-8" id="firebaseAPIKey" placeholder="Firebase  API Key" value="AIzaSyDg1xBSwmHKV0usIKxTFL5a6fFTb4s3XVM">
+                                    <!-- <input type="text" class="form-control radius-8" id="firebaseAPIKey" placeholder="Firebase  API Key" value="AIzaSyDg1xBSwmHKV0usIKxTFL5a6fFTb4s3XVM"> -->
                                 </div>
                             </div>
                             <div class="col-sm-6">
