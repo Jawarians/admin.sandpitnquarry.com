@@ -1,0 +1,32 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('business_price_detail_wheels', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('business_price_detail_id')->constrained();
+            $table->unsignedTinyInteger('wheel_id')->default(0);
+            $table->foreign('wheel_id')->references('wheel')->on('wheels');
+            $table->foreignId('creator_id')->constrained('users');
+            $table->timestamp('updated_at');
+            $table->timestamp('created_at');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('business_price_detail_wheels');
+    }
+};

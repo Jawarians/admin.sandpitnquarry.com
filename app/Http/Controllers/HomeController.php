@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\User;
 
 class HomeController extends Controller
 {
@@ -63,7 +64,11 @@ class HomeController extends Controller
 
     public function widgets()
     {
-        return view('widgets');
+        $totalUsers = User::count();
+        $newUsers = User::where('created_at', '>=', now()->subDays(30))->count();
+        $recentUsers = User::where('created_at', '>=', now()->subDays(7))->count();
+        
+        return view('widgets', compact('totalUsers', 'newUsers', 'recentUsers'));
     }
 
     public function chatProfile()

@@ -1092,7 +1092,7 @@
                                     <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
                                         <div>
                                             <p class="fw-medium text-primary-light mb-1">Total Users</p>
-                                            <h6 class="mb-0">20,000</h6>
+                                            <h6 class="mb-0">{{ number_format($totalUsers) }}</h6>
                                         </div>
                                         <div class="w-50-px h-50-px bg-cyan rounded-circle d-flex justify-content-center align-items-center">
                                             <iconify-icon icon="gridicons:multiple-users" class="text-base text-2xl mb-0"></iconify-icon>
@@ -1100,7 +1100,7 @@
                                     </div>
                                     <p class="fw-medium text-sm text-primary-light mt-12 mb-0">
                                         <span class="text-success-main">
-                                            <iconify-icon icon="bxs:up-arrow" class="text-xs"></iconify-icon> +5000
+                                            <iconify-icon icon="bxs:up-arrow" class="text-xs"></iconify-icon> +{{ number_format($newUsers) }}
                                         </span>
                                         Last 30 days users
                                     </p>
@@ -1207,13 +1207,13 @@
                                                 </span>
                                                 <div>
                                                     <span class="mb-2 fw-medium text-secondary-light text-sm">New Users</span>
-                                                    <h6 class="fw-semibold">15,000</h6>
+                                                    <h6 class="fw-semibold">{{ number_format($newUsers) }}</h6>
                                                 </div>
                                             </div>
 
                                             <div id="new-user-chart" class="remove-tooltip-title rounded-tooltip-value"></div>
                                         </div>
-                                        <p class="text-sm mb-0">Increase by <span class="bg-success-focus px-1 rounded-2 fw-medium text-success-main text-sm">+200</span> this week</p>
+                                        <p class="text-sm mb-0">Increase by <span class="bg-success-focus px-1 rounded-2 fw-medium text-success-main text-sm">+{{ number_format($recentUsers) }}</span> this week</p>
                                     </div>
                                 </div>
                             </div>

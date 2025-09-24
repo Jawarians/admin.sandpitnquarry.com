@@ -1,0 +1,313 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+
+class TripDetailsTableSeeder extends Seeder
+{
+
+    /**
+     * Auto generated seed file
+     *
+     * @return void
+     */
+    public function run()
+    {
+
+
+        DB::table('trip_details')->delete();
+
+        DB::table('trip_details')->insert(array(
+            0 =>
+            array(
+                'id' => 1,
+                'trip_id' => 1,
+                'assignment_id' => 21,
+                'status' => 'Assigned',
+                'latitude' => NULL,
+                'longitude' => NULL,
+                'reason' => NULL,
+                'creator_id' => 27,
+                'updated_at' => now(),
+                'created_at' => now(),
+                'device' => 'SM-A035F',
+                'version' => '1.4.19',
+                'ip_address' => '1.2.3.4',
+            ),
+            1 =>
+            array(
+                'id' => 2,
+                'trip_id' => 2,
+                'assignment_id' => 21,
+                'status' => 'Assigned',
+                'latitude' => NULL,
+                'longitude' => NULL,
+                'reason' => NULL,
+                'creator_id' => 27,
+                'updated_at' => now(),
+                'created_at' => now(),
+                'device' => 'SM-A035F',
+                'version' => '1.4.19',
+                'ip_address' => '1.2.3.4',
+            ),
+            2 =>
+            array(
+                'id' => 3,
+                'trip_id' => 3,
+                'assignment_id' => 21,
+                'status' => 'Assigned',
+                'latitude' => NULL,
+                'longitude' => NULL,
+                'reason' => NULL,
+                'creator_id' => 27,
+                'updated_at' => now(),
+                'created_at' => now(),
+                'device' => 'SM-A035F',
+                'version' => '1.4.19',
+                'ip_address' => '1.2.3.4',
+            ),
+            3 =>
+            array(
+                'id' => 4,
+                'trip_id' => 4,
+                'assignment_id' => 21,
+                'status' => 'Assigned',
+                'latitude' => NULL,
+                'longitude' => NULL,
+                'reason' => NULL,
+                'creator_id' => 27,
+                'updated_at' => now(),
+                'created_at' => now(),
+                'device' => 'SM-A035F',
+                'version' => '1.4.19',
+                'ip_address' => '1.2.3.4',
+            ),
+            4 =>
+            array(
+                'id' => 5,
+                'trip_id' => 5,
+                'assignment_id' => 21,
+                'status' => 'Assigned',
+                'latitude' => NULL,
+                'longitude' => NULL,
+                'reason' => NULL,
+                'creator_id' => 27,
+                'updated_at' => now(),
+                'created_at' => now(),
+                'device' => 'SM-A035F',
+                'version' => '1.4.19',
+                'ip_address' => '1.2.3.4',
+            ),
+            5 =>
+            array(
+                'id' => 6,
+                'trip_id' => 6,
+                'assignment_id' => 21,
+                'status' => 'Assigned',
+                'latitude' => NULL,
+                'longitude' => NULL,
+                'reason' => NULL,
+                'creator_id' => 27,
+                'updated_at' => now(),
+                'created_at' => now(),
+                'device' => 'SM-A035F',
+                'version' => '1.4.19',
+                'ip_address' => '1.2.3.4',
+            ),
+            6 =>
+            array(
+                'id' => 7,
+                'trip_id' => 7,
+                'assignment_id' => 21,
+                'status' => 'Assigned',
+                'latitude' => NULL,
+                'longitude' => NULL,
+                'reason' => NULL,
+                'creator_id' => 27,
+                'updated_at' => now(),
+                'created_at' => now(),
+                'device' => 'SM-A035F',
+                'version' => '1.4.19',
+                'ip_address' => '1.2.3.4',
+            ),
+            7 =>
+            array(
+                'id' => 8,
+                'trip_id' => 8,
+                'assignment_id' => 21,
+                'status' => 'Assigned',
+                'latitude' => NULL,
+                'longitude' => NULL,
+                'reason' => NULL,
+                'creator_id' => 27,
+                'updated_at' => now(),
+                'created_at' => now(),
+                'device' => 'SM-A035F',
+                'version' => '1.4.19',
+                'ip_address' => '1.2.3.4',
+            ),
+            8 =>
+            array(
+                'id' => 9,
+                'trip_id' => 8,
+                'assignment_id' => 21,
+                'status' => 'Accepted',
+                'latitude' => NULL,
+                'longitude' => NULL,
+                'reason' => NULL,
+                'creator_id' => 28,
+                'updated_at' => now(),
+                'created_at' => now(),
+                'device' => 'SM-A035F',
+                'version' => '1.4.20',
+                'ip_address' => '1.2.3.4',
+            ),
+            9 =>
+            array(
+                'id' => 10,
+                'trip_id' => 8,
+                'assignment_id' => 21,
+                'status' => 'Started',
+                'latitude' => NULL,
+                'longitude' => NULL,
+                'reason' => NULL,
+                'creator_id' => 28,
+                'updated_at' => now(),
+                'created_at' => now(),
+                'device' => 'SM-A035F',
+                'version' => '1.4.20',
+                'ip_address' => '1.2.3.4',
+            ),
+            10 =>
+            array(
+                'id' => 11,
+                'trip_id' => 8,
+                'assignment_id' => 21,
+                'status' => 'Arrived',
+                'latitude' => NULL,
+                'longitude' => NULL,
+                'reason' => NULL,
+                'creator_id' => 28,
+                'updated_at' => now(),
+                'created_at' => now(),
+                'device' => 'SM-A035F',
+                'version' => '1.4.20',
+                'ip_address' => '1.2.3.4',
+            ),
+            11 =>
+            array(
+                'id' => 12,
+                'trip_id' => 8,
+                'assignment_id' => 21,
+                'status' => 'Completed',
+                'latitude' => NULL,
+                'longitude' => NULL,
+                'reason' => NULL,
+                'creator_id' => 28,
+                'updated_at' => now(),
+                'created_at' => now(),
+                'device' => 'SM-A035F',
+                'version' => '1.4.20',
+                'ip_address' => '1.2.3.4',
+            ),
+            12 =>
+            array(
+                'id' => 13,
+                'trip_id' => 3,
+                'assignment_id' => 21,
+                'status' => 'Accepted',
+                'latitude' => '3.064855',
+                'longitude' => '101.4616176',
+                'reason' => NULL,
+                'creator_id' => 28,
+                'updated_at' => now(),
+                'created_at' => now(),
+                'device' => 'SM-A035F',
+                'version' => '1.4.20',
+                'ip_address' => '1.2.3.4',
+            ),
+            13 =>
+            array(
+                'id' => 14,
+                'trip_id' => 3,
+                'assignment_id' => 21,
+                'status' => 'Arrived',
+                'latitude' => '3.0648578',
+                'longitude' => '101.4616133',
+                'reason' => NULL,
+                'creator_id' => 28,
+                'updated_at' => '2025-01-07 18:26:45',
+                'created_at' => '2025-01-07 18:26:45',
+                'device' => 'SM-A035F',
+                'version' => '1.4.20',
+                'ip_address' => '1.2.3.4',
+            ),
+            14 =>
+            array(
+                'id' => 15,
+                'trip_id' => 3,
+                'assignment_id' => 21,
+                'status' => 'Completed',
+                'latitude' => '3.0648557',
+                'longitude' => '101.4616272',
+                'reason' => NULL,
+                'creator_id' => 28,
+                'updated_at' => now(),
+                'created_at' => now(),
+                'device' => 'SM-A035F',
+                'version' => '1.4.20',
+                'ip_address' => '1.2.3.4',
+            ),
+            15 =>
+            array(
+                'id' => 16,
+                'trip_id' => 1,
+                'assignment_id' => 21,
+                'status' => 'Accepted',
+                'latitude' => '3.0648464',
+                'longitude' => '101.4616208',
+                'reason' => NULL,
+                'creator_id' => 28,
+                'updated_at' => now(),
+                'created_at' => now(),
+                'device' => 'SM-A035F',
+                'version' => '1.4.20',
+                'ip_address' => '1.2.3.4',
+            ),
+            16 =>
+            array(
+                'id' => 17,
+                'trip_id' => 1,
+                'assignment_id' => 21,
+                'status' => 'Arrived',
+                'latitude' => '3.0648736',
+                'longitude' => '101.4615446',
+                'reason' => NULL,
+                'creator_id' => 28,
+                'updated_at' => now(),
+                'created_at' => now(),
+                'device' => 'SM-A035F',
+                'version' => '1.4.20',
+                'ip_address' => '1.2.3.4',
+            ),
+            17 =>
+            array(
+                'id' => 18,
+                'trip_id' => 1,
+                'assignment_id' => 21,
+                'status' => 'Completed',
+                'latitude' => '3.0648372',
+                'longitude' => '101.461572',
+                'reason' => NULL,
+                'creator_id' => 28,
+                'updated_at' => now(),
+                'created_at' => now(),
+                'device' => 'SM-A035F',
+                'version' => '1.4.20',
+                'ip_address' => '1.2.3.4',
+            ),
+        ));
+    }
+}
