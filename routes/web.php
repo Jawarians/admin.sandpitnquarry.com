@@ -10,6 +10,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FormsController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\PaymentGatewayController;
 use App\Http\Controllers\TableController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\BlogController;
@@ -145,6 +146,13 @@ Route::prefix('settings')->group(function () {
         Route::get('/notification', 'notification')->name('notification');
         Route::get('/notification-alert', 'notificationAlert')->name('notificationAlert');
         Route::get('/payment-gateway', 'paymentGateway')->name('paymentGateway');
+    });
+    
+    // Payment Gateway secure routes
+    Route::controller(PaymentGatewayController::class)->group(function () {
+        Route::get('/payment-gateway-secure', 'index')->name('paymentGatewaySecure');
+        Route::post('/payment-gateway-secure', 'update')->name('paymentGatewayUpdate');
+        Route::get('/payment-config', 'getPublicConfig')->name('paymentConfig');
         Route::get('/theme', 'theme')->name('theme');
     });
 });

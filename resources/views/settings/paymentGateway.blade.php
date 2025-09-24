@@ -29,33 +29,35 @@
                                             <div class="d-flex align-items-center gap-3">
                                                 <div class="d-flex align-items-center gap-10 fw-medium text-lg">
                                                     <div class="form-check style-check d-flex align-items-center">
-                                                        <input class="form-check-input radius-4 border border-neutral-500" type="checkbox" name="checkbox" id="sandbox" checked>
+                                                        <input class="form-check-input radius-4 border border-neutral-500" type="checkbox" name="checkbox" id="sandbox" {{ $paypalConfig['mode'] === 'sandbox' ? 'checked' : '' }} disabled>
                                                     </div>
                                                     <label for="sandbox" class="form-label fw-medium text-lg text-primary-light mb-0">Sandbox</label>
                                                 </div>
                                                 <div class="d-flex align-items-center gap-10 fw-medium text-lg">
                                                     <div class="form-check style-check d-flex align-items-center">
-                                                        <input class="form-check-input radius-4 border border-neutral-500" type="checkbox" name="checkbox" id="Production">
+                                                        <input class="form-check-input radius-4 border border-neutral-500" type="checkbox" name="checkbox" id="Production" {{ $paypalConfig['mode'] === 'live' ? 'checked' : '' }} disabled>
                                                     </div>
                                                     <label for="Production" class="form-label fw-medium text-lg text-primary-light mb-0">Production</label>
                                                 </div>
                                             </div>
+                                            <small class="text-muted">Current mode: <strong>{{ ucfirst($paypalConfig['mode']) }}</strong> - Configured via environment variables</small>
                                         </div>
                                         <div class="col-sm-6">
                                             <label for="currency" class="form-label fw-semibold text-primary-light text-md mb-8">Currency <span class="text-danger-600">*</span></label>
-                                            <select class="form-control radius-8 form-select" id="currency">
-                                                <option selected disabled>USD</option>
-                                                <option>TK</option>
-                                                <option>Rupee</option>
+                                            <select class="form-control radius-8 form-select" id="currency" disabled>
+                                                <option selected>{{ $paypalConfig['currency'] ?? 'USD' }}</option>
                                             </select>
+                                            <small class="text-muted">Configured via environment variables</small>
                                         </div>
                                         <div class="col-sm-6">
-                                            <label for="secretKey" class="form-label fw-semibold text-primary-light text-md mb-8">Secret Key <span class="text-danger-600">*</span></label>
-                                            <input type="text" class="form-control radius-8" id="secretKey" placeholder="Secret Key" value="EGtgNkjt3I5lkhEEzicdot8gVH_PcFiKxx6ZBiXpVrp4QLDYcVQQMLX6MMG_fkS9_H0bwmZzBovb4jLP">
+                                            <label for="secretKey" class="form-label fw-semibold text-primary-light text-md mb-8">Client Secret <span class="text-danger-600">*</span></label>
+                                            <input type="password" class="form-control radius-8" id="secretKey" placeholder="Client Secret" value="{{ $paypalConfig['mode'] === 'sandbox' ? '••••••••••••••••' : '••••••••••••••••' }}" readonly>
+                                            <small class="text-muted">Configured via environment variables</small>
                                         </div>
                                         <div class="col-sm-6">
-                                            <label for="publicKey" class="form-label fw-semibold text-primary-light text-md mb-8">Publics Key<span class="text-danger-600">*</span></label>
-                                            <input type="text" class="form-control radius-8" id="publicKey" placeholder="Publics Key" value="AcRx7vvy79nbNxBemacGKmnnRe_CtxkItyspBS_eeMIPREwfCEIfPg1uX-bdqPrS_ZFGocxEH_SJRrIJ">
+                                            <label for="publicKey" class="form-label fw-semibold text-primary-light text-md mb-8">Client ID<span class="text-danger-600">*</span></label>
+                                            <input type="text" class="form-control radius-8" id="publicKey" placeholder="Client ID" value="{{ $paypalConfig['client_id'] ?? 'Not configured' }}" readonly>
+                                            <small class="text-muted">Safe to display - configured via environment variables</small>
                                         </div>
 
                                         <div class="col-sm-6">
@@ -92,33 +94,35 @@
                                             <div class="d-flex align-items-center gap-3">
                                                 <div class="d-flex align-items-center gap-10 fw-medium text-lg">
                                                     <div class="form-check style-check d-flex align-items-center">
-                                                        <input class="form-check-input radius-4 border border-neutral-500" type="checkbox" name="checkbox" id="sandbox2" checked>
+                                                        <input class="form-check-input radius-4 border border-neutral-500" type="checkbox" name="checkbox" id="sandbox2" {{ $razorpayConfig['mode'] === 'sandbox' ? 'checked' : '' }} disabled>
                                                     </div>
                                                     <label for="sandbox2" class="form-label fw-medium text-lg text-primary-light mb-0">Sandbox</label>
                                                 </div>
                                                 <div class="d-flex align-items-center gap-10 fw-medium text-lg">
                                                     <div class="form-check style-check d-flex align-items-center">
-                                                        <input class="form-check-input radius-4 border border-neutral-500" type="checkbox" name="checkbox" id="Production2">
+                                                        <input class="form-check-input radius-4 border border-neutral-500" type="checkbox" name="checkbox" id="Production2" {{ $razorpayConfig['mode'] === 'live' ? 'checked' : '' }} disabled>
                                                     </div>
                                                     <label for="Production2" class="form-label fw-medium text-lg text-primary-light mb-0">Production</label>
                                                 </div>
                                             </div>
+                                            <small class="text-muted">Current mode: <strong>{{ ucfirst($razorpayConfig['mode']) }}</strong> - Configured via environment variables</small>
                                         </div>
                                         <div class="col-sm-6">
                                             <label for="currencyTwo" class="form-label fw-semibold text-primary-light text-md mb-8">Currency <span class="text-danger-600">*</span></label>
-                                            <select class="form-control radius-8 form-select" id="currencyTwo">
-                                                <option selected disabled>USD</option>
-                                                <option>TK</option>
-                                                <option>Rupee</option>
+                                            <select class="form-control radius-8 form-select" id="currencyTwo" disabled>
+                                                <option selected>{{ $razorpayConfig['currency'] ?? 'USD' }}</option>
                                             </select>
+                                            <small class="text-muted">Configured via environment variables</small>
                                         </div>
                                         <div class="col-sm-6">
-                                            <label for="secretKeyTwo" class="form-label fw-semibold text-primary-light text-md mb-8">Secret Key <span class="text-danger-600">*</span></label>
-                                            <input type="text" class="form-control radius-8" id="secretKeyTwo" placeholder="Secret Key" value="EGtgNkjt3I5lkhEEzicdot8gVH_PcFiKxx6ZBiXpVrp4QLDYcVQQMLX6MMG_fkS9_H0bwmZzBovb4jLP">
+                                            <label for="secretKeyTwo" class="form-label fw-semibold text-primary-light text-md mb-8">Key Secret <span class="text-danger-600">*</span></label>
+                                            <input type="password" class="form-control radius-8" id="secretKeyTwo" placeholder="Key Secret" value="{{ $razorpayConfig['mode'] === 'sandbox' ? '••••••••••••••••' : '••••••••••••••••' }}" readonly>
+                                            <small class="text-muted">Configured via environment variables</small>
                                         </div>
                                         <div class="col-sm-6">
-                                            <label for="publicKeyTwo" class="form-label fw-semibold text-primary-light text-md mb-8">Publics Key<span class="text-danger-600">*</span></label>
-                                            <input type="text" class="form-control radius-8" id="publicKeyTwo" placeholder="Publics Key" value="AcRx7vvy79nbNxBemacGKmnnRe_CtxkItyspBS_eeMIPREwfCEIfPg1uX-bdqPrS_ZFGocxEH_SJRrIJ">
+                                            <label for="publicKeyTwo" class="form-label fw-semibold text-primary-light text-md mb-8">Key ID<span class="text-danger-600">*</span></label>
+                                            <input type="text" class="form-control radius-8" id="publicKeyTwo" placeholder="Key ID" value="{{ $razorpayConfig['key_id'] ?? 'Not configured' }}" readonly>
+                                            <small class="text-muted">Safe to display - configured via environment variables</small>
                                         </div>
 
                                         <div class="col-sm-6">
