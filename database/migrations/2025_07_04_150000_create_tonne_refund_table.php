@@ -1,0 +1,35 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('tonne_refunds', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('trip_id')->constrained();
+            $table->foreignId('order_id')->constrained();
+            $table->foreignId('job_id')->constrained();
+            $table->foreignId('transporter_id')->constrained();
+            $table->integer('amount');
+            $table->integer('balance_tonne');
+            $table->foreignId('creator_id')->constrained('users');
+            $table->timestamp('updated_at');
+            $table->timestamp('created_at');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('tonne_refunds');
+    }
+};

@@ -3,12 +3,18 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\User;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        return view('dashboard/index');
+        $totalUsers = User::count();
+        $newUsers = User::where('created_at', '>=', now()->subDays(30))->count();
+        $recentUsers = User::where('created_at', '>=', now()->subDays(7))->count();
+        $latestUsers = User::orderBy('created_at', 'desc')->take(5)->get();
+        
+        return view('dashboard/index', compact('totalUsers', 'newUsers', 'recentUsers', 'latestUsers'));
     }
     
     public function index2()
