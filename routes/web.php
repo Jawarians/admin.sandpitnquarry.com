@@ -116,6 +116,7 @@ Route::prefix('dashboard')->group(function () {
         Route::get('/index8','index8')->name('index8');
         Route::get('/index9','index9')->name('index9');
         Route::get('/index10','index10')->name('index10');
+    Route::get('/analyst','analyst')->name('dashboardAnalyst');
         Route::get('/wallet','wallet')->name('wallet');
     });
 });

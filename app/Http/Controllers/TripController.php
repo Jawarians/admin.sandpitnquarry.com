@@ -31,7 +31,8 @@ class TripController extends Controller
         // Handle status filter
         if ($request->has('status') && $request->status !== 'All Status') {
             $query->whereHas('tripStatus', function($q) use ($request) {
-                $q->where('name', $request->status);
+                // TripStatus stores the status value in 'status'
+                $q->where('status', $request->status);
             });
         }
 
@@ -60,12 +61,14 @@ class TripController extends Controller
         // Handle search
         if ($request->has('search') && !empty($request->search)) {
             $searchTerm = $request->search;
-            $query->where('name', 'LIKE', "%{$searchTerm}%");
+            // TripStatus uses 'status' column
+            $query->where('status', 'LIKE', "%{$searchTerm}%");
         }
 
         // Paginate results
         $perPage = $request->get('per_page', 10);
-        $statuses = $query->orderBy('name', 'asc')->paginate($perPage);
+    // Order by the status column (there is no `name` column)
+    $statuses = $query->orderBy('status', 'asc')->paginate($perPage);
         
         return view('trips/tripStatuses', compact('statuses'));
     }

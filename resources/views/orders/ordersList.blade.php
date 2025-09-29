@@ -68,14 +68,27 @@
                                             <div class="form-check style-check d-flex align-items-center">
                                                 <input class="form-check-input radius-4 border input-form-dark" type="checkbox" name="checkbox" id="selectAll">
                                             </div>
-                                            Order ID
+                                            ID
                                         </div>
                                     </th>
-                                    <th scope="col">Order Date</th>
+                                    <th scope="col">PO/PI</th>
                                     <th scope="col">Customer</th>
-                                    <th scope="col">Order Number</th>
-                                    <th scope="col">Amount</th>
+                                    <th scope="col">Quarry / Site</th>
+                                    <th scope="col">Product</th>
+                                    <th scope="col">Agent</th>
+                                    <th scope="col">Unit</th>
+                                    <th scope="col">Price / Unit</th>
+                                    <th scope="col">Tonne</th>
+                                    <th scope="col">Fee</th>
+                                    <th scope="col">Distance</th>
+                                    <th scope="col">Duration</th>
+                                    <th scope="col">Wheel</th>
+                                    <th scope="col">Start at</th>
+                                    <th scope="col">Quantity</th>
+                                    <th scope="col">Completed</th>
+                                    <th scope="col">Ongoing</th>
                                     <th scope="col">Status</th>
+                                    <th scope="col">Created at</th>
                                     <th scope="col" class="text-center">Action</th>
                                 </tr>
                             </thead>
@@ -90,7 +103,7 @@
                                             #{{ str_pad($order->id, 4, '0', STR_PAD_LEFT) }}
                                         </div>
                                     </td>
-                                    <td>{{ $order->created_at ? $order->created_at->format('d M Y') : 'N/A' }}</td>
+                                    <td>{{ optional($order->purchase)->id ?? 'N/A' }}</td>
                                     <td>
                                         <div class="d-flex align-items-center">
                                             <div class="flex-grow-1">
@@ -100,8 +113,30 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <td><span class="text-md mb-0 fw-normal text-secondary-light">{{ $order->order_number ?? 'N/A' }}</span></td>
-                                    <td><span class="text-md mb-0 fw-bold text-success-600">${{ number_format($order->total_amount ?? 0, 2) }}</span></td>
+                                    <td>{{ optional($order->latest->site)->name ?? optional($order->latest->site)->merchant->name ?? optional($order->latest->site)->name ?? 'N/A' }}</td>
+                                    <td>{{ optional($order->product)->name ?? 'N/A' }}</td>
+                                    <td>{{ optional($order->creator)->name ?? 'N/A' }}</td>
+                                    <td>{{ $order->unit ?? 'N/A' }}</td>
+                                    <td>{{ isset($order->price_per_unit) ? '$'.number_format($order->price_per_unit,2) : (isset($order->cost_amount) ? '$'.number_format($order->cost_amount,2) : 'N/A') }}</td>
+                                    <td>{{ $order->wheel?->wheel ?? 'N/A' }}</td>
+                                    <td>
+                                        @php
+                                            $transport = $order->order_amounts->firstWhere('order_amountable_type', 'transportation');
+                                            // Only try to resolve the morph relation when the stored type appears to be a PHP class
+                                            // or the referenced class actually exists. This avoids Eloquent trying to instantiate
+                                            // non-class strings like "transportation".
+                                            $hasOrderAmountObj = $transport && (str_contains($transport->order_amountable_type, '\\') || class_exists($transport->order_amountable_type));
+                                            $transportObj = $hasOrderAmountObj ? $transport->order_amountable : null;
+                                        @endphp
+                                        {{ $transport?->amount ? '$'.number_format($transport->amount,2) : 'N/A' }}
+                                    </td>
+                                    <td>{{ $transportObj?->distance_text ?? 'N/A' }}</td>
+                                    <td>{{ $transportObj?->duration_text ?? 'N/A' }}</td>
+                                    <td>{{ optional($order->wheel)->wheel ?? 'N/A' }}</td>
+                                    <td>{{ $transportObj?->departure_at ? \Carbon\Carbon::parse($transportObj->departure_at)->format('d M Y H:i') : 'N/A' }}</td>
+                                    <td>{{ $order->latest->total ?? ($order->order_details->sum('quantity') ?? 'N/A') }}</td>
+                                    <td>{{ $order->completed ?? 0 }}</td>
+                                    <td>{{ $order->ongoing ?? 0 }}</td>
                                     <td>
                                         @if($order->orderStatus)
                                             <span class="bg-success-focus text-success-600 border border-success-main px-24 py-4 radius-4 fw-medium text-sm">{{ $order->orderStatus->name }}</span>
@@ -109,6 +144,7 @@
                                             <span class="bg-neutral-200 text-neutral-600 border border-neutral-400 px-24 py-4 radius-4 fw-medium text-sm">Unknown</span>
                                         @endif
                                     </td>
+                                    <td>{{ $order->created_at ? $order->created_at->format('d M Y H:i') : 'N/A' }}</td>
                                     <td class="text-center">
                                         <div class="d-flex align-items-center gap-10 justify-content-center">
                                             <a href="{{ route('orderDetails', $order->id) }}" class="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle" title="View Details">
