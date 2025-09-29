@@ -23,44 +23,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PriceItemController;
 use App\Http\Controllers\SiteController;
 
-Route::controller(DashboardController::class)->group(function () {
-    Route::get('/', 'index')->name('index');
-});
-
-Route::controller(HomeController::class)->group(function () {
-    Route::get('calendar','calendar')->name('calendar');
-    Route::get('chatmessage','chatMessage')->name('chatMessage');
-    Route::get('chatempty','chatempty')->name('chatempty');
-    Route::get('email','email')->name('email');
-    Route::get('error','error1')->name('error');
-    Route::get('faq','faq')->name('faq');
-    Route::get('gallery','gallery')->name('gallery');
-    Route::get('kanban','kanban')->name('kanban');
-    Route::get('pricing','pricing')->name('pricing');
-    Route::get('termscondition','termsCondition')->name('termsCondition');
-    Route::get('widgets','widgets')->name('widgets');
-    Route::get('chatprofile','chatProfile')->name('chatProfile');
-    Route::get('veiwdetails','veiwDetails')->name('veiwDetails');
-    Route::get('blankPage','blankPage')->name('blankPage');
-    Route::get('comingSoon','comingSoon')->name('comingSoon');
-    Route::get('maintenance','maintenance')->name('maintenance');
-    Route::get('starred','starred')->name('starred');
-    Route::get('testimonials','testimonials')->name('testimonials');
-    });
-
-    // aiApplication
-Route::prefix('aiapplication')->group(function () {
-    Route::controller(AiapplicationController::class)->group(function () {
-        Route::get('/codegenerator', 'codeGenerator')->name('codeGenerator');
-        Route::get('/codegeneratornew', 'codeGeneratorNew')->name('codeGeneratorNew');
-        Route::get('/imagegenerator','imageGenerator')->name('imageGenerator');
-        Route::get('/textgeneratornew','textGeneratorNew')->name('textGeneratorNew');
-        Route::get('/textgenerator','textGenerator')->name('textGenerator');
-        Route::get('/videogenerator','videoGenerator')->name('videoGenerator');
-        Route::get('/voicegenerator','voiceGenerator')->name('voiceGenerator');
-    });
-});
-
+// Authentication Routes - No auth required
 // Authentication
 Route::prefix('authentication')->group(function () {
     Route::controller(AuthenticationController::class)->group(function () {
@@ -70,222 +33,263 @@ Route::prefix('authentication')->group(function () {
     });
 });
 
-// chart
-Route::prefix('chart')->group(function () {
-    Route::controller(ChartController::class)->group(function () {
-        Route::get('/columnchart', 'columnChart')->name('columnChart');
-        Route::get('/linechart', 'lineChart')->name('lineChart');
-        Route::get('/piechart', 'pieChart')->name('pieChart');
-    });
-});
+// Authentication POST routes
+Route::post('/login', 'App\Http\Controllers\AuthenticationController@postLogin')->name('login'); // Laravel default
+Route::post('/signin', 'App\Http\Controllers\AuthenticationController@postLogin')->name('signin.post'); // Our app specific
+Route::post('/logout', 'App\Http\Controllers\AuthenticationController@logout')->name('logout');
 
-// Business Prices and Zones
-Route::prefix('business')->group(function () {
-    Route::controller(PriceItemController::class)->group(function () {
-        Route::get('/prices', 'index')->name('business.prices');
-        Route::get('/prices/tonne/{priceId}', 'tonnePrices')->name('business.prices.tonne');
-        Route::get('/prices/load/{priceId}', 'loadPrices')->name('business.prices.load');
-        Route::post('/prices/tonne/update', 'updateTonnePrice')->name('business.prices.tonne.update');
-        Route::post('/prices/load/update', 'updateLoadPrice')->name('business.prices.load.update');
-        Route::get('/zones', 'zones')->name('business.zones');
-        Route::post('/zones/postcodes/update', 'updatePostcodes')->name('business.zones.postcodes.update');
-        Route::post('/zones/postcodes/add', 'addPostcode')->name('business.zones.postcodes.add');
-    });
-    
-    // Price Items CRUD routes
-    Route::resource('price-items', PriceItemController::class, [
-        'names' => [
-            'index' => 'price.items.index',
-            'create' => 'price.items.create',
-            'store' => 'price.items.store',
-            'show' => 'price.items.show',
-            'edit' => 'price.items.edit',
-            'update' => 'price.items.update',
-            'destroy' => 'price.items.destroy',
-        ]
-    ]);
-});
-
-// Componentpage
-Route::prefix('componentspage')->group(function () {
-    Route::controller(ComponentpageController::class)->group(function () {
-        Route::get('/alert', 'alert')->name('alert');
-        Route::get('/avatar', 'avatar')->name('avatar');
-        Route::get('/badges', 'badges')->name('badges');
-        Route::get('/button', 'button')->name('button');
-        Route::get('/calendar', 'calendar')->name('calendar');
-        Route::get('/card', 'card')->name('card');
-        Route::get('/carousel', 'carousel')->name('carousel');
-        Route::get('/colors', 'colors')->name('colors');
-        Route::get('/dropdown', 'dropdown')->name('dropdown');
-        Route::get('/imageupload', 'imageUpload')->name('imageUpload');
-        Route::get('/list', 'list')->name('list');
-        Route::get('/pagination', 'pagination')->name('pagination');
-        Route::get('/progress', 'progress')->name('progress');
-        Route::get('/radio', 'radio')->name('radio');
-        Route::get('/starrating', 'starRating')->name('starRating');
-        Route::get('/switch', 'switch')->name('switch');
-        Route::get('/tabs', 'tabs')->name('tabs');
-        Route::get('/tags', 'tags')->name('tags');
-        Route::get('/tooltip', 'tooltip')->name('tooltip');
-        Route::get('/typography', 'typography')->name('typography');
-        Route::get('/videos', 'videos')->name('videos');
-    });
-});
-
-// Dashboard
-Route::prefix('dashboard')->group(function () {
+// Protected routes - Require authentication
+Route::middleware(['auth'])->group(function () {
+    // Dashboard root route
     Route::controller(DashboardController::class)->group(function () {
-        Route::get('/index', 'index')->name('index');
-        Route::get('/index2', 'index2')->name('index2');
-        Route::get('/index3', 'index3')->name('index3');
-        Route::get('/index4', 'index4')->name('index4');
-        Route::get('/index5','index5')->name('index5');
-        Route::get('/index6','index6')->name('index6');
-        Route::get('/index7','index7')->name('index7');
-        Route::get('/index8','index8')->name('index8');
-        Route::get('/index9','index9')->name('index9');
-        Route::get('/index10','index10')->name('index10');
-    Route::get('/analyst','analyst')->name('dashboardAnalyst');
-        Route::get('/wallet','wallet')->name('wallet');
+        Route::get('/', 'index')->name('index');
     });
-});
 
-// Forms
-Route::prefix('forms')->group(function () {
-    Route::controller(FormsController::class)->group(function () {
-        Route::get('/form-layout', 'formLayout')->name('formLayout');
-        Route::get('/form-validation', 'formValidation')->name('formValidation');
-        Route::get('/form', 'form')->name('form');
-        Route::get('/wizard', 'wizard')->name('wizard');
+    // Home controller routes
+    Route::controller(HomeController::class)->group(function () {
+        Route::get('calendar','calendar')->name('calendar');
+        Route::get('chatmessage','chatMessage')->name('chatMessage');
+        Route::get('chatempty','chatempty')->name('chatempty');
+        Route::get('email','email')->name('email');
+        Route::get('error','error1')->name('error');
+        Route::get('faq','faq')->name('faq');
+        Route::get('gallery','gallery')->name('gallery');
+        Route::get('kanban','kanban')->name('kanban');
+        Route::get('pricing','pricing')->name('pricing');
+        Route::get('termscondition','termsCondition')->name('termsCondition');
+        Route::get('widgets','widgets')->name('widgets');
+        Route::get('chatprofile','chatProfile')->name('chatProfile');
+        Route::get('veiwdetails','veiwDetails')->name('veiwDetails');
+        Route::get('blankPage','blankPage')->name('blankPage');
+        Route::get('comingSoon','comingSoon')->name('comingSoon');
+        Route::get('maintenance','maintenance')->name('maintenance');
+        Route::get('starred','starred')->name('starred');
+        Route::get('testimonials','testimonials')->name('testimonials');
     });
-});
 
-// invoice/invoiceList
-Route::prefix('invoice')->group(function () {
-    Route::controller(InvoiceController::class)->group(function () {
-        Route::get('/invoice-add', 'invoiceAdd')->name('invoiceAdd');
-        Route::get('/invoice-edit', 'invoiceEdit')->name('invoiceEdit');
-        Route::get('/invoice-list', 'invoiceList')->name('invoiceList');
-        Route::get('/invoice-preview', 'invoicePreview')->name('invoicePreview');
-    });
-});
-
-// Settings
-Route::prefix('settings')->group(function () {
-    Route::controller(SettingsController::class)->group(function () {
-        Route::get('/company', 'company')->name('company');
-        Route::get('/currencies', 'currencies')->name('currencies');
-        Route::get('/language', 'language')->name('language');
-        Route::get('/notification', 'notification')->name('notification');
-        Route::get('/notification-alert', 'notificationAlert')->name('notificationAlert');
-        Route::get('/payment-gateway', 'paymentGateway')->name('paymentGateway');
+    // aiApplication
+    Route::prefix('aiapplication')->group(function () {
+        Route::controller(AiapplicationController::class)->group(function () {
+            Route::get('/codegenerator', 'codeGenerator')->name('codeGenerator');
+            Route::get('/codegeneratornew', 'codeGeneratorNew')->name('codeGeneratorNew');
+            Route::get('/imagegenerator','imageGenerator')->name('imageGenerator');
+            Route::get('/textgeneratornew','textGeneratorNew')->name('textGeneratorNew');
+            Route::get('/textgenerator','textGenerator')->name('textGenerator');
+            Route::get('/videogenerator','videoGenerator')->name('videoGenerator');
+            Route::get('/voicegenerator','voiceGenerator')->name('voiceGenerator');
+        });
     });
     
-    // Payment Gateway secure routes
-    Route::controller(PaymentGatewayController::class)->group(function () {
-        Route::get('/payment-gateway-secure', 'index')->name('paymentGatewaySecure');
-        Route::post('/payment-gateway-secure', 'update')->name('paymentGatewayUpdate');
-        Route::get('/payment-config', 'getPublicConfig')->name('paymentConfig');
-        Route::get('/theme', 'theme')->name('theme');
+    // chart
+    Route::prefix('chart')->group(function () {
+        Route::controller(ChartController::class)->group(function () {
+            Route::get('/columnchart', 'columnChart')->name('columnChart');
+            Route::get('/linechart', 'lineChart')->name('lineChart');
+            Route::get('/piechart', 'pieChart')->name('pieChart');
+        });
     });
-});
 
-// Table
-Route::prefix('table')->group(function () {
-    Route::controller(TableController::class)->group(function () {
-        Route::get('/tablebasic', 'tableBasic')->name('tableBasic');
-        Route::get('/tabledata', 'tableData')->name('tableData');
+    // Business Prices and Zones
+    Route::prefix('business')->group(function () {
+        // Price item routes
+        Route::get('/prices', 'App\Http\Controllers\PriceItemController@index')->name('business.prices');
+        Route::get('/prices/tonne/{priceId}', 'App\Http\Controllers\PriceItemController@tonnePrices')->name('business.prices.tonne');
+        Route::get('/prices/load/{priceId}', 'App\Http\Controllers\PriceItemController@loadPrices')->name('business.prices.load');
+        Route::post('/prices/tonne/update', 'App\Http\Controllers\PriceItemController@updateTonnePrice')->name('business.prices.tonne.update');
+        Route::post('/prices/load/update', 'App\Http\Controllers\PriceItemController@updateLoadPrice')->name('business.prices.load.update');
+        Route::get('/zones', 'App\Http\Controllers\PriceItemController@zones')->name('business.zones');
+        Route::post('/zones/postcodes/update', 'App\Http\Controllers\PriceItemController@updatePostcodes')->name('business.zones.postcodes.update');
+        Route::post('/zones/postcodes/add', 'App\Http\Controllers\PriceItemController@addPostcode')->name('business.zones.postcodes.add');
+        
+        // Price Items CRUD routes
+        Route::get('/price-items', 'App\Http\Controllers\PriceItemController@index')->name('price.items.index');
+        Route::get('/price-items/create', 'App\Http\Controllers\PriceItemController@create')->name('price.items.create');
+        Route::post('/price-items', 'App\Http\Controllers\PriceItemController@store')->name('price.items.store');
+        Route::get('/price-items/{id}', 'App\Http\Controllers\PriceItemController@show')->name('price.items.show');
+        Route::get('/price-items/{id}/edit', 'App\Http\Controllers\PriceItemController@edit')->name('price.items.edit');
+        Route::put('/price-items/{id}', 'App\Http\Controllers\PriceItemController@update')->name('price.items.update');
+        Route::delete('/price-items/{id}', 'App\Http\Controllers\PriceItemController@destroy')->name('price.items.destroy');
     });
-});
 
-// Users
-Route::prefix('users')->group(function () {
-    Route::controller(UsersController::class)->group(function () {
-        Route::get('/add-user', 'addUser')->name('addUser');
-        Route::get('/users-grid', 'usersGrid')->name('usersGrid');
-        Route::get('/users-list', 'usersList')->name('usersList');
-        Route::get('/view-profile/{id?}', 'viewProfile')->name('viewProfile');
-        Route::get('/edit-user/{id}', 'editUser')->name('editUser');
-        Route::put('/update-user/{id}', 'updateUser')->name('updateUser');
-        Route::delete('/delete-user/{id}', 'deleteUser')->name('deleteUser');
+    // Componentpage
+    Route::prefix('componentspage')->group(function () {
+        Route::controller(ComponentpageController::class)->group(function () {
+            Route::get('/alert', 'alert')->name('alert');
+            Route::get('/avatar', 'avatar')->name('avatar');
+            Route::get('/badges', 'badges')->name('badges');
+            Route::get('/button', 'button')->name('button');
+            Route::get('/calendar', 'calendar')->name('calendar');
+            Route::get('/card', 'card')->name('card');
+            Route::get('/carousel', 'carousel')->name('carousel');
+            Route::get('/colors', 'colors')->name('colors');
+            Route::get('/dropdown', 'dropdown')->name('dropdown');
+            Route::get('/imageupload', 'imageUpload')->name('imageUpload');
+            Route::get('/list', 'list')->name('list');
+            Route::get('/pagination', 'pagination')->name('pagination');
+            Route::get('/progress', 'progress')->name('progress');
+            Route::get('/radio', 'radio')->name('radio');
+            Route::get('/starrating', 'starRating')->name('starRating');
+            Route::get('/switch', 'switch')->name('switch');
+            Route::get('/tabs', 'tabs')->name('tabs');
+            Route::get('/tags', 'tags')->name('tags');
+            Route::get('/tooltip', 'tooltip')->name('tooltip');
+            Route::get('/typography', 'typography')->name('typography');
+            Route::get('/videos', 'videos')->name('videos');
+        });
     });
-});
 
-// Users
-Route::prefix('blog')->group(function () {
-    Route::controller(BlogController::class)->group(function () {
-        Route::get('/addBlog', 'addBlog')->name('addBlog');
-        Route::get('/blog', 'blog')->name('blog');
-        Route::get('/blogDetails', 'blogDetails')->name('blogDetails');
+    // Dashboard
+    Route::prefix('dashboard')->group(function () {
+        Route::controller(DashboardController::class)->group(function () {
+            Route::get('/index', 'index')->name('index');
+            Route::get('/index2', 'index2')->name('index2');
+            Route::get('/index3', 'index3')->name('index3');
+            Route::get('/index4', 'index4')->name('index4');
+            Route::get('/index5','index5')->name('index5');
+            Route::get('/index6','index6')->name('index6');
+            Route::get('/index7','index7')->name('index7');
+            Route::get('/index8','index8')->name('index8');
+            Route::get('/index9','index9')->name('index9');
+            Route::get('/index10','index10')->name('index10');
+            Route::get('/analyst','analyst')->name('dashboardAnalyst');
+            Route::get('/wallet','wallet')->name('wallet');
+        });
     });
-});
 
-// Users
-Route::prefix('roleandaccess')->group(function () {
-    Route::controller(RoleandaccessController::class)->group(function () {
-        Route::get('/assignRole', 'assignRole')->name('assignRole');
-        Route::get('/roleAaccess', 'roleAaccess')->name('roleAaccess');
+    // Forms
+    Route::prefix('forms')->group(function () {
+        Route::controller(FormsController::class)->group(function () {
+            Route::get('/form-layout', 'formLayout')->name('formLayout');
+            Route::get('/form-validation', 'formValidation')->name('formValidation');
+            Route::get('/form', 'form')->name('form');
+            Route::get('/wizard', 'wizard')->name('wizard');
+        });
     });
-});
 
-// Users
-Route::prefix('cryptocurrency')->group(function () {
-    Route::controller(CryptocurrencyController::class)->group(function () {
-        Route::get('/marketplace', 'marketplace')->name('marketplace');
-        Route::get('/marketplacedetails', 'marketplaceDetails')->name('marketplaceDetails');
-        Route::get('/portfolio', 'portfolio')->name('portfolio');
-        Route::get('/wallet', 'wallet')->name('wallet');
+    // invoice/invoiceList
+    Route::prefix('invoice')->group(function () {
+        Route::controller(InvoiceController::class)->group(function () {
+            Route::get('/invoice-add', 'invoiceAdd')->name('invoiceAdd');
+            Route::get('/invoice-edit', 'invoiceEdit')->name('invoiceEdit');
+            Route::get('/invoice-list', 'invoiceList')->name('invoiceList');
+            Route::get('/invoice-preview', 'invoicePreview')->name('invoicePreview');
+        });
     });
-});
 
-// Orders
-Route::prefix('orders')->group(function () {
-    Route::controller(OrderController::class)->group(function () {
-        Route::get('/orders-list', 'orders')->name('ordersList');
-        Route::get('/order-details/{id}', 'orderDetails')->name('orderDetails');
-        Route::get('/order-statuses', 'orderStatuses')->name('orderStatuses');
-        Route::get('/free-deliveries', 'freeDeliveries')->name('freeDeliveries');
-        Route::get('/self-pickups', 'selfPickups')->name('selfPickups');
+    // Settings
+    Route::prefix('settings')->group(function () {
+        Route::controller(SettingsController::class)->group(function () {
+            Route::get('/company', 'company')->name('company');
+            Route::get('/currencies', 'currencies')->name('currencies');
+            Route::get('/language', 'language')->name('language');
+            Route::get('/notification', 'notification')->name('notification');
+            Route::get('/notification-alert', 'notificationAlert')->name('notificationAlert');
+            Route::get('/payment-gateway', 'paymentGateway')->name('paymentGateway');
+        });
+        
+        // Payment Gateway secure routes
+        Route::controller(PaymentGatewayController::class)->group(function () {
+            Route::get('/payment-gateway-secure', 'index')->name('paymentGatewaySecure');
+            Route::post('/payment-gateway-secure', 'update')->name('paymentGatewayUpdate');
+            Route::get('/payment-config', 'getPublicConfig')->name('paymentConfig');
+            Route::get('/theme', 'theme')->name('theme');
+        });
     });
-});
 
-// Jobs
-Route::prefix('jobs')->group(function () {
-    Route::controller(JobController::class)->group(function () {
-        Route::get('/jobs-list', 'jobs')->name('jobsList');
-        Route::get('/job-details/{id}', 'jobDetails')->name('jobDetails');
-        Route::get('/job-statuses', 'jobStatuses')->name('jobStatuses');
+    // Table
+    Route::prefix('table')->group(function () {
+        Route::controller(TableController::class)->group(function () {
+            Route::get('/tablebasic', 'tableBasic')->name('tableBasic');
+            Route::get('/tabledata', 'tableData')->name('tableData');
+        });
     });
-});
 
-// Trips
-Route::prefix('trips')->group(function () {
-    Route::controller(TripController::class)->group(function () {
-        Route::get('/trips-list', 'trips')->name('tripsList');
-        Route::get('/trip-details/{id}', 'tripDetails')->name('tripDetails');
-        Route::get('/trip-statuses', 'tripStatuses')->name('tripStatuses');
+    // Users
+    Route::prefix('users')->group(function () {
+        Route::controller(UsersController::class)->group(function () {
+            Route::get('/add-user', 'addUser')->name('addUser');
+            Route::get('/users-grid', 'usersGrid')->name('usersGrid');
+            Route::get('/users-list', 'usersList')->name('usersList');
+            Route::get('/view-profile/{id?}', 'viewProfile')->name('viewProfile');
+            Route::get('/edit-user/{id}', 'editUser')->name('editUser');
+            Route::put('/update-user/{id}', 'updateUser')->name('updateUser');
+            Route::delete('/delete-user/{id}', 'deleteUser')->name('deleteUser');
+        });
     });
-});
 
-// Products
-Route::prefix('products')->group(function () {
-    Route::controller(ProductController::class)->group(function () {
-        Route::get('/','index')->name('products.index');
-        Route::get('/create','create')->name('products.create');
-        Route::post('/store','store')->name('products.store');
+    // Blog
+    Route::prefix('blog')->group(function () {
+        Route::controller(BlogController::class)->group(function () {
+            Route::get('/addBlog', 'addBlog')->name('addBlog');
+            Route::get('/blog', 'blog')->name('blog');
+            Route::get('/blogDetails', 'blogDetails')->name('blogDetails');
+        });
     });
-});
 
-// Sites/Quarries
-Route::prefix('sites')->group(function () {
-    Route::controller(SiteController::class)->group(function () {
-        Route::get('/', 'index')->name('sites.index');
-        Route::get('/create', 'create')->name('sites.create');
-        Route::post('/', 'store')->name('sites.store');
-        Route::get('/{id}', 'show')->name('sites.show');
-        Route::get('/{id}/edit', 'edit')->name('sites.edit');
-        Route::put('/{id}', 'update')->name('sites.update');
-        Route::delete('/{id}', 'destroy')->name('sites.destroy');
+    // Role and access
+    Route::prefix('roleandaccess')->group(function () {
+        Route::controller(RoleandaccessController::class)->group(function () {
+            Route::get('/assignRole', 'assignRole')->name('assignRole');
+            Route::get('/roleAaccess', 'roleAaccess')->name('roleAaccess');
+        });
+    });
+
+    // Cryptocurrency
+    Route::prefix('cryptocurrency')->group(function () {
+        Route::controller(CryptocurrencyController::class)->group(function () {
+            Route::get('/marketplace', 'marketplace')->name('marketplace');
+            Route::get('/marketplacedetails', 'marketplaceDetails')->name('marketplaceDetails');
+            Route::get('/portfolio', 'portfolio')->name('portfolio');
+            Route::get('/wallet', 'wallet')->name('wallet');
+        });
+    });
+
+    // Orders
+    Route::prefix('orders')->group(function () {
+        Route::controller(OrderController::class)->group(function () {
+            Route::get('/orders-list', 'orders')->name('ordersList');
+            Route::get('/order-details/{id}', 'orderDetails')->name('orderDetails');
+            Route::get('/order-statuses', 'orderStatuses')->name('orderStatuses');
+            Route::get('/free-deliveries', 'freeDeliveries')->name('freeDeliveries');
+            Route::get('/self-pickups', 'selfPickups')->name('selfPickups');
+        });
+    });
+
+    // Jobs
+    Route::prefix('jobs')->group(function () {
+        Route::controller(JobController::class)->group(function () {
+            Route::get('/jobs-list', 'jobs')->name('jobsList');
+            Route::get('/job-details/{id}', 'jobDetails')->name('jobDetails');
+            Route::get('/job-statuses', 'jobStatuses')->name('jobStatuses');
+        });
+    });
+
+    // Trips
+    Route::prefix('trips')->group(function () {
+        Route::controller(TripController::class)->group(function () {
+            Route::get('/trips-list', 'trips')->name('tripsList');
+            Route::get('/trip-details/{id}', 'tripDetails')->name('tripDetails');
+            Route::get('/trip-statuses', 'tripStatuses')->name('tripStatuses');
+        });
+    });
+
+    // Products
+    Route::prefix('products')->group(function () {
+        Route::controller(ProductController::class)->group(function () {
+            Route::get('/','index')->name('products.index');
+            Route::get('/create','create')->name('products.create');
+            Route::post('/store','store')->name('products.store');
+        });
+    });
+
+    // Sites/Quarries
+    Route::prefix('sites')->group(function () {
+        Route::get('/', 'App\Http\Controllers\SiteController@index')->name('sites.index');
+        Route::get('/create', 'App\Http\Controllers\SiteController@create')->name('sites.create');
+        Route::post('/', 'App\Http\Controllers\SiteController@store')->name('sites.store');
+        Route::get('/{id}', 'App\Http\Controllers\SiteController@show')->name('sites.show');
+        Route::get('/{id}/edit', 'App\Http\Controllers\SiteController@edit')->name('sites.edit');
+        Route::put('/{id}', 'App\Http\Controllers\SiteController@update')->name('sites.update');
+        Route::delete('/{id}', 'App\Http\Controllers\SiteController@destroy')->name('sites.destroy');
     });
 });

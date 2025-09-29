@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 // use Laravel\Fortify\TwoFactorAuthenticatable;
@@ -127,86 +128,149 @@ class User extends Authenticatable // implements  JWTSubject
     protected static function booted(): void
     {
         static::creating(function (User $user) {
-            $user['name']  = strtoupper($user["name"]);
-            $auth = app('firebase.auth');
+            $user['name'] = strtoupper($user["name"]);
+            
             try {
-                $auth->getUserByEmail($user['email']);
-                return false;
-            } catch (\Exception $e) {
+                $auth = app('firebase.auth');
+                
+                // Check if email already exists in Firebase
                 try {
-                    $auth->getUserByPhoneNumber("+" . $user["phone"]);
+                    $auth->getUserByEmail($user['email']);
                     return false;
                 } catch (\Exception $e) {
-                    if (!empty($user['password'])) {
-                        $user['password'] = Crypt::encryptString($user['password']);
-                    }
-                    return true;
+                    // Email doesn't exist, proceed
                 }
+                
+                // Check if phone already exists in Firebase (if phone is set)
+                if (!empty($user["phone"])) {
+                    try {
+                        $auth->getUserByPhoneNumber("+" . $user["phone"]);
+                        return false;
+                    } catch (\Exception $e) {
+                        // Phone doesn't exist, proceed
+                    }
+                }
+                
+                // Encrypt password for local storage if present
+                if (!empty($user['password'])) {
+                    // Note: Laravel already hashes passwords, no need for extra encryption
+                    // This was just saving the original password for Firebase
+                    // $user['password'] is already handled by Laravel's password hashing
+                }
+                
+                return true;
+            } catch (\Exception $e) {
+                // If Firebase auth service is not available, still allow user creation
+                Log::warning('Firebase Auth service not available: ' . $e->getMessage());
+                return true;
             }
         });
 
         static::created(function (User $user) {
-            $auth = app('firebase.auth');
-            $userProperties = [
-                'uid' => "$user->id",
-                'email' => $user->email,
-                'emailVerified' => false,
-                'phoneNumber' => "+" . $user->phone,
-                'displayName' => strtoupper($user->name),
-                'disabled' => false,
-            ];
-            if ($user->password != null) {
-                $userProperties['password'] = Crypt::decryptString($user->password);
+            try {
+                $auth = app('firebase.auth');
+                
+                // Create properties for Firebase user
+                $userProperties = [
+                    'uid' => "$user->id",
+                    'email' => $user->email,
+                    'emailVerified' => false,
+                    'displayName' => strtoupper($user->name),
+                    'disabled' => false,
+                ];
+                
+                // Add phone if available
+                if (!empty($user->phone)) {
+                    $userProperties['phoneNumber'] = "+" . $user->phone;
+                }
+                
+                // Create the user in Firebase
+                try {
+                    $auth->createUser($userProperties);
+                    
+                    // Set custom claims
+                    $auth->setCustomUserClaims("$user->id", [
+                        'customer' => json_encode($user),
+                    ]);
+                } catch (\Exception $e) {
+                    Log::warning('Could not create Firebase user: ' . $e->getMessage());
+                }
+            } catch (\Exception $e) {
+                Log::warning('Firebase Auth service not available: ' . $e->getMessage());
             }
-
-            $auth->createUser($userProperties);
-
-            $auth->setCustomUserClaims("$user->id", [
-                'customer' => json_encode($user),
-            ]);
         });
 
         static::updating(function (User $_user) {
-            $auth = app('firebase.auth');
             try {
-                $user = $auth->getUser($_user['id']);
-                if (!empty($_user['email']) && $user->email != $_user['email']) {
-                    try {
-                        $auth->getUserByEmail($_user['email']);
-                        return false;
-                    } catch (\Exception $e) {
+                $auth = app('firebase.auth');
+                
+                try {
+                    $auth->getUser($_user['id']);
+                    
+                    // Check if email is being changed and already exists
+                    if (!empty($_user['email']) && $_user->getOriginal('email') != $_user['email']) {
+                        try {
+                            $auth->getUserByEmail($_user['email']);
+                            return false; // Email exists, don't update
+                        } catch (\Exception $e) {
+                            // Email doesn't exist, can proceed
+                        }
                     }
-                }
 
-                if (!empty($_user['phone']) && $user->phoneNumber != $_user['phone']) {
-                    try {
-                        $auth->getUserByPhoneNumber($_user['phone']);
-                        return false;
-                    } catch (\Exception $e) {
+                    // Check if phone is being changed and already exists
+                    if (!empty($_user['phone']) && $_user->getOriginal('phone') != $_user['phone']) {
+                        try {
+                            $auth->getUserByPhoneNumber($_user['phone']);
+                            return false; // Phone exists, don't update
+                        } catch (\Exception $e) {
+                            // Phone doesn't exist, can proceed
+                        }
                     }
-                }
 
-                return true;
+                    return true;
+                } catch (\Exception $e) {
+                    // User doesn't exist in Firebase
+                    return true;
+                }
             } catch (\Exception $e) {
-                return false;
+                // Firebase auth service not available
+                Log::warning('Firebase Auth service not available: ' . $e->getMessage());
+                return true;
             }
         });
 
         static::updated(function (User $user) {
-            $auth = app('firebase.auth');
             try {
-                $auth->getUser($user->id);
-                if ($user->email != null) {
-                    $userProperties['email'] = $user->email;
+                $auth = app('firebase.auth');
+                
+                try {
+                    // Check if user exists in Firebase
+                    $auth->getUser($user->id);
+                    
+                    // Update Firebase user properties
+                    $userProperties = [];
+                    
+                    if ($user->email != null) {
+                        $userProperties['email'] = $user->email;
+                    }
+                    
+                    if ($user->phone != null) {
+                        $userProperties['phoneNumber'] = "+" . $user->phone;
+                    }
+                    
+                    if ($user->name != null) {
+                        $userProperties['displayName'] = strtoupper($user->name);
+                    }
+                    
+                    // Only update if there are properties to update
+                    if (!empty($userProperties)) {
+                        $auth->updateUser("$user->id", $userProperties);
+                    }
+                } catch (\Exception $e) {
+                    Log::warning('Could not update Firebase user: ' . $e->getMessage());
                 }
-                if ($user->phone != null) {
-                    $userProperties['phoneNumber'] = "+" . $user->phone;
-                }
-                if ($user->displayName != null) {
-                    $userProperties['displayName'] = strtoupper($user->name);
-                }
-                $auth->updateUser("$user->id", $userProperties);
             } catch (\Exception $e) {
+                Log::warning('Firebase Auth service not available: ' . $e->getMessage());
             }
         });
     }
