@@ -290,6 +290,60 @@
                 </ul>
             </li>
 
+            <!-- Orders navigation - list style like Users -->
+            <li class="dropdown">
+                <a href="javascript:void(0)">
+                    <iconify-icon icon="mdi:cart-outline" class="menu-icon"></iconify-icon>
+                    <span>Orders</span>
+                </a>
+                <ul class="sidebar-submenu">
+                    <li>
+                        <a href="{{ route('ordersList') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Orders List</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('freeDeliveries') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Free Deliveries</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('selfPickups') }}"><i class="ri-circle-fill circle-icon text-info-main w-auto"></i> Self Pickups</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('orderStatuses') }}"><i class="ri-circle-fill circle-icon text-danger-main w-auto"></i> Order Statuses</a>
+                    </li>
+                </ul>
+            </li>
+
+            <!-- Jobs navigation - list style like Users -->
+            <li class="dropdown">
+                <a href="javascript:void(0)">
+                    <iconify-icon icon="mdi:briefcase-outline" class="menu-icon"></iconify-icon>
+                    <span>Jobs</span>
+                </a>
+                <ul class="sidebar-submenu">
+                    <li>
+                        <a href="{{ route('jobsList') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Jobs List</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('jobStatuses') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Job Statuses</a>
+                    </li>
+                </ul>
+            </li>
+
+            <!-- Trips navigation - list style like Users -->
+            <li class="dropdown">
+                <a href="javascript:void(0)">
+                    <iconify-icon icon="mdi:truck-outline" class="menu-icon"></iconify-icon>
+                    <span>Trips</span>
+                </a>
+                <ul class="sidebar-submenu">
+                    <li>
+                        <a href="{{ route('tripsList') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Trips List</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('tripStatuses') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Trip Statuses</a>
+                    </li>
+                </ul>
+            </li>
+
             <li class="dropdown">
                 <a  href="javascript:void(0)">
                     <i class="ri-user-settings-line text-xl me-6 d-flex w-auto"></i>

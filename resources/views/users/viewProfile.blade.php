@@ -46,13 +46,51 @@
                         <img src="{{ asset('assets/images/user-grid/user-grid-bg1.png') }}" alt="" class="w-100 object-fit-cover">
                         <div class="pb-24 ms-16 mb-24 me-16  mt--100">
                             <div class="text-center border border-top-0 border-start-0 border-end-0">
-                                <img src="{{ asset('assets/images/user-grid/user-grid-img14.png') }}" alt="" class="border br-white border-width-2-px w-200-px h-200-px rounded-circle object-fit-cover">
-                                <h6 class="mb-0 mt-16">Jacob Jones</h6>
-                                <span class="text-secondary-light mb-16">ifrandom@gmail.com</span>
+                                @if(isset($user))
+                                    <img src="{{ $user->profile_photo_path ? asset('storage/' . $user->profile_photo_path) : asset('assets/images/user-grid/user-grid-img14.png') }}" alt="" class="border br-white border-width-2-px w-200-px h-200-px rounded-circle object-fit-cover">
+                                    <h6 class="mb-0 mt-16">{{ $user->name }}</h6>
+                                    <span class="text-secondary-light mb-16">{{ $user->email }}</span>
+                                    <div class="d-flex gap-2 justify-content-center">
+                                        <a href="{{ route('editUser', $user->id) }}" class="btn btn-primary-600 text-sm btn-sm px-12 py-6 radius-8">
+                                            <iconify-icon icon="lucide:edit" class="icon text-lg me-1"></iconify-icon>
+                                            Edit Profile
+                                        </a>
+                                        <a href="{{ route('usersList') }}" class="btn btn-outline-primary text-sm btn-sm px-12 py-6 radius-8">
+                                            <iconify-icon icon="ic:baseline-arrow-back" class="icon text-lg me-1"></iconify-icon>
+                                            Back to Users
+                                        </a>
+                                    </div>
+                                @else
+                                    <img src="{{ asset('assets/images/user-grid/user-grid-img14.png') }}" alt="" class="border br-white border-width-2-px w-200-px h-200-px rounded-circle object-fit-cover">
+                                    <h6 class="mb-0 mt-16">Jacob Jones</h6>
+                                    <span class="text-secondary-light mb-16">ifrandom@gmail.com</span>
+                                @endif
                             </div>
                             <div class="mt-24">
                                 <h6 class="text-xl mb-16">Personal Info</h6>
                                 <ul>
+                                    @if(isset($user))
+                                    <li class="d-flex align-items-center gap-1 mb-12">
+                                        <span class="w-30 text-md fw-semibold text-primary-light">Full Name</span>
+                                        <span class="w-70 text-secondary-light fw-medium">: {{ $user->name ?? 'N/A' }}</span>
+                                    </li>
+                                    <li class="d-flex align-items-center gap-1 mb-12">
+                                        <span class="w-30 text-md fw-semibold text-primary-light"> Email</span>
+                                        <span class="w-70 text-secondary-light fw-medium">: {{ $user->email ?? 'N/A' }}</span>
+                                    </li>
+                                    <li class="d-flex align-items-center gap-1 mb-12">
+                                        <span class="w-30 text-md fw-semibold text-primary-light"> Join Date</span>
+                                        <span class="w-70 text-secondary-light fw-medium">: {{ $user->created_at ? $user->created_at->format('d M Y, h:i A') : 'N/A' }}</span>
+                                    </li>
+                                    <li class="d-flex align-items-center gap-1 mb-12">
+                                        <span class="w-30 text-md fw-semibold text-primary-light"> Department</span>
+                                        <span class="w-70 text-secondary-light fw-medium">: {{ $user->department ?? 'N/A' }}</span>
+                                    </li>
+                                    <li class="d-flex align-items-center gap-1 mb-12">
+                                        <span class="w-30 text-md fw-semibold text-primary-light"> Designation</span>
+                                        <span class="w-70 text-secondary-light fw-medium">: {{ $user->designation ?? 'N/A' }}</span>
+                                    </li>
+                                    @else
                                     <li class="d-flex align-items-center gap-1 mb-12">
                                         <span class="w-30 text-md fw-semibold text-primary-light">Full Name</span>
                                         <span class="w-70 text-secondary-light fw-medium">: Will Jonto</span>
@@ -73,6 +111,7 @@
                                         <span class="w-30 text-md fw-semibold text-primary-light"> Designation</span>
                                         <span class="w-70 text-secondary-light fw-medium">: UI UX Designer</span>
                                     </li>
+                                    @endif
                                     <li class="d-flex align-items-center gap-1 mb-12">
                                         <span class="w-30 text-md fw-semibold text-primary-light"> Languages</span>
                                         <span class="w-70 text-secondary-light fw-medium">: English</span>

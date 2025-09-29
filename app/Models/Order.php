@@ -250,6 +250,11 @@ protected static function boot()
         return $this->belongsTo(Customer::class, 'user_id', 'id');
     }
 
+    public function orderStatus(): BelongsTo
+    {
+        return $this->belongsTo(OrderStatus::class, 'status', 'status');
+    }
+
     public function jobs(): HasMany
     {
         return $this->hasMany(Job::class);
@@ -302,6 +307,12 @@ protected static function boot()
     public function order_details(): HasMany
     {
         return $this->hasMany(OrderDetail::class);
+    }
+
+    // Backwards-compatible relation name used in some controllers/views
+    public function orderDetails(): HasMany
+    {
+        return $this->order_details();
     }
 
     public function price_item(): BelongsTo

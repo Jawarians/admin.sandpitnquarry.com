@@ -100,6 +100,12 @@ class Trip extends Model
         return $this->belongsTo(Job::class);
     }
 
+    // Backwards-compatible relation expected by controllers
+    public function truck(): BelongsTo
+    {
+        return $this->belongsTo(Truck::class, 'truck_id', 'id');
+    }
+
     public function latest(): HasOne
     {
         return $this->hasOne(TripDetail::class)->latestOfMany();
@@ -120,6 +126,12 @@ class Trip extends Model
         return $this->hasMany(TripDetail::class);
     }
 
+    // Backwards-compatible alias
+    public function tripDetails(): HasMany
+    {
+        return $this->trip_details();
+    }
+
     public function trip_reason(): HasOne
     {
         return $this->hasOne(TripReason::class);
@@ -128,6 +140,12 @@ class Trip extends Model
     public function trip_status(): BelongsTo
     {
         return $this->belongsTo(TripStatus::class, 'status', 'status');
+    }
+
+    // Backwards-compatible relation used by controllers/views
+    public function tripStatus(): BelongsTo
+    {
+        return $this->trip_status();
     }
 
     public function user(): BelongsTo
