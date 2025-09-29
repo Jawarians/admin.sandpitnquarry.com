@@ -182,6 +182,12 @@ class Job extends Model
         return $this->hasMany(JobDetail::class);
     }
 
+    // Backwards-compatible alias
+    public function jobDetails(): HasMany
+    {
+        return $this->job_details();
+    }
+
     public function latest(): HasOne
     {
         return $this->hasOne(JobDetail::class)->latestOfMany();
@@ -195,6 +201,23 @@ class Job extends Model
     public function order(): BelongsTo
     {
         return $this->belongsTo(Order::class);
+    }
+
+    // Backwards-compatible relation expected by controllers
+    public function driver(): BelongsTo
+    {
+        return $this->belongsTo(Driver::class, 'driver_id', 'id');
+    }
+
+    public function customer(): BelongsTo
+    {
+        return $this->belongsTo(Customer::class, 'customer_id', 'id');
+    }
+
+    // Backwards-compatible relation used by controllers/views
+    public function jobStatus(): BelongsTo
+    {
+        return $this->belongsTo(JobStatus::class, 'status', 'status');
     }
 
     public function transporter(): BelongsTo

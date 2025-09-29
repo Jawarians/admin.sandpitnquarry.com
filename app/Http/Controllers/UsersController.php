@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class UsersController extends Controller
@@ -11,18 +12,118 @@ class UsersController extends Controller
         return view('users/addUser');
     }
     
-    public function usersGrid()
+    public function usersGrid(Request $request)
     {
-        return view('users/usersGrid');
+        $query = User::query();
+        
+        // Handle search
+        if ($request->has('search') && !empty($request->search)) {
+            $searchTerm = $request->search;
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('name', 'ILIKE', "%{$searchTerm}%")
+                  ->orWhere('email', 'ILIKE', "%{$searchTerm}%");
+            });
+        }
+        
+        // Paginate results for grid view
+        $perPage = $request->get('per_page', 12);
+        $users = $query->orderBy('created_at', 'desc')->paginate($perPage);
+        
+        return view('users/usersGrid', compact('users'));
     }
 
-    public function usersList()
+    public function usersList(Request $request)
     {
-        return view('users/usersList');
+        $query = User::query();
+        
+        // Handle search
+        if ($request->has('search') && !empty($request->search)) {
+            $searchTerm = $request->search;
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('name', 'ILIKE', "%{$searchTerm}%")
+                  ->orWhere('email', 'ILIKE', "%{$searchTerm}%");
+            });
+        }
+        
+        // Handle status filter
+        if ($request->has('status') && $request->status !== 'Status') {
+            if ($request->status === 'Active') {
+                $query->whereNotNull('email_verified_at');
+            } elseif ($request->status === 'Inactive') {
+                $query->whereNull('email_verified_at');
+            }
+        }
+        
+        // Paginate results
+        $perPage = $request->get('per_page', 10);
+        $users = $query->orderBy('created_at', 'desc')->paginate($perPage);
+        
+        return view('users/usersList', compact('users'));
     }
     
-    public function viewProfile()
+    public function viewProfile($id = null)
     {
-        return view('users/viewProfile');
+        if ($id) {
+            $user = User::findOrFail($id);
+            return view('users/viewProfile', compact('user'));
+        }
+        
+        // If no ID provided, show current user or redirect to users list
+        return redirect()->route('usersList');
+    }
+    
+    public function editUser($id)
+    {
+        $user = User::findOrFail($id);
+        return view('users/editUser', compact('user'));
+    }
+    
+    public function updateUser(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+        
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'department' => 'nullable|string|max:255',
+            'designation' => 'nullable|string|max:255',
+            'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+        
+        $userData = [
+            'name' => $request->name,
+            'email' => $request->email,
+            'department' => $request->department,
+            'designation' => $request->designation,
+        ];
+        
+        // Handle profile photo upload
+        if ($request->hasFile('profile_photo')) {
+            // Delete old photo if exists
+            if ($user->profile_photo_path && file_exists(storage_path('app/public/' . $user->profile_photo_path))) {
+                unlink(storage_path('app/public/' . $user->profile_photo_path));
+            }
+            
+            $path = $request->file('profile_photo')->store('profile-photos', 'public');
+            $userData['profile_photo_path'] = $path;
+        }
+        
+        $user->update($userData);
+        
+        return redirect()->route('viewProfile', $user->id)->with('success', 'User updated successfully!');
+    }
+    
+    public function deleteUser($id)
+    {
+        $user = User::findOrFail($id);
+        
+        // Delete profile photo if exists
+        if ($user->profile_photo_path && file_exists(storage_path('app/public/' . $user->profile_photo_path))) {
+            unlink(storage_path('app/public/' . $user->profile_photo_path));
+        }
+        
+        $user->delete();
+        
+        return redirect()->back()->with('success', 'User deleted successfully!');
     }
 }

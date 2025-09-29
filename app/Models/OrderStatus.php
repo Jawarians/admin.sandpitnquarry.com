@@ -36,4 +36,9 @@ class OrderStatus extends Model
             'alpha' => (float) trim($color[3]),
         );
     }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'status', 'status');
+    }
 }

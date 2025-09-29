@@ -16,6 +16,9 @@ use App\Http\Controllers\UsersController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\RoleandaccessController;
 use App\Http\Controllers\CryptocurrencyController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\JobController;
+use App\Http\Controllers\TripController;
 
 Route::controller(DashboardController::class)->group(function () {
     Route::get('/', 'index')->name('index');
@@ -171,7 +174,10 @@ Route::prefix('users')->group(function () {
         Route::get('/add-user', 'addUser')->name('addUser');
         Route::get('/users-grid', 'usersGrid')->name('usersGrid');
         Route::get('/users-list', 'usersList')->name('usersList');
-        Route::get('/view-profile', 'viewProfile')->name('viewProfile');
+        Route::get('/view-profile/{id?}', 'viewProfile')->name('viewProfile');
+        Route::get('/edit-user/{id}', 'editUser')->name('editUser');
+        Route::put('/update-user/{id}', 'updateUser')->name('updateUser');
+        Route::delete('/delete-user/{id}', 'deleteUser')->name('deleteUser');
     });
 });
 
@@ -199,5 +205,34 @@ Route::prefix('cryptocurrency')->group(function () {
         Route::get('/marketplacedetails', 'marketplaceDetails')->name('marketplaceDetails');
         Route::get('/portfolio', 'portfolio')->name('portfolio');
         Route::get('/wallet', 'wallet')->name('wallet');
+    });
+});
+
+// Orders
+Route::prefix('orders')->group(function () {
+    Route::controller(OrderController::class)->group(function () {
+        Route::get('/orders-list', 'orders')->name('ordersList');
+        Route::get('/order-details/{id}', 'orderDetails')->name('orderDetails');
+        Route::get('/order-statuses', 'orderStatuses')->name('orderStatuses');
+        Route::get('/free-deliveries', 'freeDeliveries')->name('freeDeliveries');
+        Route::get('/self-pickups', 'selfPickups')->name('selfPickups');
+    });
+});
+
+// Jobs
+Route::prefix('jobs')->group(function () {
+    Route::controller(JobController::class)->group(function () {
+        Route::get('/jobs-list', 'jobs')->name('jobsList');
+        Route::get('/job-details/{id}', 'jobDetails')->name('jobDetails');
+        Route::get('/job-statuses', 'jobStatuses')->name('jobStatuses');
+    });
+});
+
+// Trips
+Route::prefix('trips')->group(function () {
+    Route::controller(TripController::class)->group(function () {
+        Route::get('/trips-list', 'trips')->name('tripsList');
+        Route::get('/trip-details/{id}', 'tripDetails')->name('tripDetails');
+        Route::get('/trip-statuses', 'tripStatuses')->name('tripStatuses');
     });
 });
