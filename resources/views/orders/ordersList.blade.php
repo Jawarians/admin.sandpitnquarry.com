@@ -15,32 +15,45 @@
                 <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-between">
                     <div class="d-flex align-items-center flex-wrap gap-3">
                         <span class="text-md fw-medium text-secondary-light mb-0">Show</span>
-                        <form method="GET">
-                            <select class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px" name="per_page" onchange="this.form.submit()">
-                                <option value="5" {{ request('per_page') == 5 ? 'selected' : '' }}>5</option>
-                                <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
-                                <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
-                                <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
-                                <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
+                        <form method="GET" id="per-page-form">
+                            <select class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px" name="per_page" onchange="document.getElementById('per-page-form').submit()">
+                                <option value="5" {{ request('per_page') === '5' ? 'selected' : '' }}>5</option>
+                                <option value="10" {{ request('per_page') === '10' || request('per_page') === null || request('per_page') === '' ? 'selected' : '' }}>10</option>
+                                <option value="25" {{ request('per_page') === '25' ? 'selected' : '' }}>25</option>
+                                <option value="50" {{ request('per_page') === '50' ? 'selected' : '' }}>50</option>
+                                <option value="100" {{ request('per_page') === '100' ? 'selected' : '' }}>100</option>
                             </select>
-                            <input type="hidden" name="search" value="{{ request('search') }}">
-                            <input type="hidden" name="status" value="{{ request('status') }}">
+                            @if(request('search'))
+                                <input type="hidden" name="search" value="{{ request('search') }}">
+                            @endif
+                            @if(request('status'))
+                                <input type="hidden" name="status" value="{{ request('status') }}">
+                            @endif
                         </form>
-                        <form class="navbar-search" method="GET">
+                        <form class="navbar-search" method="GET" id="search-form">
                             <input type="text" class="bg-base h-40-px w-auto" name="search" placeholder="Search orders..." value="{{ request('search') }}">
-                            <iconify-icon icon="ion:search-outline" class="icon"></iconify-icon>
-                            <input type="hidden" name="status" value="{{ request('status') }}">
-                            <input type="hidden" name="per_page" value="{{ request('per_page', 10) }}">
+                            <iconify-icon icon="ion:search-outline" class="icon" onclick="document.getElementById('search-form').submit()"></iconify-icon>
+                            @if(request('status'))
+                                <input type="hidden" name="status" value="{{ request('status') }}">
+                            @endif
+                            @if(request('per_page'))
+                                <input type="hidden" name="per_page" value="{{ request('per_page') }}">
+                            @endif
+                            <button type="submit" class="d-none"></button>
                         </form>
-                        <form method="GET">
-                            <select class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px" name="status" onchange="this.form.submit()">
-                                <option value="All Status" {{ request('status') == 'All Status' ? 'selected' : '' }}>All Status</option>
+                        <form method="GET" id="status-form">
+                            <select class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px" name="status" onchange="document.getElementById('status-form').submit()">
+                                <option value="All Status" {{ request('status') === 'All Status' ? 'selected' : '' }}>All Status</option>
                                 @foreach($orderStatuses as $status)
-                                    <option value="{{ $status->name }}" {{ request('status') == $status->name ? 'selected' : '' }}>{{ $status->name }}</option>
+                                    <option value="{{ $status->name }}" {{ request('status') === $status->name ? 'selected' : '' }}>{{ $status->name }}</option>
                                 @endforeach
                             </select>
-                            <input type="hidden" name="search" value="{{ request('search') }}">
-                            <input type="hidden" name="per_page" value="{{ request('per_page', 10) }}">
+                            @if(request('search'))
+                                <input type="hidden" name="search" value="{{ request('search') }}">
+                            @endif
+                            @if(request('per_page'))
+                                <input type="hidden" name="per_page" value="{{ request('per_page') }}">
+                            @endif
                         </form>
                     </div>
                     <div class="d-flex align-items-center gap-2">
@@ -117,7 +130,7 @@
                                     <td>{{ optional($order->product)->name ?? 'N/A' }}</td>
                                     <td>{{ optional($order->creator)->name ?? 'N/A' }}</td>
                                     <td>{{ $order->unit ?? 'N/A' }}</td>
-                                    <td>{{ isset($order->price_per_unit) ? '$'.number_format($order->price_per_unit,2) : (isset($order->cost_amount) ? '$'.number_format($order->cost_amount,2) : 'N/A') }}</td>
+                                    <td>{{ isset($order->price_per_unit) ? 'MYR '.number_format($order->price_per_unit,2) : (isset($order->cost_amount) ? 'MYR '.number_format($order->cost_amount,2) : 'N/A') }}</td>
                                     <td>{{ $order->wheel?->wheel ?? 'N/A' }}</td>
                                     <td>
                                         @php
@@ -128,7 +141,7 @@
                                             $hasOrderAmountObj = $transport && (str_contains($transport->order_amountable_type, '\\') || class_exists($transport->order_amountable_type));
                                             $transportObj = $hasOrderAmountObj ? $transport->order_amountable : null;
                                         @endphp
-                                        {{ $transport?->amount ? '$'.number_format($transport->amount,2) : 'N/A' }}
+                                        {{ $transport?->amount ? 'MYR '.number_format($transport->amount,2) : 'N/A' }}
                                     </td>
                                     <td>{{ $transportObj?->distance_text ?? 'N/A' }}</td>
                                     <td>{{ $transportObj?->duration_text ?? 'N/A' }}</td>
@@ -176,12 +189,111 @@
 
                     <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mt-24">
                         <span>
-                            Showing {{ $orders->firstItem() }} to {{ $orders->lastItem() }} of {{ $orders->total() }} entries
+                            Showing {{ $orders->firstItem() ? $orders->firstItem() : 0 }} to {{ $orders->lastItem() ? $orders->lastItem() : 0 }} of {{ $orders->total() }} entries
+                            @if(request('search') || (request('status') && request('status') != 'All Status'))
+                                (filtered from {{ $orders->total() }} total entries)
+                            @endif
+                            <small class="d-block text-muted mt-1">Displaying {{ $orders->count() }} records, {{ (int)request('per_page', 10) }} per page</small>
                         </span>
                         
                         @if ($orders->hasPages())
                             <nav aria-label="Orders pagination">
-                                {{ $orders->links() }}
+                                <ul class="pagination d-flex flex-wrap align-items-center gap-2 justify-content-center">
+                                    {{-- Previous Page Link --}}
+                                    @if ($orders->onFirstPage())
+                                        <li class="page-item disabled">
+                                            <span class="page-link bg-neutral-200 text-neutral-400 fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md">
+                                                <iconify-icon icon="ep:d-arrow-left"></iconify-icon>
+                                            </span>
+                                        </li>
+                                    @else
+                                        <li class="page-item">
+                                            <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" href="{{ $orders->appends(request()->except('page'))->previousPageUrl() }}">
+                                                <iconify-icon icon="ep:d-arrow-left"></iconify-icon>
+                                            </a>
+                                        </li>
+                                    @endif
+
+                                    {{-- Pagination Elements --}}
+                                    @php
+                                        $currentPage = $orders->currentPage();
+                                        $lastPage = $orders->lastPage();
+                                        $window = 2; // Show 2 pages before and after the current page
+                                        
+                                        // Calculate start and end pages for the window
+                                        $startPage = max(1, $currentPage - $window);
+                                        $endPage = min($lastPage, $currentPage + $window);
+                                        
+                                        // Adjust for ellipsis
+                                        $ellipsisStart = false;
+                                        $ellipsisEnd = false;
+                                        
+                                        // Check if we need starting ellipsis
+                                        if ($startPage > 1) {
+                                            $ellipsisStart = true;
+                                        }
+                                        
+                                        // Check if we need ending ellipsis
+                                        if ($endPage < $lastPage) {
+                                            $ellipsisEnd = true;
+                                        }
+                                        
+                                        // Get page links for the window
+                                        $links = $orders->appends(request()->except('page'))->getUrlRange($startPage, $endPage);
+                                    @endphp
+                                    
+                                    {{-- First Page if not in range --}}
+                                    @if($ellipsisStart && $startPage > 1)
+                                        <li class="page-item">
+                                            <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" href="{{ $orders->appends(request()->except('page'))->url(1) }}">1</a>
+                                        </li>
+                                        @if($startPage > 2)
+                                            <li class="page-item disabled">
+                                                <span class="page-link bg-neutral-200 text-neutral-400 fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md">...</span>
+                                            </li>
+                                        @endif
+                                    @endif
+                                    
+                                    {{-- Page Numbers in the window --}}
+                                    @foreach ($links as $page => $url)
+                                        @if ($page == $orders->currentPage())
+                                            <li class="page-item active">
+                                                <span class="page-link text-white fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md bg-primary-600">{{ $page }}</span>
+                                            </li>
+                                        @else
+                                            <li class="page-item">
+                                                <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" href="{{ $url }}">{{ $page }}</a>
+                                            </li>
+                                        @endif
+                                    @endforeach
+                                    
+                                    {{-- Last Page if not in range --}}
+                                    @if($ellipsisEnd && $endPage < $lastPage)
+                                        @if($endPage < $lastPage - 1)
+                                            <li class="page-item disabled">
+                                                <span class="page-link bg-neutral-200 text-neutral-400 fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md">...</span>
+                                            </li>
+                                        @endif
+                                        <li class="page-item">
+                                            <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" href="{{ $orders->appends(request()->except('page'))->url($lastPage) }}">{{ $lastPage }}</a>
+                                        </li>
+                                    @endif
+
+                                    {{-- Next Page Link --}}
+                                    @if ($orders->hasMorePages())
+                                        <li class="page-item">
+                                            <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" href="{{ $orders->appends(request()->except('page'))->nextPageUrl() }}">
+                                                <iconify-icon icon="ep:d-arrow-right"></iconify-icon>
+                                            </a>
+                                        </li>
+                                    @else
+                                        <li class="page-item disabled">
+                                            <span class="page-link bg-neutral-200 text-neutral-400 fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md">
+                                                <iconify-icon icon="ep:d-arrow-right"></iconify-icon>
+                                            </span>
+                                        </li>
+                                    @endif
+                                </ul>
                             </nav>
                         @endif
                     </div>
