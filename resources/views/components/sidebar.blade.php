@@ -97,6 +97,8 @@
                     </li>
                 </ul>
             </li>
+            
+            
             <li class="dropdown">
                 <a  href="javascript:void(0)">
                     <i class="ri-robot-2-line text-xl me-6 d-flex w-auto"></i>
@@ -346,7 +348,21 @@
                     </li>
                 </ul>
             </li>
-
+            <!-- Business navigation - list style like Users -->
+            <li class="dropdown">
+                <a  href="javascript:void(0)">
+                    <iconify-icon icon="mdi:sand" class="menu-icon"></iconify-icon>
+                    <span>Business Management</span>
+                </a>
+                <ul class="sidebar-submenu">
+                    <li>
+                        <a href="{{ route('business.prices') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Prices</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('business.zones') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Zones</a>
+                    </li>
+                </ul>
+            </li>
             <!-- Products navigation - list style like Users -->
             <li class="dropdown">
                 <a href="javascript:void(0)">
