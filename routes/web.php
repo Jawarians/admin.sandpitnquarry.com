@@ -20,6 +20,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\TripController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\BusinessPriceController;
 
 Route::controller(DashboardController::class)->group(function () {
     Route::get('/', 'index')->name('index');
@@ -74,6 +75,15 @@ Route::prefix('chart')->group(function () {
         Route::get('/columnchart', 'columnChart')->name('columnChart');
         Route::get('/linechart', 'lineChart')->name('lineChart');
         Route::get('/piechart', 'pieChart')->name('pieChart');
+    });
+});
+
+// Business Prices and Zones
+Route::prefix('business')->group(function () {
+    Route::controller(BusinessPriceController::class)->group(function () {
+        Route::get('/prices', 'index')->name('business.prices');
+        Route::get('/zones', 'zones')->name('business.zones');
+        Route::post('/zones/postcodes/update', 'updatePostcodes')->name('business.zones.postcodes.update');
     });
 });
 
