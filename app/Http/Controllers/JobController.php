@@ -6,6 +6,7 @@ use App\Models\Job;
 use App\Models\JobStatus;
 use App\Models\JobDetail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 
 class JobController extends Controller
 {
@@ -31,7 +32,8 @@ class JobController extends Controller
         // Handle status filter
         if ($request->has('status') && $request->status !== 'All Status') {
             $query->whereHas('jobStatus', function($q) use ($request) {
-                $q->where('name', $request->status);
+                // JobStatus stores the status string in 'status'
+                $q->where('status', $request->status);
             });
         }
 
@@ -55,18 +57,28 @@ class JobController extends Controller
 
     public function jobStatuses(Request $request)
     {
-        $query = JobStatus::withCount('jobs');
-        
-        // Handle search
+        // Start a simple query. Only attach withCount('jobs') if the jobs table
+        // actually has a 'status' column; otherwise the subquery will reference a
+        // non-existent column and cause SQL errors on PostgreSQL.
+        $query = JobStatus::query();
+        try {
+            if (Schema::hasColumn('jobs', 'status')) {
+                $query->withCount('jobs');
+            }
+        } catch (\Exception $e) {
+            // ignore schema check failures
+        }
+
+        // Handle search (search against the status string)
         if ($request->has('search') && !empty($request->search)) {
             $searchTerm = $request->search;
-            $query->where('name', 'LIKE', "%{$searchTerm}%");
+            $query->where('status', 'LIKE', "%{$searchTerm}%");
         }
 
         // Paginate results
         $perPage = $request->get('per_page', 10);
-        $statuses = $query->orderBy('name', 'asc')->paginate($perPage);
-        
+        $statuses = $query->orderBy('status', 'asc')->paginate($perPage);
+
         return view('jobs/jobStatuses', compact('statuses'));
     }
 }

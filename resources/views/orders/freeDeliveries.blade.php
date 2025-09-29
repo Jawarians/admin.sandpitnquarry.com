@@ -85,16 +85,22 @@
                         </td>
                         <td><span class="text-md mb-0 fw-normal text-secondary-light">{{ $order->order_number ?? 'N/A' }}</span></td>
                         <td><span class="text-md mb-0 fw-bold text-success-600">${{ number_format($order->total_amount ?? 0, 2) }}</span></td>
+                        <td>{{ optional($order->purchase)->id ?? 'N/A' }}</td>
+                        <td>{{ optional($order->latest->site)->name ?? 'N/A' }}</td>
+                        <td>{{ optional($order->product)->name ?? 'N/A' }}</td>
+                        <td>{{ optional($order->creator)->name ?? 'N/A' }}</td>
+                        <td>{{ $order->unit ?? 'N/A' }}</td>
+                        <td>{{ isset($order->price_per_unit) ? '$'.number_format($order->price_per_unit,2) : (isset($order->cost_amount) ? '$'.number_format($order->cost_amount,2) : 'N/A') }}</td>
                         <td>
-                            @if($order->delivery_date)
-                                <span class="text-md mb-0 fw-normal text-secondary-light">{{ \Carbon\Carbon::parse($order->delivery_date)->format('d M Y') }}</span>
-                                @if($order->delivery_time)
-                                    <br><small class="text-xs text-secondary-light">{{ $order->delivery_time }}</small>
-                                @endif
-                            @else
-                                <span class="text-xs text-secondary-light">Not scheduled</span>
-                            @endif
+                            @php $transport = $order->order_amounts->firstWhere('order_amountable_type', 'transportation'); @endphp
+                            {{ $transport?->amount ? '$'.number_format($transport->amount,2) : 'N/A' }}
                         </td>
+                        <td>{{ $transport?->order_amountable->distance_text ?? 'N/A' }}</td>
+                        <td>{{ $transport?->order_amountable->duration_text ?? 'N/A' }}</td>
+                        <td>{{ optional($order->wheel)->wheel ?? 'N/A' }}</td>
+                        <td>{{ $order->latest->total ?? ($order->order_details->sum('quantity') ?? 'N/A') }}</td>
+                        <td>{{ $order->completed ?? 0 }}</td>
+                        <td>{{ $order->ongoing ?? 0 }}</td>
                         <td>
                             @if($order->orderStatus)
                                 <span class="bg-success-focus text-success-600 border border-success-main px-16 py-4 radius-4 fw-medium text-sm">{{ $order->orderStatus->name }}</span>

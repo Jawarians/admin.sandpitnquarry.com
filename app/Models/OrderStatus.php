@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Schema;
 
 class OrderStatus extends Model
 {
@@ -39,6 +40,19 @@ class OrderStatus extends Model
 
     public function orders()
     {
+        // Guard for environments where `orders.status` column is missing.
+        if (! Schema::hasColumn('orders', 'status')) {
+            return $this->hasMany(Order::class, 'id', 'id')->whereRaw('1=0');
+        }
+
         return $this->hasMany(Order::class, 'status', 'status');
+    }
+
+    /**
+     * Backwards-compatible accessor for templates that expect `$status->name`.
+     */
+    public function getNameAttribute()
+    {
+        return $this->status;
     }
 }

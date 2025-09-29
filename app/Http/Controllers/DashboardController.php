@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Order;
+use App\Models\Job;
+use App\Models\Trip;
 
 class DashboardController extends Controller
 {
@@ -60,6 +63,25 @@ class DashboardController extends Controller
     public function index10()
     {
         return view('dashboard/index10');
+    }
+
+    /**
+     * Analyst dashboard: quick metrics and recent items for Orders, Jobs, Trips.
+     */
+    public function analyst()
+    {
+        $ordersCount = Order::count();
+        $jobsCount = Job::count();
+        $tripsCount = Trip::count();
+
+        $recentOrders = Order::orderBy('created_at', 'desc')->take(5)->get();
+        $recentJobs = Job::orderBy('created_at', 'desc')->take(5)->get();
+        $recentTrips = Trip::orderBy('created_at', 'desc')->take(5)->get();
+
+        return view('dashboard/analyst', compact(
+            'ordersCount', 'jobsCount', 'tripsCount',
+            'recentOrders', 'recentJobs', 'recentTrips'
+        ));
     }
 
     

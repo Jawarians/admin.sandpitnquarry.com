@@ -299,6 +299,16 @@ protected static function boot()
         return $this->morphOne(Transaction::class, 'transactionable')->oldestOfMany();
     }
 
+    /**
+     * Backwards-compatible alias expected by some controllers/views.
+     * Previously some code referenced `orderPayment` — map that to the
+     * latest transaction for this order.
+     */
+    public function orderPayment(): MorphOne
+    {
+        return $this->latest_transaction();
+    }
+
     public function order_amounts(): HasMany
     {
         return $this->hasMany(OrderAmount::class);
