@@ -8,6 +8,7 @@
         "php": "^8.2",
         "backpack/basset": "*",
         "haruncpi/laravel-id-generator": "^1.1",
+        "kreait/laravel-firebase": "^6.1",
         "laravel/framework": "^11.0",
         "laravel/tinker": "^2.9",
         "symfony/asset": "^7.1",
