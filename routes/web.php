@@ -19,6 +19,7 @@ use App\Http\Controllers\CryptocurrencyController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\TripController;
+use App\Http\Controllers\ProductController;
 
 Route::controller(DashboardController::class)->group(function () {
     Route::get('/', 'index')->name('index');
@@ -235,5 +236,14 @@ Route::prefix('trips')->group(function () {
         Route::get('/trips-list', 'trips')->name('tripsList');
         Route::get('/trip-details/{id}', 'tripDetails')->name('tripDetails');
         Route::get('/trip-statuses', 'tripStatuses')->name('tripStatuses');
+    });
+});
+
+// Products
+Route::prefix('products')->group(function () {
+    Route::controller(ProductController::class)->group(function () {
+        Route::get('/','index')->name('products.index');
+        Route::get('/create','create')->name('products.create');
+        Route::post('/store','store')->name('products.store');
     });
 });
