@@ -14,6 +14,7 @@ class Product extends Model
             'name',
             'nama',
             'description',
+        'active',
             'ideal',
             'benefit',
             'code',
@@ -67,6 +68,10 @@ class Product extends Model
     {
         return $this->hasMany(ProductImage::class);
     }
+
+    protected $casts = [
+        'active' => 'boolean',
+    ];
 
     public function retail_postcodes(): BelongsToMany
     {

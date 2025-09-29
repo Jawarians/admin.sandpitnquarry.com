@@ -347,6 +347,22 @@
                 </ul>
             </li>
 
+            <!-- Products navigation - list style like Users -->
+            <li class="dropdown">
+                <a href="javascript:void(0)">
+                    <iconify-icon icon="mdi:cube-outline" class="menu-icon"></iconify-icon>
+                    <span>Products</span>
+                </a>
+                <ul class="sidebar-submenu">
+                    <li>
+                        <a href="{{ route('products.index') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Products List</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('products.create') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Add Product</a>
+                    </li>
+                </ul>
+            </li>
+
             <li class="dropdown">
                 <a  href="javascript:void(0)">
                     <i class="ri-user-settings-line text-xl me-6 d-flex w-auto"></i>
