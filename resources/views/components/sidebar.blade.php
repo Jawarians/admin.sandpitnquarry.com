@@ -52,7 +52,7 @@
                     </li>
                 </ul>
             </li>
-            <li class="sidebar-menu-group-title">Application</li>
+            <!-- <li class="sidebar-menu-group-title">Application</li>
             <li>
                   <a href="{{ route('email') }}">
                     <iconify-icon icon="mage:email" class="menu-icon"></iconify-icon>
@@ -273,7 +273,7 @@
                     <iconify-icon icon="fe:vector" class="menu-icon"></iconify-icon>
                     <span>Widgets</span>
                 </a>
-            </li>
+            </li> -->
             <li class="dropdown">
                 <a  href="javascript:void(0)">
                     <iconify-icon icon="flowbite:users-group-outline" class="menu-icon"></iconify-icon>
@@ -348,11 +348,11 @@
                     </li>
                 </ul>
             </li>
-            <!-- Business navigation - list style like Users -->
+            <!-- Quarry Operations navigation -->
             <li class="dropdown">
                 <a  href="javascript:void(0)">
-                    <iconify-icon icon="mdi:sand" class="menu-icon"></iconify-icon>
-                    <span>Business Management</span>
+                    <i class="ri-landscape-line text-xl me-6 d-flex w-auto"></i>
+                    <span>Quarry Operations</span>
                 </a>
                 <ul class="sidebar-submenu">
                     <li>
@@ -360,6 +360,9 @@
                     </li>
                     <li>
                         <a href="{{ route('business.zones') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Zones</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('sites.index') }}"><i class="ri-circle-fill circle-icon text-success-main w-auto"></i> Quarries</a>
                     </li>
                 </ul>
             </li>

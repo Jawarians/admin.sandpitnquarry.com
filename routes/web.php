@@ -20,7 +20,8 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\TripController;
 use App\Http\Controllers\ProductController;
-use App\Http\Controllers\BusinessPriceController;
+use App\Http\Controllers\PriceItemController;
+use App\Http\Controllers\SiteController;
 
 Route::controller(DashboardController::class)->group(function () {
     Route::get('/', 'index')->name('index');
@@ -80,11 +81,29 @@ Route::prefix('chart')->group(function () {
 
 // Business Prices and Zones
 Route::prefix('business')->group(function () {
-    Route::controller(BusinessPriceController::class)->group(function () {
+    Route::controller(PriceItemController::class)->group(function () {
         Route::get('/prices', 'index')->name('business.prices');
+        Route::get('/prices/tonne/{priceId}', 'tonnePrices')->name('business.prices.tonne');
+        Route::get('/prices/load/{priceId}', 'loadPrices')->name('business.prices.load');
+        Route::post('/prices/tonne/update', 'updateTonnePrice')->name('business.prices.tonne.update');
+        Route::post('/prices/load/update', 'updateLoadPrice')->name('business.prices.load.update');
         Route::get('/zones', 'zones')->name('business.zones');
         Route::post('/zones/postcodes/update', 'updatePostcodes')->name('business.zones.postcodes.update');
+        Route::post('/zones/postcodes/add', 'addPostcode')->name('business.zones.postcodes.add');
     });
+    
+    // Price Items CRUD routes
+    Route::resource('price-items', PriceItemController::class, [
+        'names' => [
+            'index' => 'price.items.index',
+            'create' => 'price.items.create',
+            'store' => 'price.items.store',
+            'show' => 'price.items.show',
+            'edit' => 'price.items.edit',
+            'update' => 'price.items.update',
+            'destroy' => 'price.items.destroy',
+        ]
+    ]);
 });
 
 // Componentpage
@@ -255,5 +274,18 @@ Route::prefix('products')->group(function () {
         Route::get('/','index')->name('products.index');
         Route::get('/create','create')->name('products.create');
         Route::post('/store','store')->name('products.store');
+    });
+});
+
+// Sites/Quarries
+Route::prefix('sites')->group(function () {
+    Route::controller(SiteController::class)->group(function () {
+        Route::get('/', 'index')->name('sites.index');
+        Route::get('/create', 'create')->name('sites.create');
+        Route::post('/', 'store')->name('sites.store');
+        Route::get('/{id}', 'show')->name('sites.show');
+        Route::get('/{id}/edit', 'edit')->name('sites.edit');
+        Route::put('/{id}', 'update')->name('sites.update');
+        Route::delete('/{id}', 'destroy')->name('sites.destroy');
     });
 });
