@@ -47,15 +47,27 @@
                                 <div class="form-check style-check d-flex align-items-center">
                                     <input class="form-check-input radius-4 border input-form-dark" type="checkbox" name="checkbox" id="selectAll">
                                 </div>
-                                Order ID
+                                ID
                             </div>
                         </th>
-                        <th scope="col">Order Date</th>
                         <th scope="col">Customer</th>
-                        <th scope="col">Order Number</th>
-                        <th scope="col">Total Amount</th>
-                        <th scope="col">Delivery Date</th>
+                        <th scope="col">Quarry</th>
+                        <th scope="col">Site</th>
+                        <th scope="col">Product</th>
+                        <th scope="col">Agent</th>
+                        <th scope="col">Unit</th>
+                        <th scope="col">Price/Unit</th>
+                        <th scope="col">Tonne</th>
+                        <th scope="col">Fee</th>
+                        <th scope="col">Distance</th>
+                        <th scope="col">Duration</th>
+                        <th scope="col">Wheel</th>
+                        <th scope="col">Start at</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Completed</th>
+                        <th scope="col">Ongoing</th>
                         <th scope="col">Status</th>
+                        <th scope="col">Created at</th>
                         <th scope="col" class="text-center">Action</th>
                     </tr>
                 </thead>
@@ -68,36 +80,35 @@
                                     <input class="form-check-input radius-4 border border-neutral-400" type="checkbox" name="checkbox" value="{{ $order->id }}">
                                 </div>
                                 <div class="d-flex align-items-center gap-2">
-                                    #{{ str_pad($order->id, 4, '0', STR_PAD_LEFT) }}
-                                    <span class="bg-success-focus text-success-600 px-8 py-2 radius-4 fw-medium text-xs">FREE</span>
+                                    {{ $order->id }}
+                                    @if(!$order->transportation_amount || ($order->transportation_amount && $order->transportation_amount->amount == 0))
+                                        <span class="bg-success-focus text-success-600 px-8 py-2 radius-4 fw-medium text-xs">FREE</span>
+                                    @endif
                                 </div>
                             </div>
                         </td>
-                        <td>{{ $order->created_at ? $order->created_at->format('d M Y') : 'N/A' }}</td>
                         <td>
                             <div class="d-flex align-items-center">
                                 <div class="flex-grow-1">
-                                    <span class="text-md mb-0 fw-normal text-secondary-light">{{ $order->customer->name ?? 'N/A' }}</span>
-                                    <br>
-                                    <small class="text-xs text-secondary-light">{{ $order->customer->email ?? '' }}</small>
+                                    <span class="text-md mb-0 fw-normal text-secondary-light">{{ $order->user->name ?? 'N/A' }}</span>
                                 </div>
                             </div>
                         </td>
-                        <td><span class="text-md mb-0 fw-normal text-secondary-light">{{ $order->order_number ?? 'N/A' }}</span></td>
-                        <td><span class="text-md mb-0 fw-bold text-success-600">${{ number_format($order->total_amount ?? 0, 2) }}</span></td>
-                        <td>{{ optional($order->purchase)->id ?? 'N/A' }}</td>
+                        <td>{{ optional($order->oldest->site)->name ?? 'N/A' }}</td>
                         <td>{{ optional($order->latest->site)->name ?? 'N/A' }}</td>
                         <td>{{ optional($order->product)->name ?? 'N/A' }}</td>
                         <td>{{ optional($order->creator)->name ?? 'N/A' }}</td>
                         <td>{{ $order->unit ?? 'N/A' }}</td>
-                        <td>{{ isset($order->price_per_unit) ? '$'.number_format($order->price_per_unit,2) : (isset($order->cost_amount) ? '$'.number_format($order->cost_amount,2) : 'N/A') }}</td>
+                        <td>{{ isset($order->price_per_unit) ? 'MYR '.number_format($order->price_per_unit/100,2) : (isset($order->cost_amount) ? 'MYR '.number_format($order->cost_amount/100,2) : 'N/A') }}</td>
+                        <td>{{ $order->latest->total ?? ($order->order_details->sum('quantity') ?? 'N/A') }}</td>
                         <td>
-                            @php $transport = $order->order_amounts->firstWhere('order_amountable_type', 'transportation'); @endphp
-                            {{ $transport?->amount ? '$'.number_format($transport->amount,2) : 'N/A' }}
+                            @php $transport = $order->transportation_amount; @endphp
+                            {{ $transport && $transport->amount ? 'MYR '.number_format($transport->amount/100,2) : 'MYR 0.00' }}
                         </td>
-                        <td>{{ $transport?->order_amountable->distance_text ?? 'N/A' }}</td>
-                        <td>{{ $transport?->order_amountable->duration_text ?? 'N/A' }}</td>
+                        <td>{{ $transport && $transport->order_amountable ? $transport->order_amountable->route->distance_text ?? 'N/A' : 'N/A' }}</td>
+                        <td>{{ $transport && $transport->order_amountable ? $transport->order_amountable->route->duration_text ?? 'N/A' : 'N/A' }}</td>
                         <td>{{ optional($order->wheel)->wheel ?? 'N/A' }}</td>
+                        <td>{{ optional($order->purchase)->created_at ? $order->purchase->created_at->format('M d, Y H:i:s') : 'N/A' }}</td>
                         <td>{{ $order->latest->total ?? ($order->order_details->sum('quantity') ?? 'N/A') }}</td>
                         <td>{{ $order->completed ?? 0 }}</td>
                         <td>{{ $order->ongoing ?? 0 }}</td>
@@ -105,7 +116,13 @@
                             @if($order->orderStatus)
                                 <span class="bg-success-focus text-success-600 border border-success-main px-16 py-4 radius-4 fw-medium text-sm">{{ $order->orderStatus->name }}</span>
                             @else
-                                <span class="bg-neutral-200 text-neutral-600 border border-neutral-400 px-16 py-4 radius-4 fw-medium text-sm">Unknown</span>
+                                @if($order->completed >= ($order->oldest->quantity ?? 0))
+                                    <span class="bg-success-focus text-success-600 border border-success-main px-16 py-4 radius-4 fw-medium text-sm">Completed</span>
+                                @elseif(isset($order->latest->status) && $order->latest->status == 'Cancelled')
+                                    <span class="bg-danger-focus text-danger-600 border border-danger-main px-16 py-4 radius-4 fw-medium text-sm">Cancelled</span>
+                                @else
+                                    <span class="bg-warning-focus text-warning-600 border border-warning-main px-16 py-4 radius-4 fw-medium text-sm">Incomplete</span>
+                                @endif
                             @endif
                         </td>
                         <td class="text-center">
@@ -118,7 +135,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="8" class="text-center py-4">
+                        <td colspan="20" class="text-center py-4">
                             <div class="d-flex flex-column align-items-center justify-content-center py-5">
                                 <iconify-icon icon="mdi:truck-delivery-outline" class="icon text-6xl text-neutral-400 mb-3"></iconify-icon>
                                 <h5 class="text-neutral-500 mb-2">No Free Deliveries Found</h5>
@@ -167,7 +184,7 @@
                         <iconify-icon icon="mdi:currency-usd" class="text-primary-600 text-3xl mb-8"></iconify-icon>
                         <h6 class="text-lg text-primary-600 mb-4">Total Value Saved</h6>
                         <h4 class="text-2xl fw-bold text-primary-600 mb-0">
-                            ${{ number_format($freeDeliveries->sum(function($order) { return $order->order_amounts->where('order_amountable_type', 'transportation')->sum('amount'); }) ?: ($freeDeliveries->count() * 5), 2) }}
+                            MYR {{ number_format(($freeDeliveries->sum(function($order) { return $order->order_amounts->where('order_amountable_type', 'transportation')->sum('amount'); }) ?: ($freeDeliveries->count() * 500))/100, 2) }}
                         </h4>
                     </div>
                 </div>

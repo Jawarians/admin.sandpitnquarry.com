@@ -15,6 +15,12 @@ class MoneyCast implements CastsAttributes
      * @param  array  $attributes
      * @return mixed
      */
+    /**
+     * Cast the given value.
+     * 
+     * Returns the raw numeric value without currency formatting.
+     * For display with MYR formatting, use a formatter in the view.
+     */
     public function get($model, string $key, $value, array $attributes)
     {
         return $value !== null ? (float) $value : null;
@@ -35,10 +41,17 @@ class MoneyCast implements CastsAttributes
             return null;
         }
         
-        if (!is_numeric($value)) {
-            throw new InvalidArgumentException('The given value is not a valid money amount.');
+        // Handle formatted strings like "1,234.56", "RM1,234.56" or "MYR1,234.56"
+        if (is_string($value)) {
+            // Remove currency symbols (RM/MYR), commas and other non-numeric characters except decimal point
+            $value = preg_replace('/[^0-9.]/', '', $value);
         }
         
-        return $value;
+        if (!is_numeric($value)) {
+            throw new InvalidArgumentException("The given value '{$value}' is not a valid money amount.");
+        }
+        
+        // Convert to a proper numeric value and ensure it's stored as a number
+        return (float) $value;
     }
 }

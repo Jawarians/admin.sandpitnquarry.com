@@ -12,34 +12,48 @@ class JobController extends Controller
 {
     public function jobs(Request $request)
     {
-        $query = Job::with(['jobStatus', 'driver', 'customer', 'jobDetails']);
+        // Build query with necessary relationships for the table
+        $query = Job::with([
+            'customer',
+            'jobDetails',
+            'latest',
+            'order.product',
+            'order.wheel',
+            'order.oldest.site',
+            'order.latest.site',
+            'order.address.latest',
+            'creator',
+            'trips',
+            'trips.latest.assignment.driver.user'
+        ]);
+        
+        // Add the JobEvent scope to get trip statistics like assigned, completed, ongoing counts
+        $query->jobEvent();
         
         // Handle search
         if ($request->has('search') && !empty($request->search)) {
             $searchTerm = $request->search;
             $query->where(function($q) use ($searchTerm) {
                 $q->where('id', 'LIKE', "%{$searchTerm}%")
-                  ->orWhere('job_number', 'LIKE', "%{$searchTerm}%")
-                  ->orWhereHas('driver', function($subQ) use ($searchTerm) {
+                  ->orWhere('order_id', 'LIKE', "%{$searchTerm}%")
+                  ->orWhereHas('customer', function($subQ) use ($searchTerm) {
                       $subQ->where('name', 'LIKE', "%{$searchTerm}%");
                   })
-                  ->orWhereHas('customer', function($subQ) use ($searchTerm) {
+                  ->orWhereHas('order.product', function($subQ) use ($searchTerm) {
+                      $subQ->where('name', 'LIKE', "%{$searchTerm}%");
+                  })
+                  ->orWhereHas('order.oldest.site', function($subQ) use ($searchTerm) {
                       $subQ->where('name', 'LIKE', "%{$searchTerm}%");
                   });
             });
         }
-
-        // Handle status filter
-        if ($request->has('status') && $request->status !== 'All Status') {
-            $query->whereHas('jobStatus', function($q) use ($request) {
-                // JobStatus stores the status string in 'status'
-                $q->where('status', $request->status);
-            });
-        }
-
+        
+        // Sort by created date to show newest jobs first
+        $query->orderBy('created_at', 'desc');
+        
         // Paginate results
         $perPage = $request->get('per_page', 10);
-        $jobs = $query->orderBy('created_at', 'desc')->paginate($perPage);
+        $jobs = $query->paginate($perPage);
         
         // Get all job statuses for filter dropdown
         $jobStatuses = JobStatus::all();
@@ -49,7 +63,8 @@ class JobController extends Controller
 
     public function jobDetails($id)
     {
-        $job = Job::with(['jobStatus', 'driver', 'customer', 'jobDetails'])
+        $job = Job::with(['driver', 'customer', 'jobDetails'])
+                 ->jobEvent()  // Add jobEvent scope to get trip-related attributes
                  ->findOrFail($id);
         
         return view('jobs/jobDetails', compact('job'));

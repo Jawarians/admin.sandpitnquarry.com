@@ -37,8 +37,14 @@ class TripController extends Controller
         }
 
         // Paginate results
-        $perPage = $request->get('per_page', 10);
-        $trips = $query->orderBy('created_at', 'desc')->paginate($perPage);
+        // If per_page is explicitly set to null or empty string, use default value
+        $perPage = $request->input('per_page');
+        if ($perPage === null || $perPage === '') {
+            $perPage = 10;
+        }
+        // Cast to integer to ensure proper pagination
+        $perPage = (int) $perPage;
+        $trips = $query->orderBy('created_at', 'desc')->paginate($perPage)->withQueryString();
         
         // Get all trip statuses for filter dropdown
         $tripStatuses = TripStatus::all();

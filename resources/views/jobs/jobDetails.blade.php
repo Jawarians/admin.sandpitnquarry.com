@@ -18,10 +18,17 @@
                     <h5 class="card-title mb-0">Job Details</h5>
                 </div>
                 <div class="d-flex align-items-center gap-2">
-                    @if($job->jobStatus)
-                        <span class="bg-info-focus text-info-600 border border-info-main px-24 py-4 radius-4 fw-medium text-sm">{{ $job->jobStatus->name }}</span>
+                    <!-- Showing job status based on trips -->
+                    @if(isset($job->assigned) && $job->assigned > 0)
+                        <span class="bg-warning-focus text-warning-600 border border-warning-main px-24 py-4 radius-4 fw-medium text-sm">Assigned</span>
+                    @elseif(isset($job->ongoing) && $job->ongoing > 0)
+                        <span class="bg-info-focus text-info-600 border border-info-main px-24 py-4 radius-4 fw-medium text-sm">In Progress</span>
+                    @elseif(isset($job->completed) && $job->completed > 0)
+                        <span class="bg-success-focus text-success-600 border border-success-main px-24 py-4 radius-4 fw-medium text-sm">Completed</span>
+                    @elseif(isset($job->cancelled) && $job->cancelled > 0)
+                        <span class="bg-danger-focus text-danger-600 border border-danger-main px-24 py-4 radius-4 fw-medium text-sm">Cancelled</span>
                     @else
-                        <span class="bg-neutral-200 text-neutral-600 border border-neutral-400 px-24 py-4 radius-4 fw-medium text-sm">Unknown Status</span>
+                        <span class="bg-neutral-200 text-neutral-600 border border-neutral-400 px-24 py-4 radius-4 fw-medium text-sm">Pending</span>
                     @endif
                 </div>
             </div>
