@@ -83,8 +83,8 @@
                         <td>{{ $zone->state ?? 'N/A' }}</td>
                         <td>
                             <div class="d-flex align-items-center">
-                                @if(isset($zonePostcodes[$zone->id]))
-                                    <span class="badge bg-light text-dark me-1">{{ $zonePostcodes[$zone->id] }}</span>
+                                @if(isset($zonePostcodes[$zone->id]) && count($zonePostcodes[$zone->id]) > 0)
+                                    <span class="badge bg-light text-dark me-1">{{ implode(', ', $zonePostcodes[$zone->id]) }}</span>
                                 @endif
                                 <a href="#" class="btn btn-xs btn-outline-success" title="Add Postcode" data-bs-toggle="modal" data-bs-target="#addPostcodeModal" data-zone-id="{{ $zone->id }}" data-zone-name="{{ $zone->name }}">
                                     <iconify-icon icon="mdi:plus-circle-outline" class="text-success"></iconify-icon>
