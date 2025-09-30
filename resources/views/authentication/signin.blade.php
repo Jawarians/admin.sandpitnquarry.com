@@ -69,27 +69,29 @@
         </div>
     </section>
 
-@php
-        $script = '<script>
-            // ================== Password Show Hide Js Start ==========
-            function initializePasswordToggle(toggleSelector) {
-                $(toggleSelector).on("click", function() {
-                    $(this).toggleClass("ri-eye-off-line");
-                    var input = $($(this).attr("data-toggle"));
-                    if (input.attr("type") === "password") {
-                        input.attr("type", "text");
-                    } else {
-                        input.attr("type", "password");
-                    }
-                });
-            }
-            // Call the function
-            initializePasswordToggle(".toggle-password");
-            // ========================= Password Show Hide Js End ===========================
-        </script>';
-@endphp
-
 <x-script />
+
+<script>
+    // ================== Password Show Hide Js Start ==========
+    document.addEventListener('DOMContentLoaded', function() {
+        const togglePasswordButtons = document.querySelectorAll('.toggle-password');
+        togglePasswordButtons.forEach(function(button) {
+            button.addEventListener('click', function() {
+                this.classList.toggle('ri-eye-off-line');
+                this.classList.toggle('ri-eye-line');
+                const inputSelector = this.getAttribute('data-toggle');
+                const inputField = document.querySelector(inputSelector);
+                
+                if (inputField.getAttribute('type') === 'password') {
+                    inputField.setAttribute('type', 'text');
+                } else {
+                    inputField.setAttribute('type', 'password');
+                }
+            });
+        });
+    });
+    // ========================= Password Show Hide Js End ===========================
+</script>
 
 </body>
 
