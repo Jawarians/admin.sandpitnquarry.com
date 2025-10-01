@@ -81,9 +81,9 @@
                                 </div>
                                 <div class="d-flex align-items-center gap-2">
                                     {{ $order->id }}
-                                    @if(!$order->transportation_amount || ($order->transportation_amount && $order->transportation_amount->amount == 0))
+                                    
                                         <span class="bg-success-focus text-success-600 px-8 py-2 radius-4 fw-medium text-xs">FREE</span>
-                                    @endif
+                                   
                                 </div>
                             </div>
                         </td>
@@ -95,21 +95,21 @@
                             </div>
                         </td>
                         <td>{{ optional($order->oldest->site)->name ?? 'N/A' }}</td>
-                        <td>{{ optional($order->latest->site)->name ?? 'N/A' }}</td>
+                        <td>{{ $order->oldest->site->city ?? 'N/A' }}</td>
                         <td>{{ optional($order->product)->name ?? 'N/A' }}</td>
                         <td>{{ optional($order->creator)->name ?? 'N/A' }}</td>
                         <td>{{ $order->unit ?? 'N/A' }}</td>
                         <td>{{ isset($order->price_per_unit) ? 'MYR '.number_format($order->price_per_unit/100,2) : (isset($order->cost_amount) ? 'MYR '.number_format($order->cost_amount/100,2) : 'N/A') }}</td>
-                        <td>{{ $order->latest->total ?? ($order->order_details->sum('quantity') ?? 'N/A') }}</td>
+                        <td>{{ $order->oldest->quantity ?? ($order->order_details->sum('quantity') ?? 'N/A') }}</td>
                         <td>
                             @php $transport = $order->transportation_amount; @endphp
-                            {{ $transport && $transport->amount ? 'MYR '.number_format($transport->amount/100,2) : 'MYR 0.00' }}
+                            {{ $transport && isset($transport->amount) ? 'MYR '.$transport->amount : 'MYR 0.00' }}
                         </td>
                         <td>{{ $transport && $transport->order_amountable ? $transport->order_amountable->route->distance_text ?? 'N/A' : 'N/A' }}</td>
                         <td>{{ $transport && $transport->order_amountable ? $transport->order_amountable->route->duration_text ?? 'N/A' : 'N/A' }}</td>
                         <td>{{ optional($order->wheel)->wheel ?? 'N/A' }}</td>
                         <td>{{ optional($order->purchase)->created_at ? $order->purchase->created_at->format('M d, Y H:i:s') : 'N/A' }}</td>
-                        <td>{{ $order->latest->total ?? ($order->order_details->sum('quantity') ?? 'N/A') }}</td>
+                        <td>{{ $order->oldest->total ?? ($order->order_details->sum('quantity') ?? 'N/A') }}</td>
                         <td>{{ $order->completed ?? 0 }}</td>
                         <td>{{ $order->ongoing ?? 0 }}</td>
                         <td>

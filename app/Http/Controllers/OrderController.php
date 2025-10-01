@@ -177,18 +177,9 @@ class OrderController extends Controller
 
     public function freeDeliveries(Request $request)
     {
-        // Select orders that either have no transportation fee recorded
-        // or have a transportation OrderAmount with amount = 0.
+        // Also, only include orders with address_id > 0
         $query = Order::with(['orderStatus', 'customer', 'order_amounts'])
-            ->where(function($q) {
-                $q->whereDoesntHave('order_amounts', function($q2) {
-                    $q2->where('order_amountable_type', 'transportation');
-                })
-                ->orWhereHas('order_amounts', function($q2) {
-                    $q2->where('order_amountable_type', 'transportation')
-                       ->where('amount', 0);
-                });
-            });
+            ->where('address_id', '>', 0);
         
         // Handle search
         if ($request->has('search') && !empty($request->search)) {
@@ -212,20 +203,7 @@ class OrderController extends Controller
     {
         $query = Order::with(['orderStatus', 'customer'])
                      ->where(function($q) {
-                         // Some installations store delivery type in delivery_type or use is_pickup flag.
-                         // Only add where('is_pickup') if the column exists to avoid SQL errors.
-                         try {
-                             if (Schema::hasColumn('orders', 'is_pickup')) {
-                                 $q->where('is_pickup', true);
-                             }
-
-                             // If a delivery_type column exists and contains 'self_pickup', include it.
-                             if (Schema::hasColumn('orders', 'delivery_type')) {
-                                 $q->orWhere('delivery_type', 'self_pickup');
-                             }
-                         } catch (\Exception $e) {
-                             // ignore schema check failures in some environments
-                         }
+                         $q->where('address_id', '<=', 0);
                      });
         
         // Handle search

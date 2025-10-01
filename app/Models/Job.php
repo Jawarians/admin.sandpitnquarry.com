@@ -37,7 +37,8 @@ class Job extends Model
     {
         return Job::withCount([
             'trips as completed_trips_count' => function (Builder $query) {
-                $query->whereHas('trip_details', function ($query) {
+                // Count only trips where the latest trip_detail has status 'Completed'
+                $query->whereHas('latest', function ($query) {
                     $query->where('status', 'Completed');
                 });
             },
@@ -50,7 +51,8 @@ class Job extends Model
     {
         return Job::withCount([
             'trips as assigned_trips_count' => function (Builder $query) {
-                $query->whereHas('trip_details', function ($query) {
+                // Count only trips where the latest trip_detail has status 'Assigned'
+                $query->whereHas('latest', function ($query) {
                     $query->where('status', 'Assigned');
                 });
                 $query->whereDoesntHave('trip_details', function ($query) {
@@ -69,7 +71,8 @@ class Job extends Model
     {
         return Job::withCount([
             'trips as ongoing_trips_count' => function (Builder $query) {
-                $query->whereHas('trip_details', function ($query) {
+                // Count only trips where the latest trip_detail has status 'Accepted'
+                $query->whereHas('latest', function ($query) {
                     $query->where('status', 'Accepted');
                 });
                 $query->whereDoesntHave('trip_details', function ($query) {
@@ -88,7 +91,8 @@ class Job extends Model
     {
         return Job::withCount([
             'trips as cancelled_trips_count' => function (Builder $query) {
-                $query->whereHas('trip_details', function ($query) {
+                // Count only trips where the latest trip_detail has a cancelled status
+                $query->whereHas('latest', function ($query) {
                     $query->where('status', 'Cancelled');
                     $query->orWhere('status', 'Released');
                     $query->orWhere('status', 'Terminated');
@@ -108,9 +112,11 @@ class Job extends Model
             ->withCount([
                 'trips as trips_count',
                 'trips as assigned_trips_count' => function (Builder $query) {
-                    $query->whereHas('trip_details', function ($query) {
+                    // Count only trips where the latest trip_detail has status 'Assigned'
+                    $query->whereHas('latest', function ($query) {
                         $query->where('status', 'Assigned');
                     });
+                    // Exclude trips that have been cancelled/released/terminated in any trip_detail
                     $query->whereDoesntHave('trip_details', function ($query) {
                         $query->where('status', 'Cancelled');
                         $query->orWhere('status', 'Released');
@@ -118,9 +124,11 @@ class Job extends Model
                     });
                 },
                 'trips as ongoing_trips_count' => function (Builder $query) {
-                    $query->whereHas('trip_details', function ($query) {
+                    // Count only trips where the latest trip_detail has status 'Accepted'
+                    $query->whereHas('latest', function ($query) {
                         $query->where('status', 'Accepted');
                     });
+                    // Exclude trips that have been cancelled/released/terminated/completed
                     $query->whereDoesntHave('trip_details', function ($query) {
                         $query->where('status', 'Cancelled');
                         $query->orWhere('status', 'Released');
@@ -129,12 +137,14 @@ class Job extends Model
                     });
                 },
                 'trips as completed_trips_count' => function (Builder $query) {
-                    $query->whereHas('trip_details', function ($query) {
+                    // Count only trips where the latest trip_detail has status 'Completed'
+                    $query->whereHas('latest', function ($query) {
                         $query->where('status', 'Completed');
                     });
                 },
                 'trips as cancelled_trips_count' => function (Builder $query) {
-                    $query->whereHas('trip_details', function ($query) {
+                    // Count only trips where the latest trip_detail has a cancelled status
+                    $query->whereHas('latest', function ($query) {
                         $query->where('status', 'Cancelled');
                         $query->orWhere('status', 'Released');
                         $query->orWhere('status', 'Terminated');
@@ -145,7 +155,8 @@ class Job extends Model
             ->with([
                 'assigned_trips' => function ($query) {
                     $query->with('latest.assignment.driver.user');
-                    $query->whereHas('trip_details', function ($query) {
+                    // Only include trips where the latest trip_detail has 'Assigned' status
+                    $query->whereHas('latest', function ($query) {
                         $query->where('status', 'Assigned');
                     });
                     $query->whereDoesntHave('trip_details', function ($query) {

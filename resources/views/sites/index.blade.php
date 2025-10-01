@@ -64,6 +64,8 @@
                         <th scope="col">Postcode</th>
                         <th scope="col">City</th>
                         <th scope="col">State</th>
+                        <th scope="col">Latitue</th>
+                        <th scope="col">Longitude</th>
                         <th scope="col">Phone</th>
                         <th scope="col">Created at</th>
                         <th scope="col" class="text-center">Action</th>
@@ -83,8 +85,10 @@
                         <td><span class="text-md mb-0 fw-normal text-secondary-light">{{ $site->name }}</span></td>
                         <td>{{ $site->address }}</td>
                         <td>{{ $site->postcode }}</td>
-                        <td>{{ $site->city->name ?? 'N/A' }}</td>
-                        <td>{{ $site->state->name ?? 'N/A' }}</td>
+                        <td>{{ $site->city ?? 'N/A' }}</td>
+                        <td>{{ $site->state?? 'N/A' }}</td>
+                        <td>{{ $site->latitude ?? 'N/A' }}</td>
+                        <td>{{ $site->longitude ?? 'N/A' }}</td>
                         <td>{{ $site->phone }}</td>
                         <td>{{ $site->created_at->format('d M Y') }}</td>
                         <td class="text-center">

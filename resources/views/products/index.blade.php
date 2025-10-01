@@ -57,6 +57,7 @@
                                         </div>
                                     </th>
                                     <th scope="col">Created</th>
+                                    <th scope="col">Image</th>
                                     <th scope="col">Name</th>
                                     <th scope="col">Nama</th>
                                     <th scope="col">Description</th>
@@ -77,6 +78,15 @@
                                         </div>
                                     </td>
                                     <td>{{ $p->created_at ? $p->created_at->format('d M Y') : 'N/A' }}</td>
+                                    <td>
+                                        @if($p->product_images && $p->product_images->isNotEmpty())
+                                            <img src="{{ $p->product_images->first()->url }}" alt="{{ $p->name }}" class="img-thumbnail" style="width: 60px; height: 60px; object-fit: cover;">
+                                        @else
+                                            <div class="bg-neutral-200 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                                <iconify-icon icon="mdi:image-off" class="icon text-xl text-neutral-500"></iconify-icon>
+                                            </div>
+                                        @endif
+                                    </td>
                                     <td>
                                         <div class="d-flex align-items-center">
                                             <div class="flex-grow-1">
@@ -110,7 +120,7 @@
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="8" class="text-center py-4">
+                                    <td colspan="9" class="text-center py-4">
                                         <div class="d-flex flex-column align-items-center justify-content-center py-5">
                                             <iconify-icon icon="mdi:box-open" class="icon text-6xl text-neutral-400 mb-3"></iconify-icon>
                                             <h5 class="text-neutral-500 mb-2">No Products Found</h5>

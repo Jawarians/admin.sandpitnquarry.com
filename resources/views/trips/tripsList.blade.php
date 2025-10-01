@@ -254,9 +254,9 @@
                                     </td>
                                     <td>
                                         @if($trip->job && $trip->job->order && $trip->job->order->oldest && $trip->job->order->oldest->site)
-                                            {{ $trip->job->order->oldest->site->state ?? 'N/A' }}
+                                            {{ $trip->job->order->oldest->site->city ?? 'N/A' }}
                                         @elseif($trip->job && $trip->job->order && $trip->job->order->latest && $trip->job->order->latest->site)
-                                            {{ $trip->job->order->latest->site->state ?? 'N/A' }}
+                                            {{ $trip->job->order->latest->site->city ?? 'N/A' }}
                                         @else
                                             N/A
                                         @endif

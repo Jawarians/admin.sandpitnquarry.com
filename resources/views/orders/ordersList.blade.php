@@ -131,7 +131,7 @@
                                     <td>{{ optional($order->creator)->name ?? 'N/A' }}</td>
                                     <td>{{ $order->unit ?? 'N/A' }}</td>
                                     <td>{{ isset($order->price_per_unit) ? 'MYR '.number_format($order->price_per_unit,2) : (isset($order->cost_amount) ? 'MYR '.number_format($order->cost_amount,2) : 'N/A') }}</td>
-                                    <td>{{ $order->wheel?->wheel ?? 'N/A' }}</td>
+                                    <td>{{ $order->oldest->quantity ?? ($order->order_details->sum('quantity') ?? 'N/A') }}</td>
                                     <td>
                                         @php
                                             $transport = $order->order_amounts->firstWhere('order_amountable_type', 'transportation');
