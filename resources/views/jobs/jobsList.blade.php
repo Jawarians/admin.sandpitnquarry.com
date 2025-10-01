@@ -176,9 +176,9 @@
                                     </td>
                                     <td>
                                         @if($job->order && $job->order->oldest && $job->order->oldest->site)
-                                            {{ $job->order->oldest->site->state }}
+                                            {{ $job->order->oldest->site->city }}
                                         @elseif($job->order && $job->order->latest && $job->order->latest->site)
-                                            {{ $job->order->latest->site->state }}
+                                            {{ $job->order->latest->site->city }}
                                         @else
                                             N/A
                                         @endif
