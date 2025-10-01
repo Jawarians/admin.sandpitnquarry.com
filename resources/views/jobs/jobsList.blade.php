@@ -11,6 +11,31 @@
                         console.log("Job ID " + jobId + " " + (isChecked ? "selected" : "deselected") + " for bulk actions");
                     });
                     
+                    // Select/Deselect all checkboxes
+                    $("#selectAll").on("click", function() {
+                        var isChecked = $(this).prop("checked");
+                        $("input[name=\'checkbox\']").prop("checked", isChecked);
+                    });
+                    
+                    // Date filter handling
+                    var today = new Date();
+                    var dd = String(today.getDate()).padStart(2, "0");
+                    var mm = String(today.getMonth() + 1).padStart(2, "0");
+                    var yyyy = today.getFullYear();
+                    
+                    // Set default end date to today if not specified
+                    if ($("input[name=\'end_date\']").val() === "") {
+                        var todayFormatted = yyyy + "-" + mm + "-" + dd;
+                        $("input[name=\'end_date\']").val(todayFormatted);
+                    }
+                    
+                    // Clear date filters
+                    $("#clearDateFilter").on("click", function() {
+                        $("input[name=\'start_date\']").val("");
+                        $("input[name=\'end_date\']").val("");
+                        $(this).closest("form").submit();
+                    });
+                    
                     // Handle bulk actions
                     $("#applyBulkAction").on("click", function() {
                         var selectedAction = $("#bulkActionSelect").val();
@@ -43,6 +68,10 @@
                                 // Add assign functionality
                                 alert("Assign functionality will be implemented for IDs: " + selectedIds.join(", "));
                                 break;
+                            case "complete":
+                                // Add complete functionality
+                                alert("Complete functionality will be implemented for IDs: " + selectedIds.join(", "));
+                                break;
                         }
                     });
                 });
@@ -64,15 +93,32 @@
                                 <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
                             </select>
                             <input type="hidden" name="search" value="{{ request('search') }}">
+                            <input type="hidden" name="start_date" value="{{ request('start_date') }}">
+                            <input type="hidden" name="end_date" value="{{ request('end_date') }}">
                         </form>
                         <form class="navbar-search" method="GET">
                             <input type="text" class="bg-base h-40-px w-auto" name="search" placeholder="Search jobs..." value="{{ request('search') }}">
                             <iconify-icon icon="ion:search-outline" class="icon"></iconify-icon>
                             <input type="hidden" name="per_page" value="{{ request('per_page', 10) }}">
+                            <input type="hidden" name="start_date" value="{{ request('start_date') }}">
+                            <input type="hidden" name="end_date" value="{{ request('end_date') }}">
                         </form>
-                        <!-- Status filter removed as jobs.status column doesn't exist -->
-                        <input type="hidden" name="search" value="{{ request('search') }}">
-                        <input type="hidden" name="per_page" value="{{ request('per_page', 10) }}">
+                        
+                        <!-- Date filter -->
+                        <form class="d-flex align-items-center gap-2" method="GET">
+                            <div class="input-group">
+                                <span class="input-group-text bg-base h-40-px">From</span>
+                                <input type="date" class="form-control bg-base h-40-px" name="start_date" value="{{ request('start_date') }}">
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-text bg-base h-40-px">To</span>
+                                <input type="date" class="form-control bg-base h-40-px" name="end_date" value="{{ request('end_date') }}">
+                            </div>
+                            <button type="submit" class="btn btn-sm btn-primary h-40-px">Filter</button>
+                            <button type="button" id="clearDateFilter" class="btn btn-sm btn-outline-secondary h-40-px">Clear</button>
+                            <input type="hidden" name="search" value="{{ request('search') }}">
+                            <input type="hidden" name="per_page" value="{{ request('per_page', 10) }}">
+                        </form>
                     </div>
                     <div class="d-flex align-items-center gap-2">
                         <a href="{{ route('jobStatuses') }}" class="btn btn-outline-primary text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2">
@@ -86,7 +132,12 @@
                         <table class="table bordered-table sm-table mb-0">
                             <thead>
                                 <tr>
-                                    <th scope="col">ID</th>
+                                    <th scope="col">
+                                        <div class="d-flex align-items-center gap-10">
+                                            <input class="form-check-input radius-4 border border-neutral-400" type="checkbox" id="selectAll">
+                                            <label for="selectAll">ID</label>
+                                        </div>
+                                    </th>
                                     <th scope="col">Order ID</th>
                                     <th scope="col">Customer</th>
                                     <th scope="col">Quarry</th>
@@ -179,7 +230,7 @@
                                             <iconify-icon icon="mdi:briefcase-outline" class="icon text-6xl text-neutral-400 mb-3"></iconify-icon>
                                             <h5 class="text-neutral-500 mb-2">No Jobs Found</h5>
                                             <p class="text-neutral-400 mb-0">
-                                                @if(request('search'))
+                                                @if(request('search') || request('start_date') || request('end_date'))
                                                     No jobs match your search criteria.
                                                 @else
                                                     There are no jobs in the system yet.

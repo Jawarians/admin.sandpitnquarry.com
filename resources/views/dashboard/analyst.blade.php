@@ -1,6 +1,6 @@
 @extends('layout.layout')
 @php
-    $title = 'Analyst Dashboard';
+    $title = 'Operations Dashboard';
     $subTitle = 'Quick metrics for Orders, Jobs, and Trips';
 @endphp
 
@@ -8,7 +8,7 @@
 <div class="card h-100 p-0 radius-12">
     <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-between">
         <div class="d-flex align-items-center gap-3">
-            <h5 class="card-title mb-0">Analyst Dashboard</h5>
+            <h5 class="card-title mb-0">Real-time Metrics for Orders, Jobs, and Trips</h5>
             <small class="text-secondary-light">Overview</small>
         </div>
     </div>

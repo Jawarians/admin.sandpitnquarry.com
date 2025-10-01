@@ -48,6 +48,15 @@ class JobController extends Controller
             });
         }
         
+        // Handle date filters
+        if ($request->has('start_date') && !empty($request->start_date)) {
+            $query->whereDate('created_at', '>=', $request->start_date);
+        }
+        
+        if ($request->has('end_date') && !empty($request->end_date)) {
+            $query->whereDate('created_at', '<=', $request->end_date);
+        }
+        
         // Sort by created date to show newest jobs first
         $query->orderBy('created_at', 'desc');
         

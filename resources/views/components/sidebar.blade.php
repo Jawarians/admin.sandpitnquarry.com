@@ -4,8 +4,8 @@
     </button>
     <div>
         <a href="{{ route('index') }}" class="sidebar-logo">
-            <img src="{{ asset('assets/images/logo.png') }}" alt="site logo" class="light-logo">
-            <img src="{{ asset('assets/images/logo-light.png') }}" alt="site logo" class="dark-logo">
+            <img src="https://storage.googleapis.com/snq-website-images/customer/Logo-1.png" alt="site logo" class="light-logo">
+            <img src="https://storage.googleapis.com/snq-website-images/customer/Logo-1.png" alt="site logo" class="dark-logo">
             <img src="{{ asset('assets/images/logo-icon.png') }}" alt="site logo" class="logo-icon">
         </a>
     </div>
@@ -20,7 +20,7 @@
                     <li>
                         <a href="{{ route('index') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> AI</a>
                     </li>
-                    <li>
+                    <!-- <li>
                     <a href="{{ route('index2') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> CRM</a>
                     </li>
                     <li>
@@ -44,12 +44,12 @@
                     <li>
                     <a href="{{ route('index9') }}"><i class="ri-circle-fill circle-icon text-purple w-auto"></i> Analytics</a>
                     </li>
-                    <li>
+                    <li> -->
                     <a href="{{ route('dashboardAnalyst') }}"><i class="ri-circle-fill circle-icon text-success-main w-auto"></i> Analyst</a>
                     </li>
-                    <li>
+                    <!-- <li>
                     <a href="{{ route('index10') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> POS & Inventory </a>
-                    </li>
+                    </li> -->
                 </ul>
             </li>
             <!-- <li class="sidebar-menu-group-title">Application</li>
@@ -399,7 +399,7 @@
 
             <li class="sidebar-menu-group-title">Application</li>
 
-            <li class="dropdown">
+            <!-- <li class="dropdown">
                 <a  href="javascript:void(0)">
                     <iconify-icon icon="simple-line-icons:vector" class="menu-icon"></iconify-icon>
                     <span>Authentication</span>
@@ -415,7 +415,7 @@
                         <a  href="{{ route('forgotPassword') }}"><i class="ri-circle-fill circle-icon text-info-main w-auto"></i> Forgot Password</a>
                     </li>
                 </ul>
-            </li>
+            </li> -->
             <li>
                 <a  href="{{ route('gallery') }}">
                     <iconify-icon icon="solar:gallery-wide-linear" class="menu-icon"></iconify-icon>

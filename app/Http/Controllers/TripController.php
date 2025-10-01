@@ -35,6 +35,24 @@ class TripController extends Controller
                 $q->where('status', $request->status);
             });
         }
+        
+        // Handle created_at date range filter
+        if ($request->has('created_start_date') && !empty($request->created_start_date)) {
+            $query->whereDate('created_at', '>=', $request->created_start_date);
+        }
+        
+        if ($request->has('created_end_date') && !empty($request->created_end_date)) {
+            $query->whereDate('created_at', '<=', $request->created_end_date);
+        }
+        
+        // Handle updated_at date range filter
+        if ($request->has('updated_start_date') && !empty($request->updated_start_date)) {
+            $query->whereDate('updated_at', '>=', $request->updated_start_date);
+        }
+        
+        if ($request->has('updated_end_date') && !empty($request->updated_end_date)) {
+            $query->whereDate('updated_at', '<=', $request->updated_end_date);
+        }
 
         // Paginate results
         // If per_page is explicitly set to null or empty string, use default value
