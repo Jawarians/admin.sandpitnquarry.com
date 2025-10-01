@@ -3,7 +3,7 @@
 @php
     $title='Dashboard';
     $subTitle = 'AI';
-    $script= '<script src="' . asset('assets/js/homeOneChart.js') . '"></script>';
+    $script= '<script src="' . asset('assets/js/dashboard-charts.js') . '"></script><script src="' . asset('assets/js/homeOneChart.js') . '"></script>';
 @endphp
 
 @section('content')
@@ -35,18 +35,18 @@
                         <div class="card-body p-20">
                             <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
                                 <div>
-                                    <p class="fw-medium text-primary-light mb-1">Total Subscription</p>
-                                    <h6 class="mb-0">15,000</h6>
+                                    <p class="fw-medium text-primary-light mb-1">Total Orders</p>
+                                    <h6 class="mb-0">{{ number_format($totalOrders) }}</h6>
                                 </div>
                                 <div class="w-50-px h-50-px bg-purple rounded-circle d-flex justify-content-center align-items-center">
-                                    <iconify-icon icon="fa-solid:award" class="text-white text-2xl mb-0"></iconify-icon>
+                                    <iconify-icon icon="carbon:order-details" class="text-white text-2xl mb-0"></iconify-icon>
                                 </div>
                             </div>
                             <p class="fw-medium text-sm text-primary-light mt-12 mb-0 d-flex align-items-center gap-2">
-                                <span class="d-inline-flex align-items-center gap-1 text-danger-main">
-                                    <iconify-icon icon="bxs:down-arrow" class="text-xs"></iconify-icon> -800
+                                <span class="d-inline-flex align-items-center gap-1 text-success-main">
+                                    <iconify-icon icon="bxs:up-arrow" class="text-xs"></iconify-icon> +{{ number_format($recentOrders) }}
                                 </span>
-                                Last 30 days subscription
+                                Last 30 days orders
                             </p>
                         </div>
                     </div><!-- card end -->
@@ -56,18 +56,18 @@
                         <div class="card-body p-20">
                             <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
                                 <div>
-                                    <p class="fw-medium text-primary-light mb-1">Total Free Users</p>
-                                    <h6 class="mb-0">5,000</h6>
+                                    <p class="fw-medium text-primary-light mb-1">Total Jobs</p>
+                                    <h6 class="mb-0">{{ number_format($totalJobs) }}</h6>
                                 </div>
                                 <div class="w-50-px h-50-px bg-info rounded-circle d-flex justify-content-center align-items-center">
-                                    <iconify-icon icon="fluent:people-20-filled" class="text-white text-2xl mb-0"></iconify-icon>
+                                    <iconify-icon icon="mdi:construction" class="text-white text-2xl mb-0"></iconify-icon>
                                 </div>
                             </div>
                             <p class="fw-medium text-sm text-primary-light mt-12 mb-0 d-flex align-items-center gap-2">
                                 <span class="d-inline-flex align-items-center gap-1 text-success-main">
-                                    <iconify-icon icon="bxs:up-arrow" class="text-xs"></iconify-icon> +200
+                                    <iconify-icon icon="bxs:up-arrow" class="text-xs"></iconify-icon> +{{ number_format($completedJobs) }}
                                 </span>
-                                Last 30 days users
+                                Completed jobs
                             </p>
                         </div>
                     </div><!-- card end -->
@@ -77,8 +77,8 @@
                         <div class="card-body p-20">
                             <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
                                 <div>
-                                    <p class="fw-medium text-primary-light mb-1">Total Income</p>
-                                    <h6 class="mb-0">$42,000</h6>
+                                    <p class="fw-medium text-primary-light mb-1">Total Revenue</p>
+                                    <h6 class="mb-0">${{ number_format($orderRevenue, 2) }}</h6>
                                 </div>
                                 <div class="w-50-px h-50-px bg-success-main rounded-circle d-flex justify-content-center align-items-center">
                                     <iconify-icon icon="solar:wallet-bold" class="text-white text-2xl mb-0"></iconify-icon>
@@ -86,9 +86,9 @@
                             </div>
                             <p class="fw-medium text-sm text-primary-light mt-12 mb-0 d-flex align-items-center gap-2">
                                 <span class="d-inline-flex align-items-center gap-1 text-success-main">
-                                    <iconify-icon icon="bxs:up-arrow" class="text-xs"></iconify-icon> +$20,000
+                                    <iconify-icon icon="bxs:up-arrow" class="text-xs"></iconify-icon> +${{ number_format($monthlyOrderData->sum('revenue'), 2) }}
                                 </span>
-                                Last 30 days income
+                                Current month
                             </p>
                         </div>
                     </div><!-- card end -->
@@ -98,18 +98,18 @@
                         <div class="card-body p-20">
                             <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
                                 <div>
-                                    <p class="fw-medium text-primary-light mb-1">Total Expense</p>
-                                    <h6 class="mb-0">$30,000</h6>
+                                    <p class="fw-medium text-primary-light mb-1">Total Trips</p>
+                                    <h6 class="mb-0">{{ number_format($totalTrips) }}</h6>
                                 </div>
                                 <div class="w-50-px h-50-px bg-red rounded-circle d-flex justify-content-center align-items-center">
-                                    <iconify-icon icon="fa6-solid:file-invoice-dollar" class="text-white text-2xl mb-0"></iconify-icon>
+                                    <iconify-icon icon="mdi:truck-delivery" class="text-white text-2xl mb-0"></iconify-icon>
                                 </div>
                             </div>
                             <p class="fw-medium text-sm text-primary-light mt-12 mb-0 d-flex align-items-center gap-2">
                                 <span class="d-inline-flex align-items-center gap-1 text-success-main">
-                                    <iconify-icon icon="bxs:up-arrow" class="text-xs"></iconify-icon> +$5,000
+                                    <iconify-icon icon="bxs:up-arrow" class="text-xs"></iconify-icon> {{ number_format($completedTrips) }}
                                 </span>
-                                Last 30 days expense
+                                Completed trips
                             </p>
                         </div>
                     </div><!-- card end -->
@@ -121,7 +121,7 @@
                     <div class="card h-100">
                         <div class="card-body">
                             <div class="d-flex flex-wrap align-items-center justify-content-between">
-                                <h6 class="text-lg mb-0">Sales Statistic</h6>
+                                <h6 class="text-lg mb-0">Order Revenue</h6>
                                 <select class="form-select bg-base form-select-sm w-auto">
                                     <option>Yearly</option>
                                     <option>Monthly</option>
@@ -130,11 +130,11 @@
                                 </select>
                             </div>
                             <div class="d-flex flex-wrap align-items-center gap-2 mt-8">
-                                <h6 class="mb-0">$27,200</h6>
+                                <h6 class="mb-0">${{ number_format($orderRevenue, 2) }}</h6>
                                 <span class="text-sm fw-semibold rounded-pill bg-success-focus text-success-main border br-success px-8 py-4 line-height-1 d-flex align-items-center gap-1">
-                                    10% <iconify-icon icon="bxs:up-arrow" class="text-xs"></iconify-icon>
+                                    {{ number_format(($monthlyOrderData->last()['revenue'] / max($monthlyOrderData->first()['revenue'], 1) - 1) * 100, 1) }}% <iconify-icon icon="bxs:up-arrow" class="text-xs"></iconify-icon>
                                 </span>
-                                <span class="text-xs fw-medium">+ $1500 Per Day</span>
+                                <span class="text-xs fw-medium">+ ${{ number_format($orderRevenue / max(date('j'), 1), 2) }} Per Day</span>
                             </div>
                             <div id="chart" class="pt-28 apexcharts-tooltip-style-1"></div>
                         </div>
@@ -143,20 +143,19 @@
                 <div class="col-xxl-3 col-xl-6">
                     <div class="card h-100 radius-8 border">
                         <div class="card-body p-24">
-                            <h6 class="mb-12 fw-semibold text-lg mb-16">Total Subscriber</h6>
+                            <h6 class="mb-12 fw-semibold text-lg mb-16">Job Status</h6>
                             <div class="d-flex align-items-center gap-2 mb-20">
-                                <h6 class="fw-semibold mb-0">5,000</h6>
+                                <h6 class="fw-semibold mb-0">{{ number_format($totalJobs) }}</h6>
                                 <p class="text-sm mb-0">
-                                    <span class="bg-danger-focus border br-danger px-8 py-2 rounded-pill fw-semibold text-danger-main text-sm d-inline-flex align-items-center gap-1">
-                                        10%
-                                        <iconify-icon icon="iconamoon:arrow-down-2-fill" class="icon"></iconify-icon>
+                                    <span class="bg-success-focus border br-success px-8 py-2 rounded-pill fw-semibold text-success-main text-sm d-inline-flex align-items-center gap-1">
+                                        {{ number_format(($completedJobs / max($totalJobs, 1)) * 100, 0) }}%
+                                        <iconify-icon icon="iconamoon:arrow-up-2-fill" class="icon"></iconify-icon>
                                     </span>
-                                    - 20 Per Day
+                                    Completion Rate
                                 </p>
                             </div>
 
                             <div id="barChart" class="barChart"></div>
-
                         </div>
                     </div>
                 </div>
@@ -164,7 +163,7 @@
                     <div class="card h-100 radius-8 border-0 overflow-hidden">
                         <div class="card-body p-24">
                             <div class="d-flex align-items-center flex-wrap gap-2 justify-content-between">
-                                <h6 class="mb-2 fw-bold text-lg">Users Overview</h6>
+                                <h6 class="mb-2 fw-bold text-lg">Trip Overview</h6>
                                 <div class="">
                                     <select class="form-select form-select-sm w-auto bg-base border text-secondary-light">
                                         <option>Today</option>
@@ -176,23 +175,22 @@
                             </div>
 
 
-                            <div id="userOverviewDonutChart" class="apexcharts-tooltip-z-none"></div>
+                            <div id="tripOverviewDonutChart" class="apexcharts-tooltip-z-none"></div>
 
                             <ul class="d-flex flex-wrap align-items-center justify-content-between mt-3 gap-3">
                                 <li class="d-flex align-items-center gap-2">
                                     <span class="w-12-px h-12-px radius-2 bg-primary-600"></span>
-                                    <span class="text-secondary-light text-sm fw-normal">New:
-                                        <span class="text-primary-light fw-semibold">{{ number_format($newUsers) }}</span>
+                                    <span class="text-secondary-light text-sm fw-normal">Completed:
+                                        <span class="text-primary-light fw-semibold">{{ number_format($completedTrips) }}</span>
                                     </span>
                                 </li>
                                 <li class="d-flex align-items-center gap-2">
                                     <span class="w-12-px h-12-px radius-2 bg-yellow"></span>
-                                    <span class="text-secondary-light text-sm fw-normal">Subscribed:
-                                        <span class="text-primary-light fw-semibold">300</span>
+                                    <span class="text-secondary-light text-sm fw-normal">Cancelled:
+                                        <span class="text-primary-light fw-semibold">{{ number_format($cancelledTrips) }}</span>
                                     </span>
                                 </li>
                             </ul>
-
                         </div>
                     </div>
                 </div>
@@ -246,7 +244,7 @@
                                                         </div>
                                                     </td>
                                                     <td>{{ $user->created_at ? $user->created_at->format('d M Y') : 'N/A' }}</td>
-                                                    <td>Free</td>
+                                                    <td>{{ isset($user->super_admin) && $user->super_admin ? 'Admin' : 'Free' }}</td>
                                                     <td class="text-center">
                                                         <span class="bg-success-focus text-success-main px-24 py-4 rounded-pill fw-medium text-sm">Active</span>
                                                     </td>
@@ -272,86 +270,28 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
+                                                @forelse($recentSubscribers as $index => $subscriber)
                                                 <tr>
                                                     <td>
                                                         <div class="d-flex align-items-center">
-                                                            <img src="{{ asset('assets/images/users/user1.png') }}" alt="" class="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 overflow-hidden">
+                                                            <img src="{{ asset('assets/images/users/user' . (($index % 5) + 1) . '.png') }}" alt="" class="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 overflow-hidden">
                                                             <div class="flex-grow-1">
-                                                                <h6 class="text-md mb-0 fw-medium">Dianne Russell</h6>
-                                                                <span class="text-sm text-secondary-light fw-medium">redaniel@gmail.com</span>
+                                                                <h6 class="text-md mb-0 fw-medium">{{ $subscriber->name ?? 'N/A' }}</h6>
+                                                                <span class="text-sm text-secondary-light fw-medium">{{ $subscriber->email ?? 'N/A' }}</span>
                                                             </div>
                                                         </div>
                                                     </td>
-                                                    <td>27 Mar 2024</td>
-                                                    <td>Free</td>
+                                                    <td>{{ $subscriber->created_at ? $subscriber->created_at->format('d M Y') : 'N/A' }}</td>
+                                                    <td>{{ isset($subscriber->super_admin) && $subscriber->super_admin ? 'Admin' : 'Free' }}</td>
                                                     <td class="text-center">
                                                         <span class="bg-success-focus text-success-main px-24 py-4 rounded-pill fw-medium text-sm">Active</span>
                                                     </td>
                                                 </tr>
+                                                @empty
                                                 <tr>
-                                                    <td>
-                                                        <div class="d-flex align-items-center">
-                                                            <img src="{{ asset('assets/images/users/user2.png') }}" alt="" class="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 overflow-hidden">
-                                                            <div class="flex-grow-1">
-                                                                <h6 class="text-md mb-0 fw-medium">Wade Warren</h6>
-                                                                <span class="text-sm text-secondary-light fw-medium">xterris@gmail.com</span>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td>27 Mar 2024</td>
-                                                    <td>Basic</td>
-                                                    <td class="text-center">
-                                                        <span class="bg-success-focus text-success-main px-24 py-4 rounded-pill fw-medium text-sm">Active</span>
-                                                    </td>
+                                                    <td colspan="4" class="text-center">No recent subscribers found</td>
                                                 </tr>
-                                                <tr>
-                                                    <td>
-                                                        <div class="d-flex align-items-center">
-                                                            <img src="{{ asset('assets/images/users/user3.png') }}" alt="" class="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 overflow-hidden">
-                                                            <div class="flex-grow-1">
-                                                                <h6 class="text-md mb-0 fw-medium">Albert Flores</h6>
-                                                                <span class="text-sm text-secondary-light fw-medium">seannand@mail.ru</span>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td>27 Mar 2024</td>
-                                                    <td>Standard</td>
-                                                    <td class="text-center">
-                                                        <span class="bg-success-focus text-success-main px-24 py-4 rounded-pill fw-medium text-sm">Active</span>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <div class="d-flex align-items-center">
-                                                            <img src="{{ asset('assets/images/users/user4.png') }}" alt="" class="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 overflow-hidden">
-                                                            <div class="flex-grow-1">
-                                                                <h6 class="text-md mb-0 fw-medium">Bessie Cooper </h6>
-                                                                <span class="text-sm text-secondary-light fw-medium">igerrin@gmail.com</span>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td>27 Mar 2024</td>
-                                                    <td>Business</td>
-                                                    <td class="text-center">
-                                                        <span class="bg-success-focus text-success-main px-24 py-4 rounded-pill fw-medium text-sm">Active</span>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <div class="d-flex align-items-center">
-                                                            <img src="{{ asset('assets/images/users/user5.png') }}" alt="" class="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 overflow-hidden">
-                                                            <div class="flex-grow-1">
-                                                                <h6 class="text-md mb-0 fw-medium">Arlene McCoy</h6>
-                                                                <span class="text-sm text-secondary-light fw-medium">fellora@mail.ru</span>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td>27 Mar 2024</td>
-                                                    <td>Enterprise </td>
-                                                    <td class="text-center">
-                                                        <span class="bg-success-focus text-success-main px-24 py-4 rounded-pill fw-medium text-sm">Active</span>
-                                                    </td>
-                                                </tr>
+                                                @endforelse
                                             </tbody>
                                         </table>
                                     </div>
@@ -372,83 +312,33 @@
                             </div>
 
                             <div class="mt-32">
-
-                                <div class="d-flex align-items-center justify-content-between gap-3 mb-24">
-                                    <div class="d-flex align-items-center">
-                                        <img src="{{ asset('assets/images/users/user1.png') }}" alt="" class="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 overflow-hidden">
-                                        <div class="flex-grow-1">
-                                            <h6 class="text-md mb-0 fw-medium">Dianne Russell</h6>
-                                            <span class="text-sm text-secondary-light fw-medium">Agent ID: 36254</span>
+                                @forelse($topPerformers as $index => $performer)
+                                    <div class="d-flex align-items-center justify-content-between gap-3 {{ $loop->last ? '' : 'mb-24' }}">
+                                        <div class="d-flex align-items-center">
+                                            <img src="{{ asset('assets/images/users/user' . (($index % 5) + 1) . '.png') }}" alt="" class="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 overflow-hidden">
+                                            <div class="flex-grow-1">
+                                                <h6 class="text-md mb-0 fw-medium">{{ $performer->name }}</h6>
+                                                <span class="text-sm text-secondary-light fw-medium">ID: {{ $performer->id }}</span>
+                                            </div>
                                         </div>
+                                        <span class="text-primary-light text-md fw-medium">{{ $performer->orders_count }} orders</span>
                                     </div>
-                                    <span class="text-primary-light text-md fw-medium">$20</span>
-                                </div>
-
-                                <div class="d-flex align-items-center justify-content-between gap-3 mb-24">
-                                    <div class="d-flex align-items-center">
-                                        <img src="{{ asset('assets/images/users/user2.png') }}" alt="" class="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 overflow-hidden">
-                                        <div class="flex-grow-1">
-                                            <h6 class="text-md mb-0 fw-medium">Wade Warren</h6>
-                                            <span class="text-sm text-secondary-light fw-medium">Agent ID: 36254</span>
-                                        </div>
+                                @empty
+                                    <div class="text-center py-4">
+                                        <p class="text-muted">No performers found</p>
                                     </div>
-                                    <span class="text-primary-light text-md fw-medium">$20</span>
-                                </div>
-
-                                <div class="d-flex align-items-center justify-content-between gap-3 mb-24">
-                                    <div class="d-flex align-items-center">
-                                        <img src="{{ asset('assets/images/users/user3.png') }}" alt="" class="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 overflow-hidden">
-                                        <div class="flex-grow-1">
-                                            <h6 class="text-md mb-0 fw-medium">Albert Flores</h6>
-                                            <span class="text-sm text-secondary-light fw-medium">Agent ID: 36254</span>
-                                        </div>
-                                    </div>
-                                    <span class="text-primary-light text-md fw-medium">$30</span>
-                                </div>
-
-                                <div class="d-flex align-items-center justify-content-between gap-3 mb-24">
-                                    <div class="d-flex align-items-center">
-                                        <img src="{{ asset('assets/images/users/user4.png') }}" alt="" class="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 overflow-hidden">
-                                        <div class="flex-grow-1">
-                                            <h6 class="text-md mb-0 fw-medium">Bessie Cooper</h6>
-                                            <span class="text-sm text-secondary-light fw-medium">Agent ID: 36254</span>
-                                        </div>
-                                    </div>
-                                    <span class="text-primary-light text-md fw-medium">$40</span>
-                                </div>
-
-                                <div class="d-flex align-items-center justify-content-between gap-3 mb-24">
-                                    <div class="d-flex align-items-center">
-                                        <img src="{{ asset('assets/images/users/user5.png') }}" alt="" class="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 overflow-hidden">
-                                        <div class="flex-grow-1">
-                                            <h6 class="text-md mb-0 fw-medium">Arlene McCoy</h6>
-                                            <span class="text-sm text-secondary-light fw-medium">Agent ID: 36254</span>
-                                        </div>
-                                    </div>
-                                    <span class="text-primary-light text-md fw-medium">$10</span>
-                                </div>
-
-                                <div class="d-flex align-items-center justify-content-between gap-3">
-                                    <div class="d-flex align-items-center">
-                                        <img src="{{ asset('assets/images/users/user1.png') }}" alt="" class="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 overflow-hidden">
-                                        <div class="flex-grow-1">
-                                            <h6 class="text-md mb-0 fw-medium">Arlene McCoy</h6>
-                                            <span class="text-sm text-secondary-light fw-medium">Agent ID: 36254</span>
-                                        </div>
-                                    </div>
-                                    <span class="text-primary-light text-md fw-medium">$10</span>
-                                </div>
+                                @endforelse
 
                             </div>
 
                         </div>
                     </div>
                 </div>
-                <div class="col-xxl-6 col-xl-12">
+                                <div class="col-xxl-6 col-xl-12">
                     <div class="card h-100">
                         <div class="card-body">
                             <div class="d-flex align-items-center flex-wrap gap-2 justify-content-between mb-20">
-                                <h6 class="mb-2 fw-bold text-lg mb-0">Top Countries</h6>
+                                <h6 class="mb-2 fw-bold text-lg mb-0">Top Order Locations</h6>
                                 <select class="form-select form-select-sm w-auto bg-base border text-secondary-light">
                                     <option>Today</option>
                                     <option>Weekly</option>
@@ -460,121 +350,40 @@
                             <div class="row gy-4">
                                 <div class="col-lg-6">
                                     <div id="world-map" class="h-100 border radius-8"></div>
+                                    
+                                    <!-- Map will be initialized by dashboard-charts.js -->
                                 </div>
 
                                 <div class="col-lg-6">
                                     <div class="h-100 border p-16 pe-0 radius-8">
                                         <div class="max-h-266-px overflow-y-auto scroll-sm pe-16">
-                                            <div class="d-flex align-items-center justify-content-between gap-3 mb-12 pb-2">
-                                                <div class="d-flex align-items-center w-100">
-                                                    <img src="{{ asset('assets/images/flags/flag1.png') }}" alt="" class="w-40-px h-40-px rounded-circle flex-shrink-0 me-12">
-                                                    <div class="flex-grow-1">
-                                                        <h6 class="text-sm mb-0">USA</h6>
-                                                        <span class="text-xs text-secondary-light fw-medium">1,240 Users</span>
-                                                    </div>
-                                                </div>
-                                                <div class="d-flex align-items-center gap-2 w-100">
-                                                    <div class="w-100 max-w-66 ms-auto">
-                                                        <div class="progress progress-sm rounded-pill" role="progressbar" aria-label="Success example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
-                                                            <div class="progress-bar bg-primary-600 rounded-pill" style="width: 80%;"></div>
+                                            @php
+                                                $maxCount = $ordersByLocation->max('count');
+                                            @endphp
+                                            
+                                            @foreach($ordersByLocation as $index => $location)
+                                                <div class="d-flex align-items-center justify-content-between gap-3 mb-12 pb-2">
+                                                    <div class="d-flex align-items-center w-100">
+                                                        <div class="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 bg-primary-600 d-flex align-items-center justify-content-center text-white font-weight-bold">
+                                                            {{ $index + 1 }}
+                                                        </div>
+                                                        <div class="flex-grow-1">
+                                                            <h6 class="text-sm mb-0">{{ $location->city }}</h6>
+                                                            <span class="text-xs text-secondary-light fw-medium">{{ number_format($location->count) }} Orders</span>
                                                         </div>
                                                     </div>
-                                                    <span class="text-secondary-light font-xs fw-semibold">80%</span>
-                                                </div>
-                                            </div>
-
-                                            <div class="d-flex align-items-center justify-content-between gap-3 mb-12 pb-2">
-                                                <div class="d-flex align-items-center w-100">
-                                                    <img src="{{ asset('assets/images/flags/flag2.png') }}" alt="" class="w-40-px h-40-px rounded-circle flex-shrink-0 me-12">
-                                                    <div class="flex-grow-1">
-                                                        <h6 class="text-sm mb-0">Japan</h6>
-                                                        <span class="text-xs text-secondary-light fw-medium">1,240 Users</span>
-                                                    </div>
-                                                </div>
-                                                <div class="d-flex align-items-center gap-2 w-100">
-                                                    <div class="w-100 max-w-66 ms-auto">
-                                                        <div class="progress progress-sm rounded-pill" role="progressbar" aria-label="Success example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
-                                                            <div class="progress-bar bg-orange rounded-pill" style="width: 60%;"></div>
+                                                    <div class="d-flex align-items-center gap-2 w-100">
+                                                        <div class="w-100 max-w-66 ms-auto">
+                                                            <div class="progress progress-sm rounded-pill" role="progressbar" aria-valuenow="{{ $maxCount > 0 ? ($location->count / $maxCount) * 100 : 0 }}" aria-valuemin="0" aria-valuemax="100">
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <span class="text-secondary-light font-xs fw-semibold">60%</span>
-                                                </div>
-                                            </div>
-
-                                            <div class="d-flex align-items-center justify-content-between gap-3 mb-12 pb-2">
-                                                <div class="d-flex align-items-center w-100">
-                                                    <img src="{{ asset('assets/images/flags/flag3.png') }}" alt="" class="w-40-px h-40-px rounded-circle flex-shrink-0 me-12">
-                                                    <div class="flex-grow-1">
-                                                        <h6 class="text-sm mb-0">France</h6>
-                                                        <span class="text-xs text-secondary-light fw-medium">1,240 Users</span>
+                                                        <span class="text-secondary-light font-xs fw-semibold">{{ number_format(($location->count / $maxCount) * 100, 0) }}%</span>
                                                     </div>
                                                 </div>
-                                                <div class="d-flex align-items-center gap-2 w-100">
-                                                    <div class="w-100 max-w-66 ms-auto">
-                                                        <div class="progress progress-sm rounded-pill" role="progressbar" aria-label="Success example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
-                                                            <div class="progress-bar bg-yellow rounded-pill" style="width: 49%;"></div>
-                                                        </div>
-                                                    </div>
-                                                    <span class="text-secondary-light font-xs fw-semibold">49%</span>
-                                                </div>
-                                            </div>
-
-                                            <div class="d-flex align-items-center justify-content-between gap-3 mb-12 pb-2">
-                                                <div class="d-flex align-items-center w-100">
-                                                    <img src="{{ asset('assets/images/flags/flag4.png') }}" alt="" class="w-40-px h-40-px rounded-circle flex-shrink-0 me-12">
-                                                    <div class="flex-grow-1">
-                                                        <h6 class="text-sm mb-0">Germany</h6>
-                                                        <span class="text-xs text-secondary-light fw-medium">1,240 Users</span>
-                                                    </div>
-                                                </div>
-                                                <div class="d-flex align-items-center gap-2 w-100">
-                                                    <div class="w-100 max-w-66 ms-auto">
-                                                        <div class="progress progress-sm rounded-pill" role="progressbar" aria-label="Success example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
-                                                            <div class="progress-bar bg-success-main rounded-pill" style="width: 100%;"></div>
-                                                        </div>
-                                                    </div>
-                                                    <span class="text-secondary-light font-xs fw-semibold">100%</span>
-                                                </div>
-                                            </div>
-
-                                            <div class="d-flex align-items-center justify-content-between gap-3 mb-12 pb-2">
-                                                <div class="d-flex align-items-center w-100">
-                                                    <img src="{{ asset('assets/images/flags/flag5.png') }}" alt="" class="w-40-px h-40-px rounded-circle flex-shrink-0 me-12">
-                                                    <div class="flex-grow-1">
-                                                        <h6 class="text-sm mb-0">South Korea</h6>
-                                                        <span class="text-xs text-secondary-light fw-medium">1,240 Users</span>
-                                                    </div>
-                                                </div>
-                                                <div class="d-flex align-items-center gap-2 w-100">
-                                                    <div class="w-100 max-w-66 ms-auto">
-                                                        <div class="progress progress-sm rounded-pill" role="progressbar" aria-label="Success example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
-                                                            <div class="progress-bar bg-info-main rounded-pill" style="width: 30%;"></div>
-                                                        </div>
-                                                    </div>
-                                                    <span class="text-secondary-light font-xs fw-semibold">30%</span>
-                                                </div>
-                                            </div>
-                                            <div class="d-flex align-items-center justify-content-between gap-3">
-                                                <div class="d-flex align-items-center w-100">
-                                                    <img src="{{ asset('assets/images/flags/flag1.png') }}" alt="" class="w-40-px h-40-px rounded-circle flex-shrink-0 me-12">
-                                                    <div class="flex-grow-1">
-                                                        <h6 class="text-sm mb-0">USA</h6>
-                                                        <span class="text-xs text-secondary-light fw-medium">1,240 Users</span>
-                                                    </div>
-                                                </div>
-                                                <div class="d-flex align-items-center gap-2 w-100">
-                                                    <div class="w-100 max-w-66 ms-auto">
-                                                        <div class="progress progress-sm rounded-pill" role="progressbar" aria-label="Success example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
-                                                            <div class="progress-bar bg-primary-600 rounded-pill" style="width: 80%;"></div>
-                                                        </div>
-                                                    </div>
-                                                    <span class="text-secondary-light font-xs fw-semibold">80%</span>
-                                                </div>
-                                            </div>
+                                            @endforeach
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -584,10 +393,8 @@
                     <div class="card h-100">
                         <div class="card-body">
                             <div class="d-flex align-items-center flex-wrap gap-2 justify-content-between">
-                                <h6 class="mb-2 fw-bold text-lg mb-0">Generated Content</h6>
+                                <h6 class="mb-2 fw-bold text-lg mb-0">Monthly Trips & Products</h6>
                                 <select class="form-select form-select-sm w-auto bg-base border text-secondary-light">
-                                    <option>Today</option>
-                                    <option>Weekly</option>
                                     <option>Monthly</option>
                                     <option>Yearly</option>
                                 </select>
@@ -596,22 +403,27 @@
                             <ul class="d-flex flex-wrap align-items-center mt-3 gap-3">
                                 <li class="d-flex align-items-center gap-2">
                                     <span class="w-12-px h-12-px rounded-circle bg-primary-600"></span>
-                                    <span class="text-secondary-light text-sm fw-semibold">Word:
-                                        <span class="text-primary-light fw-bold">500</span>
+                                    <span class="text-secondary-light text-sm fw-semibold">Trips:
+                                        <span class="text-primary-light fw-bold">{{ number_format($totalTrips) }}</span>
                                     </span>
                                 </li>
                                 <li class="d-flex align-items-center gap-2">
                                     <span class="w-12-px h-12-px rounded-circle bg-yellow"></span>
-                                    <span class="text-secondary-light text-sm fw-semibold">Image:
-                                        <span class="text-primary-light fw-bold">300</span>
+                                    <span class="text-secondary-light text-sm fw-semibold">Products:
+                                        <span class="text-primary-light fw-bold">{{ number_format($totalProducts) }}</span>
+                                    </span>
+                                </li>
+                                <li class="d-flex align-items-center gap-2">
+                                    <span class="w-12-px h-12-px rounded-circle bg-success-main"></span>
+                                    <span class="text-secondary-light text-sm fw-semibold">Active Products:
+                                        <span class="text-primary-light fw-bold">{{ number_format($activeProducts) }}</span>
                                     </span>
                                 </li>
                             </ul>
 
                             <div class="mt-40">
-                                <div id="paymentStatusChart" class="margin-16-minus"></div>
+                                <div id="tripProductChart" class="margin-16-minus"></div>
                             </div>
-
                         </div>
                     </div>
                 </div>
