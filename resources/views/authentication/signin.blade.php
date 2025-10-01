@@ -16,7 +16,7 @@
             <div class="max-w-464-px mx-auto w-100">
                 <div>
                     <a href="{{ route('index') }}" class="mb-40 max-w-290-px">
-                        <img src="{{ asset('assets/images/logo.png') }}" alt="">
+                        <img src="https://storage.googleapis.com/snq-website-images/customer/Logo-1.png" alt="">
                     </a>
                     <h4 class="mb-12">Sign In to your Account</h4>
                     <p class="mb-32 text-secondary-light text-lg">Welcome back! Please use your <strong>@sandpitnquarry.com</strong> email to sign in</p>

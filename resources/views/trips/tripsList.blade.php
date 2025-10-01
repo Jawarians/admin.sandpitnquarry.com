@@ -6,6 +6,27 @@
                         $(".remove-item-btn").on("click", function() {
                             $(this).closest("tr").addClass("d-none")
                         });
+                        
+                        // Select/Deselect all checkboxes
+                        $("#selectAll").on("click", function() {
+                            var isChecked = $(this).prop("checked");
+                            $("input[name=\'checkbox\']").prop("checked", isChecked);
+                        });
+                        
+                        // Date filter handling
+                        var today = new Date();
+                        var dd = String(today.getDate()).padStart(2, "0");
+                        var mm = String(today.getMonth() + 1).padStart(2, "0");
+                        var yyyy = today.getFullYear();
+                        
+                        // Clear date filters
+                        $("#clearDateFilters").on("click", function() {
+                            $("input[name=\'created_start_date\']").val("");
+                            $("input[name=\'created_end_date\']").val("");
+                            $("input[name=\'updated_start_date\']").val("");
+                            $("input[name=\'updated_end_date\']").val("");
+                            $("#date-filter-form").submit();
+                        });
             </script>';
 @endphp
 
@@ -39,6 +60,18 @@
                             @if(request('per_page'))
                                 <input type="hidden" name="per_page" value="{{ request('per_page') }}">
                             @endif
+                            @if(request('created_start_date'))
+                                <input type="hidden" name="created_start_date" value="{{ request('created_start_date') }}">
+                            @endif
+                            @if(request('created_end_date'))
+                                <input type="hidden" name="created_end_date" value="{{ request('created_end_date') }}">
+                            @endif
+                            @if(request('updated_start_date'))
+                                <input type="hidden" name="updated_start_date" value="{{ request('updated_start_date') }}">
+                            @endif
+                            @if(request('updated_end_date'))
+                                <input type="hidden" name="updated_end_date" value="{{ request('updated_end_date') }}">
+                            @endif
                             <button type="submit" class="d-none"></button>
                         </form>
                         <form method="GET" id="status-form">
@@ -54,7 +87,84 @@
                             @if(request('per_page'))
                                 <input type="hidden" name="per_page" value="{{ request('per_page') }}">
                             @endif
+                            @if(request('created_start_date'))
+                                <input type="hidden" name="created_start_date" value="{{ request('created_start_date') }}">
+                            @endif
+                            @if(request('created_end_date'))
+                                <input type="hidden" name="created_end_date" value="{{ request('created_end_date') }}">
+                            @endif
+                            @if(request('updated_start_date'))
+                                <input type="hidden" name="updated_start_date" value="{{ request('updated_start_date') }}">
+                            @endif
+                            @if(request('updated_end_date'))
+                                <input type="hidden" name="updated_end_date" value="{{ request('updated_end_date') }}">
+                            @endif
                         </form>
+                        
+                        <!-- Date filters -->
+                        <div class="dropdown">
+                            <button class="btn btn-outline-primary btn-sm" type="button" id="dateFilterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <iconify-icon icon="uil:calendar-alt" class="icon"></iconify-icon>
+                                <span class="d-none d-md-inline">Date</span>
+                                @if(request('created_start_date') || request('created_end_date') || request('updated_start_date') || request('updated_end_date'))
+                                    <span class="badge bg-primary text-white ms-1">!</span>
+                                @endif
+                            </button>
+                            <div class="dropdown-menu p-3" style="width: 450px;" aria-labelledby="dateFilterDropdown">
+                                <form method="GET" id="date-filter-form">
+                                    <div class="row g-2 mb-2">
+                                        <div class="col-12">
+                                            <label class="form-label small mb-1">Created Date</label>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="input-group input-group-sm">
+                                                <span class="input-group-text bg-base py-0">From</span>
+                                                <input type="date" class="form-control form-control-sm bg-base" name="created_start_date" value="{{ request('created_start_date') }}">
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="input-group input-group-sm">
+                                                <span class="input-group-text bg-base py-0">To</span>
+                                                <input type="date" class="form-control form-control-sm bg-base" name="created_end_date" value="{{ request('created_end_date') }}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row g-2 mb-3">
+                                        <div class="col-12">
+                                            <label class="form-label small mb-1">Updated Date</label>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="input-group input-group-sm">
+                                                <span class="input-group-text bg-base py-0">From</span>
+                                                <input type="date" class="form-control form-control-sm bg-base" name="updated_start_date" value="{{ request('updated_start_date') }}">
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="input-group input-group-sm">
+                                                <span class="input-group-text bg-base py-0">To</span>
+                                                <input type="date" class="form-control form-control-sm bg-base" name="updated_end_date" value="{{ request('updated_end_date') }}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="d-flex justify-content-between">
+                                        <button type="button" id="clearDateFilters" class="btn btn-outline-secondary btn-sm">Clear</button>
+                                        <button type="submit" class="btn btn-primary btn-sm">Apply</button>
+                                    </div>
+                                    
+                                    @if(request('search'))
+                                        <input type="hidden" name="search" value="{{ request('search') }}">
+                                    @endif
+                                    @if(request('status'))
+                                        <input type="hidden" name="status" value="{{ request('status') }}">
+                                    @endif
+                                    @if(request('per_page'))
+                                        <input type="hidden" name="per_page" value="{{ request('per_page') }}">
+                                    @endif
+                                </form>
+                            </div>
+                        </div>
                     </div>
                     <div class="d-flex align-items-center gap-2">
                         <a href="{{ route('tripStatuses') }}" class="btn btn-outline-primary text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2">
@@ -227,10 +337,8 @@
                                             <iconify-icon icon="mdi:truck-outline" class="icon text-6xl text-neutral-400 mb-3"></iconify-icon>
                                             <h5 class="text-neutral-500 mb-2">No Trips Found</h5>
                                             <p class="text-neutral-400 mb-0">
-                                                @if(request('search'))
-                                                    No trips match your search criteria "{{ request('search') }}".
-                                                @elseif(request('status') && request('status') != 'All Status')
-                                                    No trips with status "{{ request('status') }}" found.
+                                                @if(request('search') || request('status') != 'All Status' || request('created_start_date') || request('created_end_date') || request('updated_start_date') || request('updated_end_date'))
+                                                    No trips match your filter criteria.
                                                 @else
                                                     There are no trips in the system yet.
                                                 @endif
@@ -243,6 +351,8 @@
                                                     <li>Per Page: {{ request('per_page') ?? 'null' }}</li>
                                                     <li>Status: {{ request('status') ?? 'null' }}</li>
                                                     <li>Search: {{ request('search') ?? 'null' }}</li>
+                                                    <li>Created Date: {{ request('created_start_date') ?? 'null' }} to {{ request('created_end_date') ?? 'null' }}</li>
+                                                    <li>Updated Date: {{ request('updated_start_date') ?? 'null' }} to {{ request('updated_end_date') ?? 'null' }}</li>
                                                 </ul>
                                             </div>
                                             @endif
@@ -256,9 +366,15 @@
 
                     <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mt-24">
                         <span>
-                            Showing {{ $trips->firstItem() ? $trips->firstItem() : 0 }} to {{ $trips->lastItem() ? $trips->lastItem() : 0 }} of {{ $trips->total() }} entries
-                            @if(request('search') || (request('status') && request('status') != 'All Status'))
-                                (filtered from {{ $trips->total() }} total entries)
+                            {{ $trips->firstItem() ? $trips->firstItem() : 0 }}-{{ $trips->lastItem() ? $trips->lastItem() : 0 }} of {{ $trips->total() }}
+                            @if(request('search') || (request('status') && request('status') != 'All Status') || request('created_start_date') || request('created_end_date') || request('updated_start_date') || request('updated_end_date'))
+                                (filtered)
+                                @if(request('created_start_date') || request('created_end_date'))
+                                    <span class="badge bg-info text-white rounded-pill">Created</span>
+                                @endif
+                                @if(request('updated_start_date') || request('updated_end_date'))
+                                    <span class="badge bg-info text-white rounded-pill">Updated</span>
+                                @endif
                             @endif
                         </span>
                         
