@@ -48,15 +48,12 @@
                 </a>
             </div>
             
-            <form method="GET" id="price-selector-form" class="mb-0">
-                <div class="input-group">
-                    <input type="number" class="form-control form-control-sm h-40-px" name="price_id" placeholder="Price ID..." value="{{ request('price_id') }}">
-                    <div class="btn-group">
-                        <button class="btn btn-sm btn-primary" type="submit" name="view_type" value="tonne">View Tonne Price</button>
-                        <button class="btn btn-sm btn-secondary" type="submit" name="view_type" value="load">View Load Price</button>
-                    </div>
-                </div>
-            </form>
+            <div class="btn-group">
+                <a href="{{ url()->current() }}?type=site&view=tonne{{ request('search') ? '&search='.request('search') : '' }}{{ request('per_page') ? '&per_page='.request('per_page') : '' }}" 
+                   class="btn btn-sm {{ request('view') == 'load' ? 'btn-secondary' : 'btn-primary' }}">View Tonne Prices</a>
+                <a href="{{ url()->current() }}?type=zone&view=load{{ request('search') ? '&search='.request('search') : '' }}{{ request('per_page') ? '&per_page='.request('per_page') : '' }}" 
+                   class="btn btn-sm {{ request('view') == 'load' ? 'btn-primary' : 'btn-secondary' }}">View Load Prices</a>
+            </div>
         </div>
     </div>
     
@@ -150,7 +147,7 @@
                                 </li>
                             @else
                                 <li class="page-item">
-                                    <a class="page-link" href="{{ $priceItems->previousPageUrl() }}">
+                                    <a class="page-link" href="{{ $priceItems->previousPageUrl() }}{{ request('type') ? '&type='.request('type') : '' }}{{ request('view') ? '&view='.request('view') : '' }}">
                                         <iconify-icon icon="material-symbols:arrow-back-ios-rounded"></iconify-icon>
                                     </a>
                                 </li>
@@ -164,7 +161,7 @@
                                     </li>
                                 @else
                                     <li class="page-item">
-                                        <a class="page-link" href="{{ $url }}">{{ $page }}</a>
+                                        <a class="page-link" href="{{ $url }}{{ request('type') ? '&type='.request('type') : '' }}{{ request('view') ? '&view='.request('view') : '' }}">{{ $page }}</a>
                                     </li>
                                 @endif
                             @endforeach
@@ -172,7 +169,7 @@
                             {{-- Next Page Link --}}
                             @if ($priceItems->hasMorePages())
                                 <li class="page-item">
-                                    <a class="page-link" href="{{ $priceItems->nextPageUrl() }}">
+                                    <a class="page-link" href="{{ $priceItems->nextPageUrl() }}{{ request('type') ? '&type='.request('type') : '' }}{{ request('view') ? '&view='.request('view') : '' }}">
                                         <iconify-icon icon="material-symbols:arrow-forward-ios-rounded"></iconify-icon>
                                     </a>
                                 </li>
@@ -199,20 +196,6 @@
             $('input[name="checkbox"]').prop('checked', $(this).prop('checked'));
         });
         
-        // Handle price selector form
-        $("#price-selector-form button").on("click", function(e) {
-            e.preventDefault();
-            const priceId = $("#price-selector-form input[name='price_id']").val();
-            const viewType = $(this).val();
-            
-            if (priceId) {
-                if (viewType === "tonne") {
-                    window.location.href = "{{ url('/business/prices/tonne') }}/" + priceId;
-                } else if (viewType === "load") {
-                    window.location.href = "{{ url('/business/prices/load') }}/" + priceId;
-                }
-            }
-        });
     });
 </script>
 @endpush

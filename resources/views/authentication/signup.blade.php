@@ -3,13 +3,56 @@
 <html lang="en" data-theme="light">
 
 <x-head/>
-
+<style>
+    .image-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+    .animated-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* This ensures the image covers the entire container without distortion */
+        object-position: center;
+        transition: transform 0.8s ease-in-out;
+        animation: gentle-zoom 20s infinite alternate;
+    }
+    @keyframes gentle-zoom {
+        0% {
+            transform: scale(1);
+        }
+        100% {
+            transform: scale(1.1);
+        }
+    }
+    .auth-left {
+        position: relative;
+        overflow: hidden;
+    }
+    
+    /* Add a subtle overlay to enhance text visibility if needed */
+    .image-container::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.1);
+        pointer-events: none;
+    }
+</style>
 <body>
 
     <section class="auth bg-base d-flex flex-wrap">
         <div class="auth-left d-lg-block d-none">
-            <div class="d-flex align-items-center flex-column h-100 justify-content-center">
-                <img src="{{ asset('assets/images/auth/auth-img.png') }}" alt="">
+            <div class="d-flex align-items-center flex-column h-100 justify-content-center position-relative overflow-hidden">
+                <div class="image-container w-100 h-100">
+                    <img src="https://storage.googleapis.com/snq-website-images/customer/Merchant.png" alt="" class="animated-image">
+                </div>
             </div>
         </div>
         <div class="auth-right py-32 px-24 d-flex flex-column justify-content-center">

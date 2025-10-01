@@ -22,6 +22,8 @@ class PriceItemController extends Controller
         $perPage = $request->get('per_page', 50);
         $search = $request->get('search');
         $priceId = $request->get('price_id');
+        $type = $request->get('type');
+        $view = $request->get('view');
         
         $query = PriceItem::with(['product']);
         
@@ -35,6 +37,17 @@ class PriceItemController extends Controller
         // Filter by price_id if provided
         if ($priceId) {
             $query->where('price_id', $priceId);
+        }
+        
+        // Filter by type based on view parameter
+        if ($type) {
+            if ($view == 'tonne' && $type == 'site') {
+                $query->where('price_itemable_type', 'site');
+            } elseif ($view == 'load' && $type == 'zone') {
+                $query->where('price_itemable_type', 'zone');
+            } else {
+                $query->where('price_itemable_type', $type);
+            }
         }
         
         // Get the price items with pagination
