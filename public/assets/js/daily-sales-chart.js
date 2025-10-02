@@ -1,10 +1,11 @@
 /**
  * Daily Sales Chart Initialization
  * Displays total sales for each day over the past week
+ * 
+ * Note: This function is called from chart-init.js to ensure proper timing
+ * and container dimensions before rendering
  */
-document.addEventListener('DOMContentLoaded', function() {
-    initializeDailySalesChart();
-});
+// Removed direct DOMContentLoaded listener to prevent duplicate initialization
 
 function initializeDailySalesChart() {
     // Check if the container exists and dashboardData is defined
