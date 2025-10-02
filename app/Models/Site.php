@@ -19,12 +19,13 @@ class Site extends Model
         'name',
         'address',
         'postcode',
-        'city_id',
-        'state_id',
+        'city',
+        'state',
         'latitude',
         'longitude',
         'phone',
-        'merchant_id'
+        'merchant_id',
+        'creator_id'
     ];
 
     public function getLatLangAttribute()
@@ -34,7 +35,7 @@ class Site extends Model
 
     public function city(): BelongsTo
     {
-        return $this->belongsTo(City::class);
+        return $this->belongsTo(City::class, 'city', 'name');
     }
 
     public function creator(): BelongsTo
@@ -59,6 +60,6 @@ class Site extends Model
 
     public function state(): BelongsTo
     {
-        return $this->belongsTo(State::class);
+        return $this->belongsTo(State::class, 'state', 'name');
     }
 }

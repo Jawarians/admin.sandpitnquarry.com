@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\City;
+use App\Models\Merchant;
 use App\Models\Site;
 use App\Models\State;
 use Illuminate\Http\Request;
@@ -25,7 +26,8 @@ class SiteController extends Controller
     {
         $states = State::orderBy('name')->get();
         $cities = City::orderBy('name')->get();
-        return view('sites.create', compact('states', 'cities'));
+        $merchants = Merchant::orderBy('name')->get();
+        return view('sites.create', compact('states', 'cities', 'merchants'));
     }
 
     /**
@@ -37,14 +39,19 @@ class SiteController extends Controller
             'name' => 'required|string|max:255',
             'address' => 'required|string',
             'postcode' => 'required|string|max:10',
-            'city_id' => 'required|exists:cities,id',
-            'state_id' => 'required|exists:states,id',
+            'city' => 'required|exists:cities,name',
+            'state' => 'required|exists:address_states,name',
             'latitude' => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
             'phone' => 'nullable|string|max:20',
+            'merchant_id' => 'required|exists:merchants,id',
         ]);
-
-        Site::create($request->all());
+        
+        $data = $request->all();
+        // Set creator_id to current user ID if available, otherwise set to 0
+        $data['creator_id'] = request()->user() ? request()->user()->id : 0;
+        
+        Site::create($data);
         
         return redirect()->route('sites.index')
             ->with('success', 'Quarry added successfully.');
@@ -67,7 +74,8 @@ class SiteController extends Controller
         $site = Site::findOrFail($id);
         $states = State::orderBy('name')->get();
         $cities = City::orderBy('name')->get();
-        return view('sites.edit', compact('site', 'states', 'cities'));
+        $merchants = Merchant::orderBy('name')->get();
+        return view('sites.edit', compact('site', 'states', 'cities', 'merchants'));
     }
 
     /**
@@ -79,15 +87,23 @@ class SiteController extends Controller
             'name' => 'required|string|max:255',
             'address' => 'required|string',
             'postcode' => 'required|string|max:10',
-            'city_id' => 'required|exists:cities,id',
-            'state_id' => 'required|exists:states,id',
+            'city' => 'required|exists:cities,name',
+            'state' => 'required|exists:address_states,name',
             'latitude' => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
             'phone' => 'nullable|string|max:20',
+            'merchant_id' => 'required|exists:merchants,id',
         ]);
         
         $site = Site::findOrFail($id);
-        $site->update($request->all());
+        $data = $request->all();
+        
+        // Keep the existing creator_id when updating
+        if (!isset($data['creator_id']) || $data['creator_id'] === null) {
+            $data['creator_id'] = $site->creator_id ?? 0;
+        }
+        
+        $site->update($data);
         
         return redirect()->route('sites.index')
             ->with('success', 'Quarry updated successfully');

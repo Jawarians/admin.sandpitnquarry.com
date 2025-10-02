@@ -62,32 +62,32 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group mb-3">
-                                    <label for="state_id">State</label>
-                                    <select name="state_id" id="state_id" class="form-select @error('state_id') is-invalid @enderror" required>
+                                    <label for="state">State</label>
+                                    <select name="state" id="state" class="form-select @error('state') is-invalid @enderror" required>
                                         <option value="">Select State</option>
                                         @foreach($states as $state)
-                                            <option value="{{ $state->id }}" {{ old('state_id', $site->state_id) == $state->id ? 'selected' : '' }}>
+                                            <option value="{{ $state->name }}" {{ old('state', $site->state) == $state->name ? 'selected' : '' }}>
                                                 {{ $state->name }}
                                             </option>
                                         @endforeach
                                     </select>
-                                    @error('state_id')
+                                    @error('state')
                                         <span class="invalid-feedback">{{ $message }}</span>
                                     @enderror
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group mb-3">
-                                    <label for="city_id">City</label>
-                                    <select name="city_id" id="city_id" class="form-select @error('city_id') is-invalid @enderror" required>
+                                    <label for="city">City</label>
+                                    <select name="city" id="city" class="form-select @error('city') is-invalid @enderror" required>
                                         <option value="">Select City</option>
                                         @foreach($cities as $city)
-                                            <option value="{{ $city->id }}" {{ old('city_id', $site->city_id) == $city->id ? 'selected' : '' }}>
+                                            <option value="{{ $city->name }}" {{ old('city', $site->city) == $city->name ? 'selected' : '' }}>
                                                 {{ $city->name }}
                                             </option>
                                         @endforeach
                                     </select>
-                                    @error('city_id')
+                                    @error('city')
                                         <span class="invalid-feedback">{{ $message }}</span>
                                     @enderror
                                 </div>
@@ -109,6 +109,25 @@
                                     <label for="longitude">Longitude</label>
                                     <input type="text" name="longitude" id="longitude" class="form-control @error('longitude') is-invalid @enderror" value="{{ old('longitude', $site->longitude) }}">
                                     @error('longitude')
+                                        <span class="invalid-feedback">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group mb-3">
+                                    <label for="merchant_id">Merchant</label>
+                                    <select name="merchant_id" id="merchant_id" class="form-select @error('merchant_id') is-invalid @enderror" required>
+                                        <option value="">Select Merchant</option>
+                                        @foreach($merchants as $merchant)
+                                            <option value="{{ $merchant->id }}" {{ old('merchant_id', $site->merchant_id) == $merchant->id ? 'selected' : '' }}>
+                                                {{ $merchant->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('merchant_id')
                                         <span class="invalid-feedback">{{ $message }}</span>
                                     @enderror
                                 </div>

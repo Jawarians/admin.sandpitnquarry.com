@@ -78,7 +78,7 @@
                             <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
                                 <div>
                                     <p class="fw-medium text-primary-light mb-1">Total Revenue</p>
-                                    <h6 class="mb-0">${{ number_format($orderRevenue, 2) }}</h6>
+                                    <h6 class="mb-0">RM{{ number_format($orderRevenue, 2) }}</h6>
                                 </div>
                                 <div class="w-50-px h-50-px bg-success-main rounded-circle d-flex justify-content-center align-items-center">
                                     <iconify-icon icon="solar:wallet-bold" class="text-white text-2xl mb-0"></iconify-icon>
@@ -86,7 +86,7 @@
                             </div>
                             <p class="fw-medium text-sm text-primary-light mt-12 mb-0 d-flex align-items-center gap-2">
                                 <span class="d-inline-flex align-items-center gap-1 text-success-main">
-                                    <iconify-icon icon="bxs:up-arrow" class="text-xs"></iconify-icon> +${{ number_format($monthlyOrderData->sum('revenue'), 2) }}
+                                    <iconify-icon icon="bxs:up-arrow" class="text-xs"></iconify-icon> +RM{{ number_format($monthlyOrderData->sum('revenue'), 2) }}
                                 </span>
                                 Current month
                             </p>
@@ -130,11 +130,11 @@
                                 </select>
                             </div>
                             <div class="d-flex flex-wrap align-items-center gap-2 mt-8">
-                                <h6 class="mb-0">${{ number_format($orderRevenue, 2) }}</h6>
+                                <h6 class="mb-0">RM{{ number_format($orderRevenue, 2) }}</h6>
                                 <span class="text-sm fw-semibold rounded-pill bg-success-focus text-success-main border br-success px-8 py-4 line-height-1 d-flex align-items-center gap-1">
                                     {{ number_format(($monthlyOrderData->last()['revenue'] / max($monthlyOrderData->first()['revenue'], 1) - 1) * 100, 1) }}% <iconify-icon icon="bxs:up-arrow" class="text-xs"></iconify-icon>
                                 </span>
-                                <span class="text-xs fw-medium">+ ${{ number_format($orderRevenue / max(date('j'), 1), 2) }} Per Day</span>
+                                <span class="text-xs fw-medium">+ RM{{ number_format($orderRevenue / max(date('j'), 1), 2) }} Per Day</span>
                             </div>
                             <div id="chart" class="pt-28 apexcharts-tooltip-style-1"></div>
                         </div>

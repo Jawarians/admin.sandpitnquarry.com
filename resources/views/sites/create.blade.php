@@ -61,32 +61,32 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group mb-20">
-                                    <label for="state_id" class="text-md text-secondary-light mb-8 fw-medium d-inline-block">State</label>
-                                    <select name="state_id" id="state_id" class="form-select radius-8 py-10 px-16 border-neutral-200 bg-base focus-green @error('state_id') is-invalid @enderror" required>
+                                    <label for="state" class="text-md text-secondary-light mb-8 fw-medium d-inline-block">State</label>
+                                    <select name="state" id="state" class="form-select radius-8 py-10 px-16 border-neutral-200 bg-base focus-green @error('state') is-invalid @enderror" required>
                                         <option value="">Select State</option>
                                         @foreach($states as $state)
-                                            <option value="{{ $state->id }}" {{ old('state_id') == $state->id ? 'selected' : '' }}>
+                                            <option value="{{ $state->name }}" {{ old('state') == $state->name ? 'selected' : '' }}>
                                                 {{ $state->name }}
                                             </option>
                                         @endforeach
                                     </select>
-                                    @error('state_id')
+                                    @error('state')
                                         <span class="invalid-feedback">{{ $message }}</span>
                                     @enderror
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group mb-20">
-                                    <label for="city_id" class="text-md text-secondary-light mb-8 fw-medium d-inline-block">City</label>
-                                    <select name="city_id" id="city_id" class="form-select radius-8 py-10 px-16 border-neutral-200 bg-base focus-green @error('city_id') is-invalid @enderror" required>
+                                    <label for="city" class="text-md text-secondary-light mb-8 fw-medium d-inline-block">City</label>
+                                    <select name="city" id="city" class="form-select radius-8 py-10 px-16 border-neutral-200 bg-base focus-green @error('city') is-invalid @enderror" required>
                                         <option value="">Select City</option>
                                         @foreach($cities as $city)
-                                            <option value="{{ $city->id }}" {{ old('city_id') == $city->id ? 'selected' : '' }}>
+                                            <option value="{{ $city->name }}" {{ old('city') == $city->name ? 'selected' : '' }}>
                                                 {{ $city->name }}
                                             </option>
                                         @endforeach
                                     </select>
-                                    @error('city_id')
+                                    @error('city')
                                         <span class="invalid-feedback">{{ $message }}</span>
                                     @enderror
                                 </div>
@@ -108,6 +108,25 @@
                                     <label for="longitude" class="text-md text-secondary-light mb-8 fw-medium d-inline-block">Longitude</label>
                                     <input type="text" name="longitude" id="longitude" class="form-control radius-8 py-10 px-16 border-neutral-200 bg-base focus-green @error('longitude') is-invalid @enderror" value="{{ old('longitude') }}">
                                     @error('longitude')
+                                        <span class="invalid-feedback">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group mb-20">
+                                    <label for="merchant_id" class="text-md text-secondary-light mb-8 fw-medium d-inline-block">Merchant</label>
+                                    <select name="merchant_id" id="merchant_id" class="form-select radius-8 py-10 px-16 border-neutral-200 bg-base focus-green @error('merchant_id') is-invalid @enderror" required>
+                                        <option value="">Select Merchant</option>
+                                        @foreach($merchants as $merchant)
+                                            <option value="{{ $merchant->id }}" {{ old('merchant_id') == $merchant->id ? 'selected' : '' }}>
+                                                {{ $merchant->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('merchant_id')
                                         <span class="invalid-feedback">{{ $message }}</span>
                                     @enderror
                                 </div>
