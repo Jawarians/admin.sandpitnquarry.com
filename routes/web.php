@@ -22,6 +22,7 @@ use App\Http\Controllers\TripController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PriceItemController;
 use App\Http\Controllers\SiteController;
+use App\Http\Controllers\AccountController;
 
 // Authentication Routes - No auth required
 // Authentication
@@ -291,5 +292,18 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/{id}/edit', 'App\Http\Controllers\SiteController@edit')->name('sites.edit');
         Route::put('/{id}', 'App\Http\Controllers\SiteController@update')->name('sites.update');
         Route::delete('/{id}', 'App\Http\Controllers\SiteController@destroy')->name('sites.destroy');
+    });
+    
+    // Accounts
+    Route::prefix('accounts')->group(function () {
+        Route::controller(AccountController::class)->group(function () {
+            Route::get('/', 'index')->name('accounts.index');
+            Route::get('/create', 'create')->name('accounts.create');
+            Route::post('/', 'store')->name('accounts.store');
+            Route::get('/{account}', 'show')->name('accounts.show');
+            Route::get('/{account}/edit', 'edit')->name('accounts.edit');
+            Route::put('/{account}', 'update')->name('accounts.update');
+            Route::delete('/{account}', 'destroy')->name('accounts.destroy');
+        });
     });
 });

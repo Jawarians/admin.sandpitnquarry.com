@@ -6,7 +6,7 @@
         <a href="{{ route('index') }}" class="sidebar-logo">
             <img src="https://storage.googleapis.com/snq-website-images/customer/Logo-1.png" alt="site logo" class="light-logo">
             <img src="https://storage.googleapis.com/snq-website-images/customer/Logo-1.png" alt="site logo" class="dark-logo">
-            <img src="{{ asset('assets/images/logo-icon.png') }}" alt="site logo" class="logo-icon">
+            <img src="https://storage.googleapis.com/snq-website-images/customer/Logo-1.png" alt="site logo" class="logo-icon">
         </a>
     </div>
     <div class="sidebar-menu-area">
@@ -291,6 +291,22 @@
                     </li>
                     <li>
                         <a  href="{{ route('viewProfile') }}"><i class="ri-circle-fill circle-icon text-danger-main w-auto"></i> View Profile</a>
+                    </li>
+                </ul>
+            </li>
+
+            <!-- Accounts navigation -->
+            <li class="dropdown">
+                <a href="javascript:void(0)">
+                    <iconify-icon icon="material-symbols:account-balance-wallet-outline" class="menu-icon"></iconify-icon>
+                    <span>Accounts</span>
+                </a>
+                <ul class="sidebar-submenu">
+                    <li>
+                        <a href="{{ route('accounts.index') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Accounts List</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('accounts.create') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Create Account</a>
                     </li>
                 </ul>
             </li>
