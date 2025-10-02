@@ -18,10 +18,41 @@
             productCategoryData: ' . json_encode($productCategoryData) . ',
             dailySalesData: ' . json_encode($dailySalesData ?? []) . '
         };
+        
+        // Force charts to render even if there are errors elsewhere
+        window.addEventListener("load", function() {
+            if (typeof ApexCharts !== "undefined") {
+                console.log("Window loaded, forcing chart re-initialization");
+                setTimeout(function() {
+                    // Force re-render of problematic charts
+                    try {
+                        if (typeof initProblematicCharts === "function") {
+                            initProblematicCharts();
+                        }
+                    } catch (e) {
+                        console.error("Error in forced chart initialization:", e);
+                    }
+                }, 100);
+            }
+        });
     </script>
+    
+    <!-- Load ApexCharts before any chart initialization scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.37.0/dist/apexcharts.min.js"></script>
+    
+    <!-- Load other chart scripts -->
+    <!-- Load ApexCharts directly from CDN to ensure availability -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.37.0/dist/apexcharts.min.js"></script>
+    
+    <!-- Load chart scripts -->
     <script src="' . asset('assets/js/dashboard-charts.js') . '"></script>
     <script src="' . asset('assets/js/homeOneChart.js') . '"></script>
-    <script src="' . asset('assets/js/daily-sales-chart.js') . '"></script>';
+    <script src="' . asset('assets/js/daily-sales-chart.js') . '"></script>
+    <!-- chart-init.js removed to avoid redundancy -->
+    <script src="' . asset('assets/js/chart-emergency-fix.js') . '"></script>
+    
+    <!-- Emergency fix script - guaranteed to render problematic charts -->
+    <script src="' . asset('assets/js/chart-emergency-fix.js') . '"></script>';
 @endphp
 
 @section('content')
@@ -225,7 +256,7 @@
                                 </p>
                             </div>
 
-                            <div id="barChart" class="barChart"></div>
+                            <div id="barChart" class="barChart" style="min-height: 250px; width: 100%; height: 250px;"></div>
                             <div class="text-center mt-2">
                                 <small class="text-muted">Last 7 days</small>
                             </div>
@@ -260,7 +291,7 @@
                                 </p>
                             </div>
 
-                            <div id="dailySalesChart" class="dailySalesChart"></div>
+                            <div id="dailySalesChart" class="dailySalesChart" style="min-height: 200px; width: 100%; height: 200px;"></div>
                             <div class="text-center mt-2">
                                 <small class="text-muted">Last 7 days</small>
                             </div>
