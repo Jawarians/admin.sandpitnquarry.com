@@ -97,8 +97,9 @@ class OrderAmount extends Model
         return $this->belongsTo(Order::class);
     }
 
-    // public function order_amountable(): MorphTo
-    // {
-    //     return $this->morphTo();
-    // }
+    public function order_amountable(): MorphTo
+    {
+        // Simple implementation that relies on the global morph map
+        return $this->morphTo();
+    }
 }

@@ -74,6 +74,16 @@
         background: rgba(0, 0, 0, 0.4);
         pointer-events: none;
     }
+    
+    /* Override Bootstrap's checkbox styling */
+    .form-check-input:checked ~ .form-check-label {
+        color: #212529 !important;
+        font-weight: 500 !important;
+    }
+    .form-check-input:checked {
+        background-color: #0d6efd;
+        border-color: #000 !important;
+    }
 </style>
 
 <body>
@@ -115,12 +125,11 @@
                         @endif
                     </div>
                     <div class="">
-                        <div class="d-flex justify-content-between gap-2">
+                        <div class="d-flex justify-content-start">
                             <div class="form-check style-check d-flex align-items-center">
-                                <input class="form-check-input border border-secondary" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
-                                <label class="form-check-label text-secondary" for="remember">Remember me </label>
+                                <input class="form-check-input" style="width: 20px; height: 20px; border: 2px solid #000; box-shadow: 0 0 0 1px rgba(0,0,0,0.2); background-color: transparent;" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
+                                <label class="form-check-label text-dark fw-medium ms-2" style="color: #212529 !important; font-weight: 500 !important;" for="remember">Remember me</label>
                             </div>
-                            <a href="{{ route('forgotPassword') }}" class="text-primary fw-medium">Forgot Password?</a>
                         </div>
                     </div>
 

@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +20,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Register morph map to ensure consistent model resolution
+        // Map the string 'transportation' directly to TransportationFee model
+        Relation::morphMap([
+            'transportation' => \App\Models\TransportationFee::class,
+        ]);
     }
 }

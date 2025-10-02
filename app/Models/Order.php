@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Facades\Auth;
+use App\Models\TransportationFee;
 
 class Order extends Model
 {
@@ -359,6 +360,8 @@ protected static function boot()
         return $this->hasOne(OrderAmount::class)->ofMany([
             'id' => 'min',
         ], function (Builder $query) {
+            // Since we've set up a morphMap in AppServiceProvider, we can simply check for 'transportation'
+            // Laravel will automatically resolve this to TransportationFee thanks to our morphMap
             $query->where('order_amountable_type', 'transportation');
         });
     }

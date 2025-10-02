@@ -178,15 +178,25 @@ class OrderController extends Controller
     public function freeDeliveries(Request $request)
     {
         // Also, only include orders with address_id > 0
-        $query = Order::with(['orderStatus', 'customer', 'order_amounts'])
-            ->where('address_id', '>', 0);
+        $query = Order::with([
+            'orderStatus',
+            'user',
+            'creator',
+            'oldest.site',
+            'latest.site',
+            'product',
+            'wheel',
+            'purchase',
+            'order_details',
+            'transportation_amount.order_amountable.route',
+        ])->where('address_id', '>', 0);
         
         // Handle search
         if ($request->has('search') && !empty($request->search)) {
             $searchTerm = $request->search;
             $query->where(function($q) use ($searchTerm) {
-                $q->where('order_number', 'LIKE', "%{$searchTerm}%")
-                  ->orWhereHas('customer', function($subQ) use ($searchTerm) {
+                $q->where('id', 'LIKE', "%{$searchTerm}%")
+                  ->orWhereHas('user', function($subQ) use ($searchTerm) {
                       $subQ->where('name', 'LIKE', "%{$searchTerm}%");
                   });
             });
@@ -195,6 +205,21 @@ class OrderController extends Controller
         // Paginate results
         $perPage = $request->get('per_page', 10);
         $freeDeliveries = $query->orderBy('created_at', 'desc')->paginate($perPage);
+        
+        // Process each order for display
+        $freeDeliveries->each(function ($order) {
+            // Set defaults for properties
+            $order->completed = $order->completed ?? 0;
+            $order->ongoing = $order->ongoing ?? 0;
+            
+            // Format transportation_amount if it exists
+            if ($order->transportation_amount && isset($order->transportation_amount->amount)) {
+                // Assuming amount is stored in cents and needs to be converted to dollars/ringgit
+                if (is_numeric($order->transportation_amount->amount)) {
+                    $order->transportation_amount->amount = number_format($order->transportation_amount->amount / 100, 2);
+                }
+            }
+        });
         
         return view('orders/freeDeliveries', compact('freeDeliveries'));
     }
