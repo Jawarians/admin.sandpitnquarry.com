@@ -102,11 +102,35 @@
                         <td>{{ isset($order->price_per_unit) ? 'MYR '.number_format($order->price_per_unit/100,2) : (isset($order->cost_amount) ? 'MYR '.number_format($order->cost_amount/100,2) : 'N/A') }}</td>
                         <td>{{ $order->oldest->quantity ?? ($order->order_details->sum('quantity') ?? 'N/A') }}</td>
                         <td>
-                            @php $transport = $order->transportation_amount; @endphp
-                            {{ $transport && isset($transport->amount) ? 'MYR '.$transport->amount : 'MYR 0.00' }}
+                            @php 
+        $transport = $order->transportation_amount;
+        $feeAmount = 0;
+        
+        if (!is_null($transport) && isset($transport->amount) && !is_null($order->oldest) && isset($order->oldest->total_kg) && $order->oldest->total_kg > 0) {
+            $feeAmount = $transport->amount / ($order->oldest->total_kg / 1000);
+        }
+    @endphp
+    {{ 'MYR ' . number_format($feeAmount, 2) }}
                         </td>
-                        <td>{{ $transport && $transport->order_amountable ? $transport->order_amountable->route->distance_text ?? 'N/A' : 'N/A' }}</td>
-                        <td>{{ $transport && $transport->order_amountable ? $transport->order_amountable->route->duration_text ?? 'N/A' : 'N/A' }}</td>
+                        <td>
+                            @if($transport && 
+                                optional($transport->order_amountable)->route &&
+                                optional($transport->order_amountable->route)->distance_text)
+                                {{ $transport->order_amountable->route->distance_text }}
+                            @else
+                                N/A
+                            @endif
+                        </td>
+                        <td>
+                            @if($transport && 
+                                optional($transport->order_amountable)->route)
+                                {{ optional($transport->order_amountable->route)->traffic_text ?? 
+                                   optional($transport->order_amountable->route)->duration_text ?? 
+                                   'N/A' }}
+                            @else
+                                N/A
+                            @endif
+                        </td>
                         <td>{{ optional($order->wheel)->wheel ?? 'N/A' }}</td>
                         <td>{{ optional($order->purchase)->created_at ? $order->purchase->created_at->format('M d, Y H:i:s') : 'N/A' }}</td>
                         <td>{{ $order->oldest->total ?? ($order->order_details->sum('quantity') ?? 'N/A') }}</td>
@@ -184,7 +208,35 @@
                         <iconify-icon icon="mdi:currency-usd" class="text-primary-600 text-3xl mb-8"></iconify-icon>
                         <h6 class="text-lg text-primary-600 mb-4">Total Value Saved</h6>
                         <h4 class="text-2xl fw-bold text-primary-600 mb-0">
-                            MYR {{ number_format(($freeDeliveries->sum(function($order) { return $order->order_amounts->where('order_amountable_type', 'transportation')->sum('amount'); }) ?: ($freeDeliveries->count() * 500))/100, 2) }}
+                            @php
+                                $defaultValue = $freeDeliveries->count() * 500;
+                                $transportValues = [];
+                                
+                                // Manually loop through orders instead of using sum() with a callback
+                                foreach ($freeDeliveries as $order) {
+                                    if (!$order->transportation_amount) {
+                                        continue;
+                                    }
+                                    
+                                    if (!isset($order->transportation_amount->amount)) {
+                                        continue;
+                                    }
+                                    
+                                    $amount = $order->transportation_amount->amount;
+                                    
+                                    // Handle formatted string values
+                                    if (is_string($amount) && strpos($amount, '.') !== false) {
+                                        $transportValues[] = (float) str_replace(',', '', $amount) * 100;
+                                    }
+                                    // Handle numeric values
+                                    elseif (is_numeric($amount)) {
+                                        $transportValues[] = $amount * 100;
+                                    }
+                                }
+                                
+                                $totalValue = !empty($transportValues) ? array_sum($transportValues) : $defaultValue;
+                            @endphp
+                            MYR {{ number_format($totalValue / 100, 2) }}
                         </h4>
                     </div>
                 </div>
