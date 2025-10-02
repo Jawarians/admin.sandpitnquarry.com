@@ -3,7 +3,25 @@
 @php
     $title='Dashboard';
     $subTitle = 'AI';
-    $script= '<script src="' . asset('assets/js/dashboard-charts.js') . '"></script><script src="' . asset('assets/js/homeOneChart.js') . '"></script>';
+    $script= '
+    <script>
+        // Pass data to JavaScript
+        const dashboardData = {
+            monthlyOrderData: ' . json_encode($monthlyOrderData) . ',
+            dailyOrderData: ' . json_encode($dailyOrderData) . ',
+            jobsByTypeData: ' . json_encode($jobsByTypeData ?? []) . ',
+            completedTrips: ' . $completedTrips . ',
+            cancelledTrips: ' . $cancelledTrips . ',
+            totalTrips: ' . $totalTrips . ',
+            ordersByLocation: ' . json_encode($ordersByLocation) . ',
+            monthlyTripData: ' . json_encode($monthlyTripData) . ',
+            productCategoryData: ' . json_encode($productCategoryData) . ',
+            dailySalesData: ' . json_encode($dailySalesData ?? []) . '
+        };
+    </script>
+    <script src="' . asset('assets/js/dashboard-charts.js') . '"></script>
+    <script src="' . asset('assets/js/homeOneChart.js') . '"></script>
+    <script src="' . asset('assets/js/daily-sales-chart.js') . '"></script>';
 @endphp
 
 @section('content')
@@ -85,8 +103,18 @@
                                 </div>
                             </div>
                             <p class="fw-medium text-sm text-primary-light mt-12 mb-0 d-flex align-items-center gap-2">
-                                <span class="d-inline-flex align-items-center gap-1 text-success-main">
-                                    <iconify-icon icon="bxs:up-arrow" class="text-xs"></iconify-icon> +RM{{ number_format($monthlyOrderData->sum('revenue'), 2) }}
+                                @php
+                                    // Safely calculate the sum of revenue for the current month
+                                    $currentMonth = date('n');
+                                    $currentMonthData = $monthlyOrderData->firstWhere('month', date('M'));
+                                    $currentMonthRevenue = $currentMonthData ? ($currentMonthData['revenue'] ?? 0) : 0;
+                                    
+                                    $revenueClass = $currentMonthRevenue >= 0 ? 'text-success-main' : 'text-danger-main';
+                                    $arrowIcon = $currentMonthRevenue >= 0 ? 'bxs:up-arrow' : 'bxs:down-arrow';
+                                    $prefix = $currentMonthRevenue >= 0 ? '+' : '';
+                                @endphp
+                                <span class="d-inline-flex align-items-center gap-1 {{ $revenueClass }}">
+                                    <iconify-icon icon="{{ $arrowIcon }}" class="text-xs"></iconify-icon> {{ $prefix }}RM{{ number_format(abs($currentMonthRevenue), 2) }}
                                 </span>
                                 Current month
                             </p>
@@ -131,12 +159,54 @@
                             </div>
                             <div class="d-flex flex-wrap align-items-center gap-2 mt-8">
                                 <h6 class="mb-0">RM{{ number_format($orderRevenue, 2) }}</h6>
-                                <span class="text-sm fw-semibold rounded-pill bg-success-focus text-success-main border br-success px-8 py-4 line-height-1 d-flex align-items-center gap-1">
-                                    {{ number_format(($monthlyOrderData->last()['revenue'] / max($monthlyOrderData->first()['revenue'], 1) - 1) * 100, 1) }}% <iconify-icon icon="bxs:up-arrow" class="text-xs"></iconify-icon>
+                                @php
+                                    // Safely calculate revenue growth percentage
+                                    $firstRevenue = $monthlyOrderData->first() ? ($monthlyOrderData->first()['revenue'] ?? 0) : 0;
+                                    $lastRevenue = $monthlyOrderData->last() ? ($monthlyOrderData->last()['revenue'] ?? 0) : 0;
+                                    
+                                    if ($firstRevenue > 0) {
+                                        $growthPercentage = ($lastRevenue / $firstRevenue - 1) * 100;
+                                    } else if ($lastRevenue > 0) {
+                                        $growthPercentage = 100; // If first is 0 but last is positive, show 100%
+                                    } else {
+                                        $growthPercentage = 0; // Both are 0
+                                    }
+                                    
+                                    $badgeClass = $growthPercentage >= 0 ? 'bg-success-focus text-success-main br-success' : 'bg-danger-focus text-danger-main br-danger';
+                                    $arrowIcon = $growthPercentage >= 0 ? 'bxs:up-arrow' : 'bxs:down-arrow';
+                                @endphp
+                                <span class="text-sm fw-semibold rounded-pill {{ $badgeClass }} border px-8 py-4 line-height-1 d-flex align-items-center gap-1">
+                                    {{ number_format(abs($growthPercentage), 1) }}% <iconify-icon icon="{{ $arrowIcon }}" class="text-xs"></iconify-icon>
                                 </span>
                                 <span class="text-xs fw-medium">+ RM{{ number_format($orderRevenue / max(date('j'), 1), 2) }} Per Day</span>
                             </div>
-                            <div id="chart" class="pt-28 apexcharts-tooltip-style-1"></div>
+                            
+                            <!-- Order Revenue Chart -->
+                            <div id="orderRevenueChart" class="pt-28"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xxl-6 col-xl-12">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="d-flex flex-wrap align-items-center justify-content-between">
+                                <h6 class="text-lg mb-0">Order Tracking</h6>
+                                <select class="form-select bg-base form-select-sm w-auto" id="orderTrackingPeriod">
+                                    <option value="daily">Daily</option>
+                                    <option value="monthly">Monthly</option>
+                                </select>
+                            </div>
+                            <div class="d-flex flex-wrap align-items-center gap-2 mt-8">
+                                <h6 class="mb-0" id="orderTrackingTotal">{{ number_format($recentOrders) }} Orders</h6>
+                                <span class="text-sm fw-semibold rounded-pill bg-success-focus text-success-main border br-success px-8 py-4 line-height-1 d-flex align-items-center gap-1">
+                                    <span id="orderTrackingPercentage">
+                                        {{ $dailyOrderData->count() > 0 ? number_format((($dailyOrderData->last()['count'] / max($dailyOrderData->first()['count'], 1)) - 1) * 100, 1) : '0' }}%
+                                    </span> 
+                                    <iconify-icon icon="bxs:up-arrow" class="text-xs"></iconify-icon>
+                                </span>
+                                <span class="text-xs fw-medium">Last 30 days</span>
+                            </div>
+                            <div id="orderTrackingChart" class="pt-28 apexcharts-tooltip-style-1"></div>
                         </div>
                     </div>
                 </div>
@@ -156,6 +226,44 @@
                             </div>
 
                             <div id="barChart" class="barChart"></div>
+                            <div class="text-center mt-2">
+                                <small class="text-muted">Last 7 days</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xxl-3 col-xl-6">
+                    <div class="card h-100 radius-8 border">
+                        <div class="card-body p-24">
+                            <h6 class="mb-12 fw-semibold text-lg mb-16">Total Sales</h6>
+                            <div class="d-flex align-items-center gap-2 mb-20">
+                                @php
+                                    // Calculate total daily sales if available - Fixed for collection
+                                    $totalDailySales = 0;
+                                    $salesCount = 0;
+                                    
+                                    if (isset($dailySalesData) && $dailySalesData->isNotEmpty()) {
+                                        $totalDailySales = $dailySalesData->sum('amount');
+                                        $salesCount = $dailySalesData->count();
+                                    }
+                                    
+                                    // Calculate average daily sales
+                                    $avgDailySales = $salesCount > 0 ? $totalDailySales / $salesCount : 0;
+                                @endphp
+                                <h6 class="fw-semibold mb-0">RM{{ number_format($totalDailySales, 2) }}</h6>
+                                <p class="text-sm mb-0">
+                                    <span class="bg-info-focus border br-info px-8 py-2 rounded-pill fw-semibold text-info-main text-sm d-inline-flex align-items-center gap-1">
+                                        RM{{ number_format($avgDailySales, 2) }}
+                                        <iconify-icon icon="material-symbols:trending-up" class="icon"></iconify-icon>
+                                    </span>
+                                    Avg. Daily
+                                </p>
+                            </div>
+
+                            <div id="dailySalesChart" class="dailySalesChart"></div>
+                            <div class="text-center mt-2">
+                                <small class="text-muted">Last 7 days</small>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -389,44 +497,7 @@
                     </div>
                 </div>
 
-                <div class="col-xxl-6">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center flex-wrap gap-2 justify-content-between">
-                                <h6 class="mb-2 fw-bold text-lg mb-0">Monthly Trips & Products</h6>
-                                <select class="form-select form-select-sm w-auto bg-base border text-secondary-light">
-                                    <option>Monthly</option>
-                                    <option>Yearly</option>
-                                </select>
-                            </div>
 
-                            <ul class="d-flex flex-wrap align-items-center mt-3 gap-3">
-                                <li class="d-flex align-items-center gap-2">
-                                    <span class="w-12-px h-12-px rounded-circle bg-primary-600"></span>
-                                    <span class="text-secondary-light text-sm fw-semibold">Trips:
-                                        <span class="text-primary-light fw-bold">{{ number_format($totalTrips) }}</span>
-                                    </span>
-                                </li>
-                                <li class="d-flex align-items-center gap-2">
-                                    <span class="w-12-px h-12-px rounded-circle bg-yellow"></span>
-                                    <span class="text-secondary-light text-sm fw-semibold">Products:
-                                        <span class="text-primary-light fw-bold">{{ number_format($totalProducts) }}</span>
-                                    </span>
-                                </li>
-                                <li class="d-flex align-items-center gap-2">
-                                    <span class="w-12-px h-12-px rounded-circle bg-success-main"></span>
-                                    <span class="text-secondary-light text-sm fw-semibold">Active Products:
-                                        <span class="text-primary-light fw-bold">{{ number_format($activeProducts) }}</span>
-                                    </span>
-                                </li>
-                            </ul>
-
-                            <div class="mt-40">
-                                <div id="tripProductChart" class="margin-16-minus"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
 
 @endsection

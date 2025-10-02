@@ -51,10 +51,44 @@ class AccountController extends Controller
     {
         // Validation logic
         $validated = $request->validate([
-            // Add fields as needed
+            'code' => 'required|string',
+            'term' => 'required|integer|min:0',
+            'limit' => 'required|numeric|min:0',
+            'status' => 'required|string|in:Pending,Approve,Reject',
+            'remark' => 'nullable|string',
         ]);
         
-        $account->update($validated);
+        // Create or update AccountDetail record
+        $accountDetail = $account->latest;
+        if (!$accountDetail) {
+            $accountDetail = $account->account_details()->create([
+                'code' => $validated['code'],
+                'status' => $validated['status'],
+                'remark' => $validated['remark'],
+                'creator_id' => 1, // Default to admin or system user
+            ]);
+        } else {
+            $accountDetail->update([
+                'code' => $validated['code'],
+                'status' => $validated['status'],
+                'remark' => $validated['remark'],
+            ]);
+        }
+        
+        // Create or update AccountDetailItem
+        $accountDetailItem = $accountDetail->latest;
+        if (!$accountDetailItem) {
+            $accountDetail->account_detail_items()->create([
+                'term' => $validated['term'],
+                'limit' => $validated['limit'],
+                'creator_id' => 1, // Default to admin or system user
+            ]);
+        } else {
+            $accountDetailItem->update([
+                'term' => $validated['term'],
+                'limit' => $validated['limit'],
+            ]);
+        }
         
         return redirect()->route('accounts.index')->with('success', 'Account updated successfully');
     }
