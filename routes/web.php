@@ -20,9 +20,8 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\TripController;
 use App\Http\Controllers\ProductController;
-use App\Http\Controllers\PriceItemController;
-use App\Http\Controllers\SiteController;
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\DriverController;
 
 // Authentication Routes - No auth required
 // Authentication
@@ -304,6 +303,19 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/{account}/edit', 'edit')->name('accounts.edit');
             Route::put('/{account}', 'update')->name('accounts.update');
             Route::delete('/{account}', 'destroy')->name('accounts.destroy');
+        });
+    });
+    
+    // Drivers
+    Route::prefix('drivers')->group(function () {
+        Route::controller(DriverController::class)->group(function () {
+            Route::get('/', 'index')->name('drivers.index');
+            Route::get('/create', 'create')->name('drivers.create');
+            Route::post('/', 'store')->name('drivers.store');
+            Route::get('/{driver}', 'show')->name('drivers.show');
+            Route::get('/{driver}/edit', 'edit')->name('drivers.edit');
+            Route::put('/{driver}', 'update')->name('drivers.update');
+            Route::delete('/{driver}', 'destroy')->name('drivers.destroy');
         });
     });
 });
