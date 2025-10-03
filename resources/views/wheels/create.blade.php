@@ -1,80 +1,79 @@
 @extends('layout.layout')
-
-@section('title', 'Create Wheel')
+@php
+    $title='Create Wheel';
+    $subTitle = 'New Wheel';
+@endphp
 
 @section('content')
-<div class="content-wrapper">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="page-title-wrap">
-                    <div class="page-title">
-                        <h1>Create Wheel</h1>
-                    </div>
-                    <div class="page-button">
-                        <a href="{{ route('wheels.index') }}" class="btn btn-secondary">
-                            <i class="ri-arrow-left-line me-2"></i>
-                            Back to List
-                        </a>
-                    </div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card radius-12 p-0">
+            <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between flex-wrap">
+                <h4 class="mb-0 text-lg fw-semibold">Create Wheel</h4>
+                <div>
+                    <a href="{{ route('wheels.index') }}" class="btn btn-sm btn-secondary px-12 py-8 radius-8">
+                        <iconify-icon icon="mdi:arrow-left" class="me-1"></iconify-icon>
+                        Back to List
+                    </a>
                 </div>
             </div>
-        </div>
+            <div class="card-body p-24">
+                        @if($errors->any())
+                            <div class="alert alert-danger mb-4">
+                                <ul class="mb-0">
+                                    @foreach($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
 
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-body">
                         <form action="{{ route('wheels.store') }}" method="POST">
                             @csrf
 
-                            <div class="mb-3">
-                                <label for="wheel" class="form-label">Wheel Number</label>
-                                <input type="number" name="wheel" id="wheel" class="form-control @error('wheel') is-invalid @enderror" value="{{ old('wheel') }}" required min="1">
-                                @error('wheel')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                                <small class="form-text text-muted">This is the primary identifier and cannot be changed later.</small>
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <label for="wheel" class="form-label">Wheel Number <span class="text-danger">*</span></label>
+                                    <input type="number" name="wheel" id="wheel" class="form-control @error('wheel') is-invalid @enderror" value="{{ old('wheel') }}" required min="1">
+                                    @error('wheel')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                    <small class="form-text text-secondary-light">This is the primary identifier and cannot be changed later.</small>
+                                </div>
                             </div>
                             
-                            <div class="mb-3">
-                                <label for="capacity" class="form-label">Capacity</label>
-                                <input type="number" name="capacity" id="capacity" class="form-control @error('capacity') is-invalid @enderror" value="{{ old('capacity', 0) }}" min="0" required>
-                                @error('capacity')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <label for="capacity" class="form-label">Capacity <span class="text-danger">*</span></label>
+                                    <input type="number" name="capacity" id="capacity" class="form-control @error('capacity') is-invalid @enderror" value="{{ old('capacity', 0) }}" min="0" required>
+                                    @error('capacity')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
                             </div>
                             
                             <div class="row mb-3">
                                 <div class="col-md-6">
-                                    <div class="form-check form-switch">
+                                    <label class="form-label">Load Options</label>
+                                    <div class="form-check form-switch mt-2">
                                         <input class="form-check-input" type="checkbox" name="load" id="load" {{ old('load') ? 'checked' : '' }}>
                                         <label class="form-check-label" for="load">Load</label>
                                     </div>
                                 </div>
                                 
                                 <div class="col-md-6">
-                                    <div class="form-check form-switch">
+                                    <label class="form-label">Tonne Options</label>
+                                    <div class="form-check form-switch mt-2">
                                         <input class="form-check-input" type="checkbox" name="tonne" id="tonne" {{ old('tonne') ? 'checked' : '' }}>
                                         <label class="form-check-label" for="tonne">Tonne</label>
                                     </div>
                                 </div>
                             </div>
                             
-                            <div class="mb-3">
-                                <label for="rgba" class="form-label">Color (RGBA)</label>
-                                <input type="text" name="rgba" id="rgba" class="form-control @error('rgba') is-invalid @enderror" value="{{ old('rgba', 'rgba(0, 0, 0, 1)') }}">
-                                @error('rgba')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                                <div class="mt-2">
-                                    <label>Color Preview:</label>
-                                    <div id="colorPreview" style="width: 50px; height: 30px; border: 1px solid #ccc; border-radius: 4px;"></div>
-                                </div>
-                            </div>
-                            
-                            <div class="text-end">
-                                <button type="submit" class="btn btn-primary">Create Wheel</button>
+                            <div class="d-flex justify-content-end mt-4">
+                                <button type="reset" class="btn btn-light me-2 px-16 py-12 radius-8">Reset</button>
+                                <button type="submit" class="btn btn-primary px-16 py-12 radius-8">Create Wheel</button>
                             </div>
                         </form>
                     </div>
@@ -82,23 +81,6 @@
             </div>
         </div>
     </div>
-</div>
+
 @endsection
 
-@push('scripts')
-<script>
-    $(document).ready(function() {
-        // Update color preview when input changes
-        function updateColorPreview() {
-            var rgbaValue = $('#rgba').val();
-            $('#colorPreview').css('background-color', rgbaValue);
-        }
-        
-        // Initialize color preview
-        updateColorPreview();
-        
-        // Update preview when input changes
-        $('#rgba').on('input', updateColorPreview);
-    });
-</script>
-@endpush

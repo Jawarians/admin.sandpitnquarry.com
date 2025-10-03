@@ -1,7 +1,7 @@
 @extends('layout.layout')
 @php
     $title='Create Driver';
-    $subTitle = 'Create New Driver';
+    $subTitle = 'Create Driver';
 @endphp
 
 @section('content')
@@ -76,7 +76,7 @@
                                     @error('profile_photo')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
-                                    <small class="form-text text-muted">Recommended size: 300x300 pixels (Max: 2MB)</small>
+                                    <small class="form-text text-secondary-light">Recommended size: 300x300 pixels (Max: 2MB)</small>
                                 </div>
 
                                 <div class="col-md-6">
@@ -139,7 +139,7 @@
                                     @error('truck_id')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
-                                    <small class="form-text text-muted">Optional. You can assign a truck later.</small>
+                                    <small class="form-text text-secondary-light">Optional. You can assign a truck later.</small>
                                 </div>
                             </div>
                         </div>
