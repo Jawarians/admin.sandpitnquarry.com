@@ -30,6 +30,7 @@ use App\Http\Controllers\DriverController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\CoinController;
 use App\Http\Controllers\WithdrawalController;
+use App\Http\Controllers\TruckController;
 
 // Authentication Routes - No auth required
 // Authentication
@@ -419,6 +420,19 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/{driver}/edit', 'edit')->name('drivers.edit');
             Route::put('/{driver}', 'update')->name('drivers.update');
             Route::delete('/{driver}', 'destroy')->name('drivers.destroy');
+        });
+    });
+    
+    // Trucks
+    Route::prefix('trucks')->group(function () {
+        Route::controller(TruckController::class)->group(function () {
+            Route::get('/', 'index')->name('trucks.index');
+            Route::get('/create', 'create')->name('trucks.create');
+            Route::post('/', 'store')->name('trucks.store');
+            Route::get('/{truck}', 'show')->name('trucks.show');
+            Route::get('/{truck}/edit', 'edit')->name('trucks.edit');
+            Route::put('/{truck}', 'update')->name('trucks.update');
+            Route::delete('/{truck}', 'destroy')->name('trucks.destroy');
         });
     });
 });
