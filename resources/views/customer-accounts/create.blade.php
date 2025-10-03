@@ -91,7 +91,7 @@
                         <div class="col-md-6">
                             <label for="document" class="form-label">Bank Statement Document</label>
                             <input type="file" class="form-control @error('document') is-invalid @enderror" id="document" name="document">
-                            <div class="form-text">Upload bank statement or relevant document (PDF, JPG, PNG).</div>
+                            <small class="form-text text-secondary-light">Upload bank statement or relevant document (PDF, JPG, PNG).</small>
                             @error('document')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
