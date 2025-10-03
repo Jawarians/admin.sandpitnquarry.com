@@ -327,6 +327,14 @@
                 </ul>
             </li>
 
+            <!-- Reloads navigation -->
+            <li>
+                <a href="{{ route('reloads.index') }}">
+                    <iconify-icon icon="material-symbols:payments-outline" class="menu-icon"></iconify-icon>
+                    <span>Reloads</span>
+                </a>
+            </li>
+
             <!-- Coins navigation -->
             <li class="dropdown">
                 <a href="javascript:void(0)">
