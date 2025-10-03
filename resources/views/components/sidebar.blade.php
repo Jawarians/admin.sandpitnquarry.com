@@ -391,6 +391,22 @@
                 </ul>
             </li>
             
+            <!-- Trucks navigation -->
+            <li class="dropdown">
+                <a href="javascript:void(0)">
+                    <iconify-icon icon="mdi:truck" class="menu-icon"></iconify-icon>
+                    <span>Trucks</span>
+                </a>
+                <ul class="sidebar-submenu">
+                    <li>
+                        <a href="{{ route('trucks.index') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Trucks List</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('trucks.create') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Create Truck</a>
+                    </li>
+                </ul>
+            </li>
+            
             <!-- Payments navigation -->
             <li class="dropdown">
                 <a href="javascript:void(0)">
