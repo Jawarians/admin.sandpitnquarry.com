@@ -15,6 +15,7 @@ use App\Http\Controllers\PaymentGatewayController;
 use App\Http\Controllers\TableController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\ReloadController;
 use App\Http\Controllers\RoleandaccessController;
 use App\Http\Controllers\CryptocurrencyController;
 use App\Http\Controllers\OrderController;
@@ -323,6 +324,14 @@ Route::middleware(['auth'])->group(function () {
             Route::put('/{customerAccount}', 'update')->name('customer-accounts.update');
             Route::delete('/{customerAccount}', 'destroy')->name('customer-accounts.destroy');
             Route::get('/{customerAccount}/document', 'viewDocument')->name('customer-accounts.document');
+        });
+    });
+    
+    // Reloads
+    Route::prefix('reloads')->group(function () {
+        Route::controller(ReloadController::class)->group(function () {
+            Route::get('/', 'index')->name('reloads.index');
+            Route::get('/{reload}', 'show')->name('reloads.show');
         });
     });
     
