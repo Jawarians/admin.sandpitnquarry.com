@@ -6,6 +6,7 @@ use App\Http\Controllers\AiapplicationController;
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\ChartController;
 use App\Http\Controllers\ComponentpageController;
+use App\Http\Controllers\CustomerAccountController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FormsController;
 use App\Http\Controllers\InvoiceController;
@@ -308,6 +309,20 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/{account}/edit', 'edit')->name('accounts.edit');
             Route::put('/{account}', 'update')->name('accounts.update');
             Route::delete('/{account}', 'destroy')->name('accounts.destroy');
+        });
+    });
+    
+    // Customer Accounts
+    Route::prefix('customer-accounts')->group(function () {
+        Route::controller(CustomerAccountController::class)->group(function () {
+            Route::get('/', 'index')->name('customer-accounts.index');
+            Route::get('/create', 'create')->name('customer-accounts.create');
+            Route::post('/', 'store')->name('customer-accounts.store');
+            Route::get('/{customerAccount}', 'show')->name('customer-accounts.show');
+            Route::get('/{customerAccount}/edit', 'edit')->name('customer-accounts.edit');
+            Route::put('/{customerAccount}', 'update')->name('customer-accounts.update');
+            Route::delete('/{customerAccount}', 'destroy')->name('customer-accounts.destroy');
+            Route::get('/{customerAccount}/document', 'viewDocument')->name('customer-accounts.document');
         });
     });
     

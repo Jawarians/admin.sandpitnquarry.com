@@ -311,6 +311,22 @@
                 </ul>
             </li>
 
+            <!-- Customer Accounts navigation -->
+            <li class="dropdown">
+                <a href="javascript:void(0)">
+                    <iconify-icon icon="material-symbols:account-balance-outline" class="menu-icon"></iconify-icon>
+                    <span>Customer Accounts</span>
+                </a>
+                <ul class="sidebar-submenu">
+                    <li>
+                        <a href="{{ route('customer-accounts.index') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Customer Accounts List</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('customer-accounts.create') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Create Customer Account</a>
+                    </li>
+                </ul>
+            </li>
+
             <!-- Coins navigation -->
             <li class="dropdown">
                 <a href="javascript:void(0)">

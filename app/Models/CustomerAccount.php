@@ -26,6 +26,13 @@ class CustomerAccount extends Model
         'approver_id',
         'status',
     ];
+    
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'approved_at' => 'datetime',
+        'deleted_at' => 'datetime',
+    ];
 
     protected static function booted(): void
     {
