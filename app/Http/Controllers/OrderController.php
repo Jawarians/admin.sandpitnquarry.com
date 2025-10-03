@@ -6,6 +6,9 @@ use App\Models\Order;
 use App\Models\OrderStatus;
 use App\Models\Wheel;
 use App\Models\Product;
+use App\Models\Customer;
+use App\Models\Site;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 use Carbon\Carbon;
@@ -224,12 +227,28 @@ class OrderController extends Controller
         return view('orders/freeDeliveries', compact('freeDeliveries'));
     }
 
+    /**
+     * Display a listing of self-pickup orders
+     *
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\View
+     */
     public function selfPickups(Request $request)
     {
-        $query = Order::with(['orderStatus', 'customer'])
-                     ->where(function($q) {
-                         $q->where('address_id', '<=', 0);
-                     });
+        // Query orders where address_id <= 0 (self-pickup)
+        $query = Order::with([
+                    'orderStatus',
+                    'customer',
+                    'product',
+                    'wheel', 
+                    'quarry',
+                    'agent',
+                    'jobs',
+                    'trips'
+                ])
+                ->where(function($q) {
+                    $q->where('address_id', '<=', 0);
+                });
         
         // Handle search
         if ($request->has('search') && !empty($request->search)) {
@@ -237,6 +256,14 @@ class OrderController extends Controller
             $query->where(function($q) use ($searchTerm) {
                 $q->where('order_number', 'LIKE', "%{$searchTerm}%")
                   ->orWhereHas('customer', function($subQ) use ($searchTerm) {
+                      $subQ->where('name', 'LIKE', "%{$searchTerm}%")
+                          ->orWhere('email', 'LIKE', "%{$searchTerm}%")
+                          ->orWhere('phone', 'LIKE', "%{$searchTerm}%");
+                  })
+                  ->orWhereHas('product', function($subQ) use ($searchTerm) {
+                      $subQ->where('name', 'LIKE', "%{$searchTerm}%");
+                  })
+                  ->orWhereHas('quarry', function($subQ) use ($searchTerm) {
                       $subQ->where('name', 'LIKE', "%{$searchTerm}%");
                   });
             });
@@ -246,6 +273,49 @@ class OrderController extends Controller
         $perPage = $request->get('per_page', 10);
         $selfPickups = $query->orderBy('created_at', 'desc')->paginate($perPage);
         
-        return view('orders/selfPickups', compact('selfPickups'));
+        // Calculate completed and ongoing quantities
+        foreach ($selfPickups as $order) {
+            // Count completed trips/jobs
+            $order->completed_quantity = $order->trips->where('status', 'Completed')->sum('actual_quantity');
+            
+            // Count ongoing trips/jobs
+            $order->ongoing_quantity = $order->trips->whereIn('status', ['Pending', 'In Progress'])->sum('actual_quantity');
+        }
+        
+        return view('orders.selfPickups', compact('selfPickups'));
+    }
+    
+    /**
+     * Show the form for editing the specified order.
+     *
+     * @param int $id
+     * @return \Illuminate\Contracts\View\View
+     */
+    public function orderEdit($id)
+    {
+        $order = Order::with([
+            'orderStatus',
+            'customer',
+            'product',
+            'wheel',
+            'quarry',
+            'agent',
+            'jobs',
+            'trips'
+        ])->findOrFail($id);
+        
+        // Calculate completed and ongoing quantities
+        $order->completed_quantity = $order->trips->where('status', 'Completed')->sum('actual_quantity');
+        $order->ongoing_quantity = $order->trips->whereIn('status', ['Pending', 'In Progress'])->sum('actual_quantity');
+        
+        // Get additional data needed for the edit form
+        $products = Product::all();
+        $wheels = Wheel::all();
+        $orderStatuses = OrderStatus::all();
+        $customers = Customer::all();
+        $sites = Site::all(); // Quarries
+        $agents = User::where('role', 'agent')->get();
+        
+        return view('orders.orderEdit', compact('order', 'products', 'wheels', 'orderStatuses', 'customers', 'sites', 'agents'));
     }
 }

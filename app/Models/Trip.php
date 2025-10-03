@@ -148,6 +148,11 @@ class Trip extends Model
         return $this->trip_status();
     }
 
+    public function tripLocation(): HasMany
+    {
+        return $this->locations();
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

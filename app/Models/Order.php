@@ -256,6 +256,28 @@ protected static function boot()
         return $this->belongsTo(OrderStatus::class, 'status', 'status');
     }
 
+    /**
+     * Check if the order is scheduled for pickup today or in the future.
+     *
+     * @return bool
+     */
+    public function isPendingPickup()
+    {
+        $pickupDate = $this->pickup_date ?: $this->delivery_date;
+        return !$pickupDate || now()->startOfDay()->lte($pickupDate);
+    }
+    
+    /**
+     * Check if the order pickup is completed (in the past).
+     *
+     * @return bool
+     */
+    public function isPickupCompleted()
+    {
+        $pickupDate = $this->pickup_date ?: $this->delivery_date;
+        return $pickupDate && now()->startOfDay()->gt($pickupDate);
+    }
+
     public function jobs(): HasMany
     {
         return $this->hasMany(Job::class);
@@ -334,6 +356,16 @@ protected static function boot()
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
+    }
+    
+    public function quarry(): BelongsTo
+    {
+        return $this->belongsTo(Site::class, 'site_id');
+    }
+    
+    public function agent(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'agent_id');
     }
 
     public function purchase(): BelongsTo
