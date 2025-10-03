@@ -24,7 +24,11 @@
     <!-- audioplayer -->
     <script src="{{ asset('assets/js/lib/audioplayer.js') }}"></script>
 
+    <!-- theme detector js (must be before page transition) -->
+    <script src="{{ asset('assets/js/theme-detector.js') }}"></script>
     <!-- main js -->
     <script src="{{ asset('assets/js/app.js') }}"></script>
+    <!-- page transition js -->
+    <script src="{{ asset('assets/js/page-transition.js') }}"></script>
 
     <?php echo (isset($script) ? $script   : '')?>
