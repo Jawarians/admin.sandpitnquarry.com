@@ -31,6 +31,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\CoinController;
 use App\Http\Controllers\WithdrawalController;
 use App\Http\Controllers\TruckController;
+use App\Http\Controllers\WheelController;
 
 // Authentication Routes - No auth required
 // Authentication
@@ -433,6 +434,22 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/{truck}/edit', 'edit')->name('trucks.edit');
             Route::put('/{truck}', 'update')->name('trucks.update');
             Route::delete('/{truck}', 'destroy')->name('trucks.destroy');
+        });
+    });
+    
+    // Wheels
+    Route::prefix('wheels')->group(function () {
+        Route::controller(WheelController::class)->group(function () {
+            Route::get('/', 'index')->name('wheels.index');
+            Route::get('/create', 'create')->name('wheels.create');
+            Route::post('/', 'store')->name('wheels.store');
+            Route::get('/{wheel}', 'show')->name('wheels.show');
+            Route::get('/{wheel}/edit', 'edit')->name('wheels.edit');
+            Route::put('/{wheel}', 'update')->name('wheels.update');
+            Route::delete('/{wheel}', 'destroy')->name('wheels.destroy');
+            // API route for toggling properties
+            Route::post('/toggle-property', 'toggleProperty')->name('wheels.toggle-property');
+            Route::get('/api/get-wheels', 'getWheels')->name('wheels.get_wheels');
         });
     });
 });
