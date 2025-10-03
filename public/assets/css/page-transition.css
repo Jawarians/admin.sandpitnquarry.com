@@ -1,0 +1,79 @@
+/* Page Transition Animation CSS - No Flash Version (Fixed for Light/Dark) */
+
+/* Theme variables for transitions */
+:root {
+  --dashboard-bg-dark: #252b3b; /* Dashboard dark theme background color */
+  --dashboard-bg-light: #f5f7fb; /* Dashboard light theme background color */
+  --transition-timing: 0.3s ease-out;
+}
+
+/* Theme-specific background colors with higher specificity to override others */
+html[data-theme="dark"], 
+html[data-theme="dark"] body {
+  background-color: var(--dashboard-bg-dark) !important;
+  color-scheme: dark;
+}
+
+html[data-theme="light"], 
+html[data-theme="light"] body {
+  background-color: var(--dashboard-bg-light) !important;
+  color-scheme: light;
+}
+
+/* Base styles for smooth transitions */
+html {
+  transition: background-color var(--transition-timing);
+}
+
+body {
+  transition: background-color var(--transition-timing), opacity 0.2s ease-out;
+}
+
+/* Transitioning state */
+body.page-transitioning {
+  opacity: 0.98;
+}
+
+/* Legacy selectors kept but disabled */
+.page-transition-overlay,
+.page-transition-overlay.active,
+.page-transition-loader,
+.page-transition-logo,
+.page-transition-bar,
+.page-transition-progress {
+  display: none !important;
+}
+
+/* Content transitions - No flash version */
+.dashboard-main-body,
+#main-content,
+.main-content,
+.content-wrapper,
+#app-content,
+#content,
+main {
+  transition: opacity 0.2s ease-out;
+}
+
+/* Cards and panels reveal animation - Very subtle fade only */
+.card, .panel, .widget {
+  opacity: 0;
+  transform: translateY(3px); /* Even more subtle movement */
+  animation: simpleReveal 0.3s ease-out forwards; /* Faster animation */
+  will-change: opacity, transform; /* Performance hint for browsers */
+}
+
+/* Minimal stagger card animations */
+.card:nth-child(1), .panel:nth-child(1), .widget:nth-child(1) { animation-delay: 0.02s; }
+.card:nth-child(2), .panel:nth-child(2), .widget:nth-child(2) { animation-delay: 0.04s; }
+.card:nth-child(3), .panel:nth-child(3), .widget:nth-child(3) { animation-delay: 0.06s; }
+.card:nth-child(4), .panel:nth-child(4), .widget:nth-child(4) { animation-delay: 0.08s; }
+.card:nth-child(5), .panel:nth-child(5), .widget:nth-child(5) { animation-delay: 0.10s; }
+
+/* Only the keyframes we need */
+@keyframes simpleReveal {
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
