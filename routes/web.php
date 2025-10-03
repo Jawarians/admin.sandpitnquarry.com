@@ -22,6 +22,7 @@ use App\Http\Controllers\TripController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\DriverController;
+use App\Http\Controllers\PaymentController;
 
 // Authentication Routes - No auth required
 // Authentication
@@ -306,6 +307,21 @@ Route::middleware(['auth'])->group(function () {
         });
     });
     
+    // Payments
+    Route::prefix('payments')->group(function () {
+        Route::controller(PaymentController::class)->group(function () {
+            Route::get('/', 'index')->name('payments.index');
+            Route::get('/create', 'create')->name('payments.create');
+            Route::post('/', 'store')->name('payments.store');
+            Route::get('/{payment}', 'show')->name('payments.show');
+            Route::get('/{payment}/edit', 'edit')->name('payments.edit');
+            Route::put('/{payment}', 'update')->name('payments.update');
+            Route::delete('/{payment}', 'destroy')->name('payments.destroy');
+            Route::post('/{payment}/approve', 'approve')->name('payments.approve');
+            Route::post('/{payment}/reject', 'reject')->name('payments.reject');
+        });
+    });
+
     // Drivers
     Route::prefix('drivers')->group(function () {
         Route::controller(DriverController::class)->group(function () {

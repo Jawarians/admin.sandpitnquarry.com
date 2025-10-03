@@ -311,6 +311,22 @@
                 </ul>
             </li>
             
+            <!-- Payments navigation -->
+            <li class="dropdown">
+                <a href="javascript:void(0)">
+                    <iconify-icon icon="mdi:cash-multiple" class="menu-icon"></iconify-icon>
+                    <span>Payments</span>
+                </a>
+                <ul class="sidebar-submenu">
+                    <li>
+                        <a href="{{ route('payments.index') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Payments List</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('payments.create') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Create Payment</a>
+                    </li>
+                </ul>
+            </li>
+            
             <!-- Drivers navigation -->
             <li class="dropdown">
                 <a href="javascript:void(0)">
