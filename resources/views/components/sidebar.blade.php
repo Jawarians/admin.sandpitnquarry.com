@@ -310,6 +310,22 @@
                     </li>
                 </ul>
             </li>
+            
+            <!-- Coin Promotions navigation -->
+            <li class="dropdown">
+                <a href="javascript:void(0)">
+                    <iconify-icon icon="mdi:cash-coin" class="menu-icon"></iconify-icon>
+                    <span>Coin Promotions</span>
+                </a>
+                <ul class="sidebar-submenu">
+                    <li>
+                        <a href="{{ route('coin-promotions.index') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Promotions List</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('coin-promotions.create') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Create Promotion</a>
+                    </li>
+                </ul>
+            </li>
 
             <!-- Assignments navigation -->
             <li class="dropdown">

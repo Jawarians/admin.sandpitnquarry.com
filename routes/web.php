@@ -18,6 +18,8 @@ use App\Http\Controllers\RoleandaccessController;
 use App\Http\Controllers\CryptocurrencyController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\JobController;
+use App\Http\Controllers\CoinPromotionController;
+use App\Http\Controllers\CoinPromotionDetailController;
 use App\Http\Controllers\TripController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\AccountController;
@@ -305,6 +307,29 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/{account}/edit', 'edit')->name('accounts.edit');
             Route::put('/{account}', 'update')->name('accounts.update');
             Route::delete('/{account}', 'destroy')->name('accounts.destroy');
+        });
+    });
+    
+    // Coin Promotions
+    Route::prefix('coin-promotions')->group(function () {
+        Route::controller(CoinPromotionController::class)->group(function () {
+            Route::get('/', 'index')->name('coin-promotions.index');
+            Route::get('/create', 'create')->name('coin-promotions.create');
+            Route::post('/', 'store')->name('coin-promotions.store');
+            Route::get('/{coinPromotion}/edit', 'edit')->name('coin-promotions.edit');
+            Route::put('/{coinPromotion}', 'update')->name('coin-promotions.update');
+            Route::delete('/{coinPromotion}', 'destroy')->name('coin-promotions.destroy');
+        });
+    });
+    
+    // Coin Promotion Details
+    Route::prefix('coin-promotion-details')->group(function () {
+        Route::controller(CoinPromotionDetailController::class)->group(function () {
+            Route::get('/create', 'create')->name('coin-promotion-details.create');
+            Route::post('/', 'store')->name('coin-promotion-details.store');
+            Route::get('/{coinPromotionDetail}/edit', 'edit')->name('coin-promotion-details.edit');
+            Route::put('/{coinPromotionDetail}', 'update')->name('coin-promotion-details.update');
+            Route::delete('/{coinPromotionDetail}', 'destroy')->name('coin-promotion-details.destroy');
         });
     });
     

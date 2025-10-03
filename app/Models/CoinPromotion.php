@@ -15,6 +15,10 @@ class CoinPromotion extends Model
         'created_at',
         'updated_at',
     ];
+    
+    protected $casts = [
+        'start_at' => 'datetime',
+    ];
 
     public function coin_promotion_details(): HasMany
     {
