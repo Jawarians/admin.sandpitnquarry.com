@@ -310,6 +310,22 @@
                     </li>
                 </ul>
             </li>
+
+            <!-- Coins navigation -->
+            <li class="dropdown">
+                <a href="javascript:void(0)">
+                    <iconify-icon icon="ph:coins" class="menu-icon"></iconify-icon>
+                    <span>Coins</span>
+                </a>
+                <ul class="sidebar-submenu">
+                    <li>
+                        <a href="{{ route('coins.index') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Coins List</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('coins.create') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Create Coin</a>
+                    </li>
+                </ul>
+            </li>
             
             <!-- Coin Promotions navigation -->
             <li class="dropdown">
