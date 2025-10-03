@@ -259,6 +259,7 @@ Route::middleware(['auth'])->group(function () {
         Route::controller(OrderController::class)->group(function () {
             Route::get('/orders-list', 'orders')->name('ordersList');
             Route::get('/order-details/{id}', 'orderDetails')->name('orderDetails');
+            Route::get('/order-edit/{id}', 'orderEdit')->name('orderEdit');
             Route::get('/order-statuses', 'orderStatuses')->name('orderStatuses');
             Route::get('/free-deliveries', 'freeDeliveries')->name('freeDeliveries');
             Route::get('/self-pickups', 'selfPickups')->name('selfPickups');

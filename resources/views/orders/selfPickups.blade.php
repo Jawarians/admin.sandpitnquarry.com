@@ -47,15 +47,22 @@
                                 <div class="form-check style-check d-flex align-items-center">
                                     <input class="form-check-input radius-4 border input-form-dark" type="checkbox" name="checkbox" id="selectAll">
                                 </div>
-                                Order ID
+                                Id
                             </div>
                         </th>
-                        <th scope="col">Order Date</th>
                         <th scope="col">Customer</th>
-                        <th scope="col">Order Number</th>
-                        <th scope="col">Total Amount</th>
-                        <th scope="col">Pickup Date</th>
+                        <th scope="col">Quarry</th>
+                        <th scope="col">Product</th>
+                        <th scope="col">Agent</th>
+                        <th scope="col">Unit</th>
+                        <th scope="col">Price / Unit</th>
+                        <th scope="col">Wheel</th>
+                        <th scope="col">Start at</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Completed</th>
+                        <th scope="col">Ongoing</th>
                         <th scope="col">Status</th>
+                        <th scope="col">Created at</th>
                         <th scope="col" class="text-center">Action</th>
                     </tr>
                 </thead>
@@ -68,40 +75,46 @@
                                     <input class="form-check-input radius-4 border border-neutral-400" type="checkbox" name="checkbox" value="{{ $order->id }}">
                                 </div>
                                 <div class="d-flex align-items-center gap-2">
-                                    #{{ str_pad($order->id, 4, '0', STR_PAD_LEFT) }}
-                                    <span class="bg-info-focus text-info-600 px-8 py-2 radius-4 fw-medium text-xs">PICKUP</span>
+                                    {{ $order->order_number ?? str_pad($order->id, 10, '0', STR_PAD_LEFT) }}
                                 </div>
                             </div>
                         </td>
-                        <td>{{ $order->created_at ? $order->created_at->format('d M Y') : 'N/A' }}</td>
                         <td>
-                            <div class="d-flex align-items-center">
-                                <div class="flex-grow-1">
-                                    <span class="text-md mb-0 fw-normal text-secondary-light">{{ $order->customer->name ?? 'N/A' }}</span>
-                                    <br>
-                                    <small class="text-xs text-secondary-light">{{ $order->customer->email ?? '' }}</small>
-                                    @if($order->customer->phone)
-                                        <br><small class="text-xs text-secondary-light"><iconify-icon icon="mdi:phone" class="me-1"></iconify-icon>{{ $order->customer->phone }}</small>
-                                    @endif
-                                </div>
-                            </div>
+                            <span class="text-md mb-0 fw-normal text-secondary-light">{{ $order->customer->name ?? 'N/A' }}</span>
                         </td>
-                        <td><span class="text-md mb-0 fw-normal text-secondary-light">{{ $order->order_number ?? 'N/A' }}</span></td>
-                        <td><span class="text-md mb-0 fw-bold text-success-600">${{ number_format($order->total_amount ?? 0, 2) }}</span></td>
                         <td>
-                            @if($order->pickup_date)
-                                <span class="text-md mb-0 fw-normal text-secondary-light">{{ \Carbon\Carbon::parse($order->pickup_date)->format('d M Y') }}</span>
-                                @if($order->pickup_time)
-                                    <br><small class="text-xs text-secondary-light">{{ $order->pickup_time }}</small>
-                                @endif
-                            @elseif($order->delivery_date)
-                                <span class="text-md mb-0 fw-normal text-secondary-light">{{ \Carbon\Carbon::parse($order->delivery_date)->format('d M Y') }}</span>
-                                @if($order->delivery_time)
-                                    <br><small class="text-xs text-secondary-light">{{ $order->delivery_time }}</small>
-                                @endif
+                            <span class="text-md mb-0 fw-normal text-secondary-light">{{ $order->oldest->site->name ?? 'N/A' }}</span>
+                        </td>
+                        <td>
+                            <span class="text-md mb-0 fw-normal text-secondary-light">{{ $order->product->name ?? 'N/A' }}</span>
+                        </td>
+                        <td>
+                            <span class="text-md mb-0 fw-normal text-secondary-light">{{ $order->agent->name ?? 'N/A' }}</span>
+                        </td>
+                        <td>
+                            <span class="text-md mb-0 fw-normal text-secondary-light">{{ $order->unit ?? 'Tonne' }}</span>
+                        </td>
+                        <td>
+                            <span class="text-md mb-0 fw-bold text-success-600">MYR {{ number_format($order->price_per_unit/100 ?? 0, 2) }}</span>
+                        </td>
+                        <td>
+                            <span class="text-md mb-0 fw-normal text-secondary-light">{{ $order->wheel->name ?? $order->wheel->capacity ?? 'N/A' }}</span>
+                        </td>
+                        <td>
+                            @if($order->start_date)
+                                <span class="text-md mb-0 fw-normal text-secondary-light">{{ \Carbon\Carbon::parse($order->start_date)->format('M d, Y') }}</span>
                             @else
                                 <span class="text-xs text-secondary-light">Not scheduled</span>
                             @endif
+                        </td>
+                        <td>
+                            <span class="text-md mb-0 fw-normal text-secondary-light">{{ $order->oldest->quantity ?? ($order->order_details->sum('quantity') ?? 'N/A') }}</span>
+                        </td>
+                        <td>
+                            <span class="text-md mb-0 fw-normal text-secondary-light">{{ $order->completed ?? 0 }}</span>
+                        </td>
+                        <td>
+                            <span class="text-md mb-0 fw-normal text-secondary-light">{{ $order->ongoing ?? 0 }}</span>
                         </td>
                         <td>
                             @if($order->orderStatus)
@@ -110,17 +123,23 @@
                                 <span class="bg-neutral-200 text-neutral-600 border border-neutral-400 px-16 py-4 radius-4 fw-medium text-sm">Unknown</span>
                             @endif
                         </td>
+                        <td>
+                            {{ $order->created_at ? $order->created_at->format('M d, Y H:i:s') : 'N/A' }}
+                        </td>
                         <td class="text-center">
                             <div class="d-flex align-items-center gap-10 justify-content-center">
                                 <a href="{{ route('orderDetails', $order->id) }}" class="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle" title="View Details">
                                     <iconify-icon icon="majesticons:eye-line" class="icon text-xl"></iconify-icon>
+                                </a>
+                                <a href="{{ route('orderEdit', $order->id) }}" class="bg-primary-focus bg-hover-primary-200 text-primary-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle" title="Update Order">
+                                    <iconify-icon icon="majesticons:pencil-line" class="icon text-xl"></iconify-icon>
                                 </a>
                             </div>
                         </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="8" class="text-center py-4">
+                        <td colspan="15" class="text-center py-4">
                             <div class="d-flex flex-column align-items-center justify-content-center py-5">
                                 <iconify-icon icon="mdi:store-outline" class="icon text-6xl text-neutral-400 mb-3"></iconify-icon>
                                 <h5 class="text-neutral-500 mb-2">No Self Pickups Found</h5>
@@ -181,8 +200,7 @@
                         <h6 class="text-lg text-warning-600 mb-4">Pending Pickups</h6>
                         <h4 class="text-2xl fw-bold text-warning-600 mb-0">
                             {{ $selfPickups->filter(function($order) { 
-                                $pickupDate = $order->pickup_date ?: $order->delivery_date;
-                                return !$pickupDate || $pickupDate > now(); 
+                                return $order->isPendingPickup();
                             })->count() }}
                         </h4>
                     </div>
@@ -195,8 +213,7 @@
                         <h6 class="text-lg text-primary-600 mb-4">Completed Pickups</h6>
                         <h4 class="text-2xl fw-bold text-primary-600 mb-0">
                             {{ $selfPickups->filter(function($order) { 
-                                $pickupDate = $order->pickup_date ?: $order->delivery_date;
-                                return $pickupDate && $pickupDate <= now(); 
+                                return $order->isPickupCompleted(); 
                             })->count() }}
                         </h4>
                     </div>

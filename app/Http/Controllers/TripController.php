@@ -11,7 +11,18 @@ class TripController extends Controller
 {
     public function trips(Request $request)
     {
-        $query = Trip::with(['tripStatus', 'driver', 'truck', 'tripDetails']);
+        // Option 1: Optimize using proper eager loading with all needed relationships
+        $query = Trip::with([
+            'creator',
+            'job.order.customer',
+            'job.order.product',
+            'job.order.wheel',
+            'job.order.transportation_amount',
+            'job.order.oldest.site',
+            'job.order.latest.site',
+            'latest.assignment.driver.user',
+            'latest.assignment.truck.transporter'
+        ]);
         
         // Handle search
         if ($request->has('search') && !empty($request->search)) {
@@ -30,10 +41,7 @@ class TripController extends Controller
 
         // Handle status filter
         if ($request->has('status') && $request->status !== 'All Status') {
-            $query->whereHas('tripStatus', function($q) use ($request) {
-                // TripStatus stores the status value in 'status'
-                $q->where('status', $request->status);
-            });
+            $query->where('status', $request->status);
         }
         
         // Handle created_at date range filter

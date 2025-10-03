@@ -20,548 +20,213 @@
                     <li>
                         <a href="{{ route('index') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> AI</a>
                     </li>
-                    <!-- <li>
-                    <a href="{{ route('index2') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> CRM</a>
-                    </li>
                     <li>
-                    <a href="{{ route('index3') }}"><i class="ri-circle-fill circle-icon text-info-main w-auto"></i> eCommerce</a>
-                    </li>
-                    <li>
-                    <a href="{{ route('index4') }}"><i class="ri-circle-fill circle-icon text-danger-main w-auto"></i> Cryptocurrency</a>
-                    </li>
-                    <li>
-                    <a href="{{ route('index5') }}"><i class="ri-circle-fill circle-icon text-success-main w-auto"></i> Investment</a>
-                    </li>
-                    <li>
-                    <a href="{{ route('index6') }}"><i class="ri-circle-fill circle-icon text-purple w-auto"></i> LMS</a>
-                    </li>
-                    <li>
-                    <a href="{{ route('index7') }}"><i class="ri-circle-fill circle-icon text-info-main w-auto"></i> NFT & Gaming</a>
-                    </li>
-                    <li>
-                    <a href="{{ route('index8') }}"><i class="ri-circle-fill circle-icon text-danger-main w-auto"></i> Medical</a>
-                    </li>
-                    <li>
-                    <a href="{{ route('index9') }}"><i class="ri-circle-fill circle-icon text-purple w-auto"></i> Analytics</a>
-                    </li>
-                    <li> -->
-                    <a href="{{ route('dashboardAnalyst') }}"><i class="ri-circle-fill circle-icon text-success-main w-auto"></i> Analyst</a>
-                    </li>
-                    <!-- <li>
-                    <a href="{{ route('index10') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> POS & Inventory </a>
-                    </li> -->
-                </ul>
-            </li>
-            <!-- <li class="sidebar-menu-group-title">Application</li>
-            <li>
-                  <a href="{{ route('email') }}">
-                    <iconify-icon icon="mage:email" class="menu-icon"></iconify-icon>
-                    <span>Email</span>
-                </a>
-            </li>
-            <li>
-                <a href="{{ route('chatMessage') }}">
-                    <iconify-icon icon="bi:chat-dots" class="menu-icon"></iconify-icon>
-                    <span>Chat</span>
-                </a>
-            </li>
-            <li>
-                <a href="{{ route('calendar') }}">
-                    <iconify-icon icon="solar:calendar-outline" class="menu-icon"></iconify-icon>
-                    <span>Calendar</span>
-                </a>
-            </li>
-            <li>
-                <a href="{{ route('kanban') }}">
-                    <iconify-icon icon="material-symbols:map-outline" class="menu-icon"></iconify-icon>
-                    <span>Kanban</span>
-                </a>
-            </li>
-            <li class="dropdown">
-                <a  href="javascript:void(0)">
-                    <iconify-icon icon="hugeicons:invoice-03" class="menu-icon"></iconify-icon>
-                    <span>Invoice</span>
-                </a>
-                <ul class="sidebar-submenu">
-                    <li>
-                    <a href="{{ route('invoiceList') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> List</a>
-                    </li>
-                    <li>
-                    <a href="{{ route('invoicePreview') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Preview</a>
-                    </li>
-                    <li>
-                    <a href="{{ route('invoiceAdd') }}"><i class="ri-circle-fill circle-icon text-info-main w-auto"></i> Add new</a>
-                    </li>
-                    <li>
-                    <a href="{{ route('invoiceEdit') }}"><i class="ri-circle-fill circle-icon text-danger-main w-auto"></i> Edit</a>
+                        <a href="{{ route('dashboardAnalyst') }}"><i class="ri-circle-fill circle-icon text-success-main w-auto"></i> Analyst</a>
                     </li>
                 </ul>
             </li>
-            
-            
-            <li class="dropdown">
-                <a  href="javascript:void(0)">
-                    <i class="ri-robot-2-line text-xl me-6 d-flex w-auto"></i>
-                    <span>Ai Application</span>
-                </a>
-                <ul class="sidebar-submenu">
-                    <li>
-                        <a href="{{ route('textGenerator') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Text Generator</a>
-                    </li>
-                    <li>
-                        <a href="{{ route('codeGenerator') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Code Generator</a>
-                    </li>
-                    <li>
-                        <a href="{{ route('imageGenerator') }}"><i class="ri-circle-fill circle-icon text-info-main w-auto"></i> Image Generator</a>
-                    </li>
-                    <li>
-                        <a href="{{ route('voiceGenerator') }}"><i class="ri-circle-fill circle-icon text-danger-main w-auto"></i> Voice Generator</a>
-                    </li>
-                    <li>
-                        <a href="{{ route('videoGenerator') }}"><i class="ri-circle-fill circle-icon text-success-main w-auto"></i> Video Generator</a>
-                    </li>
-                </ul>
-            </li>
-
-            <li class="dropdown">
-                <a  href="javascript:void(0)">
-                    <i class="ri-btc-line text-xl me-6 d-flex w-auto"></i>
-                    <span>Crypto Currency</span>
-                </a>
-                <ul class="sidebar-submenu">
-                    <li>
-                        <a href="{{ route('wallet') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Wallet</a>
-                    </li>
-                    <li>
-                        <a href="{{ route('marketplace') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Marketplace</a>
-                    </li>
-                    <li>
-                        <a href="{{ route('marketplaceDetails') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Marketplace Details</a>
-                    </li>
-                    <li>
-                    <a  href="{{ route('portfolio') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Portfolios</a>
-                    </li>
-                </ul>
-            </li>
-
-            <li class="sidebar-menu-group-title">UI Elements</li>
-
-            <li class="dropdown">
-                <a  href="javascript:void(0)">
-                    <iconify-icon icon="solar:document-text-outline" class="menu-icon"></iconify-icon>
-                    <span>Components</span>
-                </a>
-                <ul class="sidebar-submenu">
-                    <li>
-                        <a  href="{{ route('typography') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Typography</a>
-                    </li>
-                    <li>
-                        <a  href="{{ route('colors') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Colors</a>
-                    </li>
-                    <li>
-                        <a  href="{{ route('button') }}"><i class="ri-circle-fill circle-icon text-success-main w-auto"></i> Button</a>
-                    </li>
-                    <li>
-                         <a  href="{{ route('dropdown') }}"><i class="ri-circle-fill circle-icon text-lilac-600 w-auto"></i> Dropdown</a>
-                    </li>
-                    <li>
-                        <a  href="{{ route('alert') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Alerts</a>
-                    </li>
-                    <li>
-                       <a  href="{{ route('card') }}"><i class="ri-circle-fill circle-icon text-danger-main w-auto"></i> Card</a>
-                    </li>
-                    <li>
-                        <a  href="{{ route('carousel') }}"><i class="ri-circle-fill circle-icon text-info-main w-auto"></i> Carousel</a>
-                    </li>
-                    <li>
-                        <a  href="{{ route('avatar') }}"><i class="ri-circle-fill circle-icon text-success-main w-auto"></i> Avatars</a>
-                    </li>
-                    <li>
-                        <a  href="{{ route('progress') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Progress bar</a>
-                    </li>
-                    <li>
-                        <a  href="{{ route('tabs') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Tab & Accordion</a>
-                    </li>
-                    <li>
-                        <a  href="{{ route('pagination') }}"><i class="ri-circle-fill circle-icon text-danger-main w-auto"></i> Pagination</a>
-                    </li>
-                    <li>
-                        <a  href="{{ route('badges') }}"><i class="ri-circle-fill circle-icon text-info-main w-auto"></i> Badges</a>
-                    </li>
-                    <li>
-                        <a  href="{{ route('tooltip') }}"><i class="ri-circle-fill circle-icon text-lilac-600 w-auto"></i> Tooltip & Popover</a>
-                    </li>
-                    <li>
-                        <a  href="{{ route('videos') }}"><i class="ri-circle-fill circle-icon text-cyan w-auto"></i> Videos</a>
-                    </li>
-                    <li>
-                        <a  href="{{ route('starRating') }}"><i class="ri-circle-fill circle-icon text-indigo w-auto"></i> Star Ratings</a>
-                    </li>
-                    <li>
-                        <a  href="{{ route('tags') }}"><i class="ri-circle-fill circle-icon text-purple w-auto"></i> Tags</a>
-                    </li>
-                    <li>
-                        <a  href="{{ route('list') }}"><i class="ri-circle-fill circle-icon text-red w-auto"></i> List</a>
-                    </li>
-                    <li>
-                        <a  href="{{ route('calendar') }}"><i class="ri-circle-fill circle-icon text-yellow w-auto"></i> Calendar</a>
-                    </li>
-                    <li>
-                        <a  href="{{ route('radio') }}"><i class="ri-circle-fill circle-icon text-orange w-auto"></i> Radio</a>
-                    </li>
-                    <li>
-                        <a  href="{{ route('switch') }}"><i class="ri-circle-fill circle-icon text-pink w-auto"></i> Switch</a>
-                    </li>
-                    <li>
-                        <a  href="{{ route('imageUpload') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Upload</a>
-                    </li>
-                </ul>
-            </li>
-            <li class="dropdown">
-                <a  href="javascript:void(0)">
-                    <iconify-icon icon="heroicons:document" class="menu-icon"></iconify-icon>
-                    <span>Forms</span>
-                </a>
-                <ul class="sidebar-submenu">
-                    <li>
-                        <a  href="{{ route('form') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Input Forms</a>
-                    </li>
-                    <li>
-                        <a  href="{{ route('formLayout') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Input Layout</a>
-                    </li>
-                    <li>
-                        <a  href="{{ route('formValidation') }}"><i class="ri-circle-fill circle-icon text-success-main w-auto"></i> Form Validation</a>
-                    </li>
-                    <li>
-                        <a  href="{{ route('wizard') }}"><i class="ri-circle-fill circle-icon text-danger-main w-auto"></i> Form Wizard</a>
-                    </li>
-                </ul>
-            </li>
-            <li class="dropdown">
-                <a  href="javascript:void(0)">
-                    <iconify-icon icon="mingcute:storage-line" class="menu-icon"></iconify-icon>
-                    <span>Table</span>
-                </a>
-                <ul class="sidebar-submenu">
-                    <li>
-                        <a  href="{{ route('tableBasic') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Basic Table</a>
-                    </li>
-                    <li>
-                        <a  href="{{ route('tableData') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Data Table</a>
-                    </li>
-                </ul>
-            </li>
-            <li class="dropdown">
-                <a  href="javascript:void(0)">
-                    <iconify-icon icon="solar:pie-chart-outline" class="menu-icon"></iconify-icon>
-                    <span>Chart</span>
-                </a>
-                <ul class="sidebar-submenu">
-                    <li>
-                        <a  href="{{ route('lineChart') }}"><i class="ri-circle-fill circle-icon text-danger-main w-auto"></i> Line Chart</a>
-                    </li>
-                    <li>
-                        <a  href="{{ route('columnChart') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Column Chart</a>
-                    </li>
-                    <li>
-                        <a  href="{{ route('pieChart') }}"><i class="ri-circle-fill circle-icon text-success-main w-auto"></i> Pie Chart</a>
-                    </li>
-                </ul>
-            </li>
-            <li>
-                <a  href="{{ route('widgets') }}">
-                    <iconify-icon icon="fe:vector" class="menu-icon"></iconify-icon>
-                    <span>Widgets</span>
-                </a>
-            </li> -->
-            <li class="dropdown">
-                <a  href="javascript:void(0)">
-                    <iconify-icon icon="flowbite:users-group-outline" class="menu-icon"></iconify-icon>
-                    <span>Users</span>
-                </a>
-                <ul class="sidebar-submenu">
-                    <li>
-                        <a  href="{{ route('usersList') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Users List</a>
-                    </li>
-                    <li>
-                        <a  href="{{ route('usersGrid') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Users Grid</a>
-                    </li>
-                    <li>
-                        <a  href="{{ route('addUser') }}"><i class="ri-circle-fill circle-icon text-info-main w-auto"></i> Add User</a>
-                    </li>
-                    <li>
-                        <a  href="{{ route('viewProfile') }}"><i class="ri-circle-fill circle-icon text-danger-main w-auto"></i> View Profile</a>
-                    </li>
-                </ul>
-            </li>
-
-            <!-- Accounts navigation -->
-            <li class="dropdown">
-                <a href="javascript:void(0)">
-                    <iconify-icon icon="material-symbols:account-balance-wallet-outline" class="menu-icon"></iconify-icon>
+            <li class="sidebar-menu-group-title">Sales</li>
+             <li>
+                <a href="{{ route('accounts.index') }}">
+                    <iconify-icon icon="mdi:account-cash" class="menu-icon"></iconify-icon>
                     <span>Accounts</span>
                 </a>
-                <ul class="sidebar-submenu">
-                    <li>
-                        <a href="{{ route('accounts.index') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Accounts List</a>
-                    </li>
-                    <li>
-                        <a href="{{ route('accounts.create') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Create Account</a>
-                    </li>
-                </ul>
             </li>
-
-            <!-- Customer Accounts navigation -->
-            <li class="dropdown">
-                <a href="javascript:void(0)">
-                    <iconify-icon icon="material-symbols:account-balance-outline" class="menu-icon"></iconify-icon>
+            <li>
+                <a href="{{ route('payments.index') }}">
+                    <iconify-icon icon="mdi:credit-card-outline" class="menu-icon"></iconify-icon>
+                    <span>Payments</span>
+                </a>
+            </li>
+            <li class="sidebar-menu-group-title">Transporter</li>
+            <li>
+                <a href="{{ route('assignments.index') }}">
+                    <iconify-icon icon="mdi:clipboard-account-outline" class="menu-icon"></iconify-icon>
+                    <span>Assignments</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('drivers.index') }}">
+                    <iconify-icon icon="mdi:account-hard-hat" class="menu-icon"></iconify-icon>
+                    <span>Drivers</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('trucks.index') }}">
+                    <iconify-icon icon="mdi:truck" class="menu-icon"></iconify-icon>
+                    <span>Trucks</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('wheels.index') }}">
+                    <iconify-icon icon="mdi:tire" class="menu-icon"></iconify-icon>
+                    <span>Wheels</span>
+                </a>
+            </li>
+            <li class="sidebar-menu-group-title">Coins</li>
+            <li>
+                <a href="{{ route('coins.index') }}">
+                    <iconify-icon icon="mdi:coin" class="menu-icon"></iconify-icon>
+                    <span>Coins</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('coin-promotions.index') }}">
+                    <iconify-icon icon="mdi:tag-multiple" class="menu-icon"></iconify-icon>
+                    <span>Coin Promotions</span>
+                </a>
+            </li>
+            <li class="sidebar-menu-group-title">Customer</li>
+            <li>
+                <a href="{{ route('customer-accounts.index') }}">
+                    <iconify-icon icon="mdi:account-multiple" class="menu-icon"></iconify-icon>
                     <span>Customer Accounts</span>
                 </a>
-                <ul class="sidebar-submenu">
-                    <li>
-                        <a href="{{ route('customer-accounts.index') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Customer Accounts List</a>
-                    </li>
-                    <li>
-                        <a href="{{ route('customer-accounts.create') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Create Customer Account</a>
-                    </li>
-                </ul>
             </li>
-
-            <!-- Reloads navigation -->
+            <li>
+                <a href="{{ route('blog') }}">
+                    <iconify-icon icon="mdi:message-text" class="menu-icon"></iconify-icon>
+                    <span>Feedback</span>
+                </a>
+            </li>
             <li>
                 <a href="{{ route('reloads.index') }}">
                     <iconify-icon icon="material-symbols:payments-outline" class="menu-icon"></iconify-icon>
                     <span>Reloads</span>
                 </a>
             </li>
-
-            <!-- Withdrawals navigation -->
+            <li>
+                <a href="{{ route('testimonials') }}">
+                    <iconify-icon icon="mdi:star-outline" class="menu-icon"></iconify-icon>
+                    <span>Reviews</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('blog') }}">
+                    <iconify-icon icon="ic:baseline-whatsapp" class="menu-icon"></iconify-icon>
+                    <span>Whatsapps</span>
+                </a>
+            </li>
             <li>
                 <a href="{{ route('withdrawals.index') }}">
                     <iconify-icon icon="material-symbols:payments" class="menu-icon"></iconify-icon>
                     <span>Withdrawals</span>
                 </a>
             </li>
-
-            <!-- Coins navigation -->
-            <li class="dropdown">
-                <a href="javascript:void(0)">
-                    <iconify-icon icon="ph:coins" class="menu-icon"></iconify-icon>
-                    <span>Coins</span>
+            
+            <li class="sidebar-menu-group-title">User</li>
+            <li>
+                <a href="{{ route('usersList') }}">
+                    <iconify-icon icon="mdi:account-tie" class="menu-icon"></iconify-icon>
+                    <span>Employees</span>
                 </a>
-                <ul class="sidebar-submenu">
-                    <li>
-                        <a href="{{ route('coins.index') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Coins List</a>
-                    </li>
-                    <li>
-                        <a href="{{ route('coins.create') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Create Coin</a>
-                    </li>
-                </ul>
+            </li>
+            <li>
+                <a href="{{ route('roleAaccess') }}">
+                    <iconify-icon icon="material-symbols:lock-outline" class="menu-icon"></iconify-icon>
+                    <span>Permissions</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('assignRole') }}">
+                    <iconify-icon icon="mdi:shield-account-outline" class="menu-icon"></iconify-icon>
+                    <span>Roles</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('usersList') }}">
+                    <iconify-icon icon="flowbite:users-outline" class="menu-icon"></iconify-icon>
+                    <span>Users</span>
+                </a>
             </li>
             
-            <!-- Coin Promotions navigation -->
-            <li class="dropdown">
-                <a href="javascript:void(0)">
-                    <iconify-icon icon="mdi:cash-coin" class="menu-icon"></iconify-icon>
-                    <span>Coin Promotions</span>
-                </a>
-                <ul class="sidebar-submenu">
-                    <li>
-                        <a href="{{ route('coin-promotions.index') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Promotions List</a>
-                    </li>
-                    <li>
-                        <a href="{{ route('coin-promotions.create') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Create Promotion</a>
-                    </li>
-                </ul>
-            </li>
-
-            <!-- Assignments navigation -->
-            <li class="dropdown">
-                <a href="javascript:void(0)">
-                    <iconify-icon icon="mdi:truck-check" class="menu-icon"></iconify-icon>
-                    <span>Assignments</span>
-                </a>
-                <ul class="sidebar-submenu">
-                    <li>
-                        <a href="{{ route('assignments.index') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Assignments List</a>
-                    </li>
-                    <li>
-                        <a href="{{ route('assignments.create') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Create Assignment</a>
-                    </li>
-                </ul>
-            </li>
-            
-            <!-- Trucks navigation -->
-            <li class="dropdown">
-                <a href="javascript:void(0)">
-                    <iconify-icon icon="mdi:truck" class="menu-icon"></iconify-icon>
-                    <span>Trucks</span>
-                </a>
-                <ul class="sidebar-submenu">
-                    <li>
-                        <a href="{{ route('trucks.index') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Trucks List</a>
-                    </li>
-                    <li>
-                        <a href="{{ route('trucks.create') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Create Truck</a>
-                    </li>
-                </ul>
-            </li>
-            
-            <!-- Wheels navigation -->
-            <li class="dropdown">
-                <a href="javascript:void(0)">
-                    <iconify-icon icon="mdi:wheel" class="menu-icon"></iconify-icon>
-                    <span>Wheels</span>
-                </a>
-                <ul class="sidebar-submenu">
-                    <li>
-                        <a href="{{ route('wheels.index') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Wheels List</a>
-                    </li>
-                    <li>
-                        <a href="{{ route('wheels.create') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Create Wheel</a>
-                    </li>
-                </ul>
-            </li>
-            
-            <!-- Payments navigation -->
-            <li class="dropdown">
-                <a href="javascript:void(0)">
-                    <iconify-icon icon="mdi:cash-multiple" class="menu-icon"></iconify-icon>
-                    <span>Payments</span>
-                </a>
-                <ul class="sidebar-submenu">
-                    <li>
-                        <a href="{{ route('payments.index') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Payments List</a>
-                    </li>
-                    <li>
-                        <a href="{{ route('payments.create') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Create Payment</a>
-                    </li>
-                </ul>
-            </li>
-            
-            <!-- Drivers navigation -->
-            <li class="dropdown">
-                <a href="javascript:void(0)">
-                    <iconify-icon icon="heroicons:truck-solid" class="menu-icon"></iconify-icon>
-                    <span>Drivers</span>
-                </a>
-                <ul class="sidebar-submenu">
-                    <li>
-                        <a href="{{ route('drivers.index') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Drivers List</a>
-                    </li>
-                    <li>
-                        <a href="{{ route('drivers.create') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Add Driver</a>
-                    </li>
-                </ul>
-            </li>
-
-            <!-- Orders navigation - list style like Users -->
-            <li class="dropdown">
-                <a href="javascript:void(0)">
-                    <iconify-icon icon="mdi:cart-outline" class="menu-icon"></iconify-icon>
-                    <span>Orders</span>
-                </a>
-                <ul class="sidebar-submenu">
-                    <li>
-                        <a href="{{ route('ordersList') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Orders List</a>
-                    </li>
-                    <li>
-                        <a href="{{ route('freeDeliveries') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Free Deliveries</a>
-                    </li>
-                    <li>
-                        <a href="{{ route('selfPickups') }}"><i class="ri-circle-fill circle-icon text-info-main w-auto"></i> Self Pickups</a>
-                    </li>
-                    <li>
-                        <a href="{{ route('orderStatuses') }}"><i class="ri-circle-fill circle-icon text-danger-main w-auto"></i> Order Statuses</a>
-                    </li>
-                </ul>
-            </li>
-
-            <!-- Jobs navigation - list style like Users -->
-            <li class="dropdown">
-                <a href="javascript:void(0)">
-                    <iconify-icon icon="mdi:briefcase-outline" class="menu-icon"></iconify-icon>
+            <li class="sidebar-menu-group-title">Order</li>
+            <li>
+                <a href="{{ route('jobsList') }}">
+                    <iconify-icon icon="mdi:clipboard-text-outline" class="menu-icon"></iconify-icon>
                     <span>Jobs</span>
                 </a>
-                <ul class="sidebar-submenu">
-                    <li>
-                        <a href="{{ route('jobsList') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Jobs List</a>
-                    </li>
-                    <li>
-                        <a href="{{ route('jobStatuses') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Job Statuses</a>
-                    </li>
-                </ul>
             </li>
-
-            <!-- Trips navigation - list style like Users -->
-            <li class="dropdown">
-                <a href="javascript:void(0)">
-                    <iconify-icon icon="material-symbols:local-shipping" class="menu-icon"></iconify-icon>
+            <li>
+                <a href="{{ route('jobStatuses') }}">
+                    <iconify-icon icon="mdi:clipboard-check-outline" class="menu-icon"></iconify-icon>
+                    <span>Job Statuses</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('freeDeliveries') }}">
+                    <iconify-icon icon="mdi:truck-fast-outline" class="menu-icon"></iconify-icon>
+                    <span>Free Deliveries</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('orderStatuses') }}">
+                    <iconify-icon icon="mdi:package-variant-closed" class="menu-icon"></iconify-icon>
+                    <span>Order Statuses</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('selfPickups') }}">
+                    <iconify-icon icon="mdi:hand-extended-outline" class="menu-icon"></iconify-icon>
+                    <span>Self-Pickups</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('tripsList') }}">
+                    <iconify-icon icon="mdi:map-marker-path" class="menu-icon"></iconify-icon>
                     <span>Trips</span>
                 </a>
-                <ul class="sidebar-submenu">
-                    <li>
-                        <a href="{{ route('tripsList') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Trips List</a>
-                    </li>
-                    <li>
-                        <a href="{{ route('tripStatuses') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Trip Statuses</a>
-                    </li>
-                </ul>
             </li>
-            <!-- Quarry Operations navigation -->
-            <li class="dropdown">
-                <a  href="javascript:void(0)">
-                    <i class="ri-landscape-line text-xl me-6 d-flex w-auto"></i>
-                    <span>Quarry Operations</span>
+            <li>
+                <a href="{{ route('tripStatuses') }}">
+                    <iconify-icon icon="mdi:map-marker-check" class="menu-icon"></iconify-icon>
+                    <span>Trip Statuses</span>
                 </a>
-                <ul class="sidebar-submenu">
-                    <li>
-                        <a href="{{ route('business.prices') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Prices</a>
-                    </li>
-                    <li>
-                        <a href="{{ route('business.zones') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Zones</a>
-                    </li>
-                    <li>
-                        <a href="{{ route('sites.index') }}"><i class="ri-circle-fill circle-icon text-success-main w-auto"></i> Quarries</a>
-                    </li>
-                </ul>
             </li>
-            <!-- Products navigation - list style like Users -->
-            <li class="dropdown">
-                <a href="javascript:void(0)">
-                    <iconify-icon icon="mdi:cube-outline" class="menu-icon"></iconify-icon>
+            
+            <li class="sidebar-menu-group-title">Price</li>
+            <li>
+                <a href="{{ route('business.prices') }}">
+                    <iconify-icon icon="mdi:cash" class="menu-icon"></iconify-icon>
+                    <span>Prices</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('business.zones') }}">
+                    <iconify-icon icon="mdi:map" class="menu-icon"></iconify-icon>
+                    <span>Zones</span>
+                </a>
+            </li>
+            
+            <li class="sidebar-menu-group-title">Products</li>
+            <li>
+                <a href="{{ route('products.index') }}">
+                    <iconify-icon icon="mdi:package-variant" class="menu-icon"></iconify-icon>
                     <span>Products</span>
                 </a>
-                <ul class="sidebar-submenu">
-                    <li>
-                        <a href="{{ route('products.index') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Products List</a>
-                    </li>
-                    <li>
-                        <a href="{{ route('products.create') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Add Product</a>
-                    </li>
-                </ul>
             </li>
-
+            <li>
+                <a href="{{ route('sites.index') }}">
+                    <iconify-icon icon="mdi:bulldozer" class="menu-icon"></iconify-icon>
+                    <span>Quarries</span>
+                </a>
+            </li>
+            <!-- <li class="sidebar-menu-group-title">Application</li>
+            <li>
+                <a  href="{{ route('gallery') }}">
+                    <iconify-icon icon="solar:gallery-bold-duotone" class="menu-icon"></iconify-icon>
+                    <span>Gallery</span>
+                </a>
+            </li>
+            <li>
+                <a  href="{{ route('pricing') }}">
+                    <iconify-icon icon="solar:tag-price-bold-duotone" class="menu-icon"></iconify-icon>
+                    <span>Pricing</span>
+                </a>
+            </li>
             <li class="dropdown">
                 <a  href="javascript:void(0)">
-                    <i class="ri-user-settings-line text-xl me-6 d-flex w-auto"></i>
-                    <span>Role & Access</span>
-                </a>
-                <ul class="sidebar-submenu">
-                    <li>
-                        <a  href="{{ route('roleAaccess') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Role & Access</a>
-                    </li>
-                    <li>
-                        <a  href="{{ route('assignRole') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Assign Role</a>
-                    </li>
-                </ul>
-            </li>
-
-            <li class="sidebar-menu-group-title">Application</li>
-
-            <!-- <li class="dropdown">
-                <a  href="javascript:void(0)">
-                    <iconify-icon icon="simple-line-icons:vector" class="menu-icon"></iconify-icon>
+                    <iconify-icon icon="solar:shield-user-outline" class="menu-icon"></iconify-icon>
                     <span>Authentication</span>
                 </a>
                 <ul class="sidebar-submenu">
@@ -571,111 +236,85 @@
                     <li>
                         <a  href="{{ route('signup') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Sign Up</a>
                     </li>
-                    <li>
-                        <a  href="{{ route('forgotPassword') }}"><i class="ri-circle-fill circle-icon text-info-main w-auto"></i> Forgot Password</a>
-                    </li>
-                </ul>
-            </li> -->
-            <li>
-                <a  href="{{ route('gallery') }}">
-                    <iconify-icon icon="solar:gallery-wide-linear" class="menu-icon"></iconify-icon>
-                    <span>Gallery</span>
-                </a>
-            </li>
-            <li>
-                <a  href="{{ route('pricing') }}">
-                    <iconify-icon icon="hugeicons:money-send-square" class="menu-icon"></iconify-icon>
-                    <span>Pricing</span>
-                </a>
-            </li>
-            <li class="dropdown">
-                <a  href="javascript:void(0)">
-                    <i class="ri-news-line text-xl me-6 d-flex w-auto"></i>
-                    <span>Blog</span>
-                </a>
-                <ul class="sidebar-submenu">
-                    <li>
-                        <a  href="{{ route('blog') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Blog</a>
-                    </li>
-                    <li>
-                        <a  href="{{ route('blogDetails') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Blog Details</a>
-                    </li>
-                    <li>
-                        <a  href="{{ route('addBlog') }}"><i class="ri-circle-fill circle-icon text-info-main w-auto"></i> Add Blog</a>
-                    </li>
+                   
+                   
                 </ul>
             </li>
             <li>
                 <a  href="{{ route('testimonials') }}">
-                    <i class="ri-star-line text-xl me-6 d-flex w-auto"></i>
-                    <span>Testimonial</span>
+                    <iconify-icon icon="solar:like-bold-duotone" class="menu-icon"></iconify-icon>
+                    <span>Testimonials</span>
                 </a>
             </li>
             <li>
                 <a  href="{{ route('faq') }}">
-                    <iconify-icon icon="mage:message-question-mark-round" class="menu-icon"></iconify-icon>
-                    <span>FAQs</span>
+                    <iconify-icon icon="solar:question-circle-bold-duotone" class="menu-icon"></iconify-icon>
+                    <span>FAQ</span>
                 </a>
             </li>
             <li>
                 <a  href="{{ route('error') }}">
-                    <iconify-icon icon="streamline:straight-face" class="menu-icon"></iconify-icon>
+                    <iconify-icon icon="solar:shield-warning-bold-duotone" class="menu-icon"></iconify-icon>
                     <span>404</span>
                 </a>
             </li>
             <li>
                 <a  href="{{ route('termsCondition') }}">
-                    <iconify-icon icon="octicon:info-24" class="menu-icon"></iconify-icon>
-                    <span>Terms & Conditions</span>
+                    <iconify-icon icon="solar:file-check-bold-duotone" class="menu-icon"></iconify-icon>
+                    <span>Terms & Condition</span>
                 </a>
             </li>
             <li>
                 <a  href="{{ route('comingSoon') }}">
-                    <i class="ri-rocket-line text-xl me-6 d-flex w-auto"></i>
+                    <iconify-icon icon="solar:bell-bold-duotone" class="menu-icon"></iconify-icon>
                     <span>Coming Soon</span>
                 </a>
             </li>
             <li>
                 <a  href="{{ route('maintenance') }}">
-                    <i class="ri-hammer-line text-xl me-6 d-flex w-auto"></i>
-                    <span>Maintenance</span>
+                    <iconify-icon icon="solar:wrench-bold-duotone" class="menu-icon"></iconify-icon>
+                    <span>Under Maintenance</span>
                 </a>
             </li>
             <li>
                 <a  href="{{ route('blankPage') }}">
-                    <i class="ri-checkbox-multiple-blank-line text-xl me-6 d-flex w-auto"></i>
+                    <iconify-icon icon="solar:file-bold-duotone" class="menu-icon"></iconify-icon>
                     <span>Blank Page</span>
                 </a>
             </li>
             <li class="dropdown">
                 <a  href="javascript:void(0)">
-                    <iconify-icon icon="icon-park-outline:setting-two" class="menu-icon"></iconify-icon>
-                    <span>Settings</span>
+                    <iconify-icon icon="solar:share-outline" class="menu-icon"></iconify-icon>
+                    <span>Multi Level</span>
                 </a>
                 <ul class="sidebar-submenu">
                     <li>
-                        <a  href="{{ route('company') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Company</a>
+                        <a  href="javascript:void(0)"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Level 1.1</a>
                     </li>
                     <li>
-                        <a  href="{{ route('notification') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Notification</a>
+                        <a  href="javascript:void(0)"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Level 1.2</a>
                     </li>
-                    <li>
-                        <a  href="{{ route('notificationAlert') }}"><i class="ri-circle-fill circle-icon text-info-main w-auto"></i> Notification Alert</a>
-                    </li>
-                    <li>
-                        <a  href="{{ route('theme') }}"><i class="ri-circle-fill circle-icon text-danger-main w-auto"></i> Theme</a>
-                    </li>
-                    <li>
-                        <a  href="{{ route('currencies') }}"><i class="ri-circle-fill circle-icon text-danger-main w-auto"></i> Currencies</a>
-                    </li>
-                    <li>
-                        <a  href="{{ route('language') }}"><i class="ri-circle-fill circle-icon text-danger-main w-auto"></i> Languages</a>
-                    </li>
-                    <li>
-                        <a  href="{{ route('paymentGateway') }}"><i class="ri-circle-fill circle-icon text-danger-main w-auto"></i> Payment Gateway</a>
+                    <li class="sub-menu">
+                        <a  href="javascript:void(0)"><i class="ri-circle-fill circle-icon text-info-main w-auto"></i> Level 1.3</a>
+                        <ul class="sidebar-submenu">
+                            <li>
+                                <a href="javascript:void(0)"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Level 2.1</a>
+                            </li>
+                            <li class="sub-menu">
+                                <a href="javascript:void(0)"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Level 2.2</a>
+                                <ul class="sidebar-submenu">
+                                    <li>
+                                        <a href="javascript:void(0)"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Level 3.1</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:void(0)"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Level 3.2</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
                     </li>
                 </ul>
             </li>
-        </ul>
+        </ul> -->
     </div>
 </aside>

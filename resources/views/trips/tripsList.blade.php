@@ -273,33 +273,51 @@
                                         @endif
                                     </td>
                                     <td>
-                                        @if($trip->job && $trip->job->order && $trip->job->order->transportation_amount)
-                                            MYR {{ number_format($trip->job->order->transportation_amount->amount/100, 2) }}
+                                        @php 
+                                            $transport = $trip->job && $trip->job->order ? $trip->job->order->transportation_amount : null;
+                                            $feeAmount = 0;
+                                            
+                                            // Check if transport amount exists
+                                            if (!is_null($transport) && isset($transport->amount)) {
+                                                // Check if we can calculate per tonne (all required data is available)
+                                                $oldest = $trip->job->order->oldest ?? null;
+                                                if ($oldest && isset($oldest->total_kg) && $oldest->total_kg > 0) {
+                                                    // Convert kg to tonnes and calculate fee per tonne
+                                                    $tonnes = $oldest->total_kg / 1000;
+                                                    $feeAmount = $transport->amount / $tonnes;
+                                                } else {
+                                                    // If total_kg is not available, use the full amount
+                                                    $feeAmount = $transport->amount;
+                                                }
+                                                
+                                                // Convert cents to MYR
+                                                $feeAmount = $feeAmount / 100;
+                                            }
+                                        @endphp
+                                        {{ 'MYR ' . number_format($feeAmount, 2) }}
+                                    </td>
+                                    <td>
+                                        @if($transport && 
+                                            optional($transport->order_amountable)->route &&
+                                            optional($transport->order_amountable->route)->distance_text)
+                                            {{ $transport->order_amountable->route->distance_text }}
+                                        @elseif($trip->distance_km)
+                                            {{ number_format($trip->distance_km, 1) . ' km' }}
                                         @else
                                             N/A
                                         @endif
                                     </td>
                                     <td>
-                                        @php
-                                            $distance = null;
-                                            if ($trip->job && $trip->job->order && $trip->job->order->unit == 'Load') {
-                                                if ($trip->distance_km) {
-                                                    $distance = number_format($trip->distance_km, 1) . ' km';
-                                                }
-                                            }
-                                        @endphp
-                                        {{ $distance ?? 'N/A' }}
-                                    </td>
-                                    <td>
-                                        @php
-                                            $duration = null;
-                                            if ($trip->job && $trip->job->order && $trip->job->order->unit == 'Load') {
-                                                if ($trip->duration_minutes) {
-                                                    $duration = $trip->duration_minutes . ' mins';
-                                                }
-                                            }
-                                        @endphp
-                                        {{ $duration ?? 'N/A' }}
+                                        @if($transport && 
+                                            optional($transport->order_amountable)->route)
+                                            {{ optional($transport->order_amountable->route)->traffic_text ?? 
+                                               optional($transport->order_amountable->route)->duration_text ?? 
+                                               'N/A' }}
+                                        @elseif($trip->duration_minutes)
+                                            {{ $trip->duration_minutes . ' mins' }}
+                                        @else
+                                            N/A
+                                        @endif
                                     </td>
                                     <td>{{ $trip->created_at ? $trip->created_at->format('M d, Y H:i:s') : 'N/A' }}</td>
                                     <td>
