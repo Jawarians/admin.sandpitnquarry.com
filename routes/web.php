@@ -26,6 +26,7 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\DriverController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\CoinController;
 
 // Authentication Routes - No auth required
 // Authentication
@@ -307,6 +308,18 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/{account}/edit', 'edit')->name('accounts.edit');
             Route::put('/{account}', 'update')->name('accounts.update');
             Route::delete('/{account}', 'destroy')->name('accounts.destroy');
+        });
+    });
+    
+    // Coins
+    Route::prefix('coins')->group(function () {
+        Route::controller(CoinController::class)->group(function () {
+            Route::get('/', 'index')->name('coins.index');
+            Route::get('/create', 'create')->name('coins.create');
+            Route::post('/', 'store')->name('coins.store');
+            Route::get('/{coin}/edit', 'edit')->name('coins.edit');
+            Route::put('/{coin}', 'update')->name('coins.update');
+            Route::delete('/{coin}', 'destroy')->name('coins.destroy');
         });
     });
     
