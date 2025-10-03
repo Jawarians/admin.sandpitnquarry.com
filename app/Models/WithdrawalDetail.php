@@ -26,7 +26,7 @@ class WithdrawalDetail extends Model
                     'created_at' => Carbon::now('Asia/Kuala_Lumpur'),
                     'updated_at' => Carbon::now('Asia/Kuala_Lumpur'),
                 ]);
-                SendNotification::dispatch($notification);
+                
             }
             if ($withdrawal_detail['status'] == 'Approved') {
                 Coin::create([
@@ -51,7 +51,7 @@ class WithdrawalDetail extends Model
                     'created_at' => Carbon::now('Asia/Kuala_Lumpur'),
                     'updated_at' => Carbon::now('Asia/Kuala_Lumpur'),
                 ]);
-                SendNotification::dispatch($notification);
+                
             }
             if ($withdrawal_detail['status'] == 'Rejected') {
                 $notification = CustomerNotification::create([
@@ -67,7 +67,7 @@ class WithdrawalDetail extends Model
                     'created_at' => Carbon::now('Asia/Kuala_Lumpur'),
                     'updated_at' => Carbon::now('Asia/Kuala_Lumpur'),
                 ]);
-                SendNotification::dispatch($notification);
+                
             }
         });
 

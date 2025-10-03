@@ -335,6 +335,14 @@
                 </a>
             </li>
 
+            <!-- Withdrawals navigation -->
+            <li>
+                <a href="{{ route('withdrawals.index') }}">
+                    <iconify-icon icon="material-symbols:payments" class="menu-icon"></iconify-icon>
+                    <span>Withdrawals</span>
+                </a>
+            </li>
+
             <!-- Coins navigation -->
             <li class="dropdown">
                 <a href="javascript:void(0)">

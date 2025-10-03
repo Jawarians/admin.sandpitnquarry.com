@@ -29,6 +29,7 @@ use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\DriverController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\CoinController;
+use App\Http\Controllers\WithdrawalController;
 
 // Authentication Routes - No auth required
 // Authentication
@@ -332,6 +333,16 @@ Route::middleware(['auth'])->group(function () {
         Route::controller(ReloadController::class)->group(function () {
             Route::get('/', 'index')->name('reloads.index');
             Route::get('/{reload}', 'show')->name('reloads.show');
+        });
+    });
+    
+    // Withdrawals
+    Route::prefix('withdrawals')->group(function () {
+        Route::controller(WithdrawalController::class)->group(function () {
+            Route::get('/', 'index')->name('withdrawals.index');
+            Route::get('/{withdrawal}/edit', 'edit')->name('withdrawals.edit');
+            Route::post('/{withdrawal}', 'update')->name('withdrawals.update');
+            Route::get('/{withdrawal}/bank-statement', 'viewBankStatement')->name('withdrawals.bank-statement');
         });
     });
     
