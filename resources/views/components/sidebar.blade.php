@@ -310,6 +310,22 @@
                     </li>
                 </ul>
             </li>
+
+            <!-- Assignments navigation -->
+            <li class="dropdown">
+                <a href="javascript:void(0)">
+                    <iconify-icon icon="mdi:truck-check" class="menu-icon"></iconify-icon>
+                    <span>Assignments</span>
+                </a>
+                <ul class="sidebar-submenu">
+                    <li>
+                        <a href="{{ route('assignments.index') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Assignments List</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('assignments.create') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Create Assignment</a>
+                    </li>
+                </ul>
+            </li>
             
             <!-- Payments navigation -->
             <li class="dropdown">

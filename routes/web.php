@@ -21,6 +21,7 @@ use App\Http\Controllers\JobController;
 use App\Http\Controllers\TripController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\DriverController;
 use App\Http\Controllers\PaymentController;
 
@@ -304,6 +305,19 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/{account}/edit', 'edit')->name('accounts.edit');
             Route::put('/{account}', 'update')->name('accounts.update');
             Route::delete('/{account}', 'destroy')->name('accounts.destroy');
+        });
+    });
+    
+    // Assignments
+    Route::prefix('assignments')->group(function () {
+        Route::controller(AssignmentController::class)->group(function () {
+            Route::get('/', 'index')->name('assignments.index');
+            Route::get('/create', 'create')->name('assignments.create');
+            Route::post('/', 'store')->name('assignments.store');
+            Route::get('/{assignment}', 'show')->name('assignments.show');
+            Route::get('/{assignment}/edit', 'edit')->name('assignments.edit');
+            Route::put('/{assignment}', 'update')->name('assignments.update');
+            Route::delete('/{assignment}', 'destroy')->name('assignments.destroy');
         });
     });
     
