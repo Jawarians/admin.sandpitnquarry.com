@@ -116,12 +116,6 @@
             
             <li class="sidebar-menu-group-title">User</li>
             <li>
-                <a href="{{ route('roleAaccess') }}">
-                    <iconify-icon icon="material-symbols:lock-outline" class="menu-icon"></iconify-icon>
-                    <span>Permissions</span>
-                </a>
-            </li>
-            <li>
                 <a href="{{ route('usersList') }}">
                     <iconify-icon icon="flowbite:users-outline" class="menu-icon"></iconify-icon>
                     <span>Users</span>
