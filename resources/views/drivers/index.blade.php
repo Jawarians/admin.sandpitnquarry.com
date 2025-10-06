@@ -102,8 +102,8 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <span class="copy-text" data-clipboard-text="{{ optional($driver->user)->phone ?? 'N/A' }}">
-                                                    <span class="text-md mb-0 fw-normal text-secondary-light">{{ optional($driver->user)->phone ?? 'N/A' }}</span>
+                                                <span class="copy-text" data-clipboard-text="{{ optional($driver->user)->phone }}">
+                                                    <span class="text-md mb-0 fw-normal text-secondary-light">{{ optional($driver->user)->phone ?: 'N/A' }}</span>
                                                 </span>
                                             </td>
                                             <td><span class="text-md mb-0 fw-normal text-secondary-light">{{ optional($driver->transporter)->name ?? 'N/A' }}</span></td>
