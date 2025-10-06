@@ -193,7 +193,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @forelse($driver->statuses->sortByDesc('created_at') as $status)
+                                            @forelse(optional($driver->statuses)->sortByDesc('created_at') ?? collect() as $status)
                                                 <tr>
                                                     <td>
                                                         @php
