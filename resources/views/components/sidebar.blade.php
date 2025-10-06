@@ -40,6 +40,12 @@
             </li>
             <li class="sidebar-menu-group-title">Transporter</li>
             <li>
+                <a href="{{ route('transportersList') }}">
+                    <iconify-icon icon="mdi:truck-delivery" class="menu-icon"></iconify-icon>
+                    <span>Transporters</span>
+                </a>
+            </li>
+            <li>
                 <a href="{{ route('assignments.index') }}">
                     <iconify-icon icon="mdi:clipboard-account-outline" class="menu-icon"></iconify-icon>
                     <span>Assignments</span>

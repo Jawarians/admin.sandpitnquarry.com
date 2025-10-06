@@ -14,6 +14,7 @@ use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\PaymentGatewayController;
 use App\Http\Controllers\TableController;
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\TransporterController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ReloadController;
 use App\Http\Controllers\RoleandaccessController;
@@ -256,6 +257,20 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/edit-user/{id}', 'editUser')->name('editUser');
             Route::put('/update-user/{id}', 'updateUser')->name('updateUser');
             Route::delete('/delete-user/{id}', 'deleteUser')->name('deleteUser');
+        });
+    });
+    
+    // Transporters
+    Route::prefix('transporters')->group(function () {
+        Route::controller(TransporterController::class)->group(function () {
+            Route::get('/add-transporter', 'addTransporter')->name('addTransporter');
+            Route::post('/store-transporter', 'storeTransporter')->name('storeTransporter');
+            Route::get('/transporters-grid', 'transportersGrid')->name('transportersGrid');
+            Route::get('/transporters-list', 'transportersList')->name('transportersList');
+            Route::get('/view-transporter/{id}', 'viewTransporter')->name('viewTransporter');
+            Route::get('/edit-transporter/{id}', 'editTransporter')->name('editTransporter');
+            Route::put('/update-transporter/{id}', 'updateTransporter')->name('updateTransporter');
+            Route::delete('/delete-transporter/{id}', 'deleteTransporter')->name('deleteTransporter');
         });
     });
 
