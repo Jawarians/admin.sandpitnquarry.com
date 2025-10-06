@@ -259,20 +259,25 @@ Route::middleware(['auth'])->group(function () {
         });
     });
 
+    // Employees Routes
+    Route::prefix('employees')->group(function () {
+        Route::controller(\App\Http\Controllers\EmployeesController::class)->group(function () {
+            Route::get('/', 'index')->name('employees.index');
+            Route::get('/create', 'create')->name('employees.create');
+            Route::post('/', 'store')->name('employees.store');
+            Route::get('/{id}', 'show')->name('employees.show');
+            Route::get('/{id}/edit', 'edit')->name('employees.edit');
+            Route::put('/{id}', 'update')->name('employees.update');
+            Route::delete('/{id}', 'destroy')->name('employees.destroy');
+        });
+    });
+
     // Blog
     Route::prefix('blog')->group(function () {
         Route::controller(BlogController::class)->group(function () {
             Route::get('/addBlog', 'addBlog')->name('addBlog');
             Route::get('/blog', 'blog')->name('blog');
             Route::get('/blogDetails', 'blogDetails')->name('blogDetails');
-        });
-    });
-
-    // Role and access
-    Route::prefix('roleandaccess')->group(function () {
-        Route::controller(RoleandaccessController::class)->group(function () {
-            Route::get('/assignRole', 'assignRole')->name('assignRole');
-            Route::get('/roleAaccess', 'roleAaccess')->name('roleAaccess');
         });
     });
 
