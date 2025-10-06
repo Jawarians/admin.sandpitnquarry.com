@@ -116,27 +116,21 @@
             
             <li class="sidebar-menu-group-title">User</li>
             <li>
-                <a href="{{ route('usersList') }}">
-                    <iconify-icon icon="mdi:account-tie" class="menu-icon"></iconify-icon>
-                    <span>Employees</span>
-                </a>
-            </li>
-            <li>
                 <a href="{{ route('roleAaccess') }}">
                     <iconify-icon icon="material-symbols:lock-outline" class="menu-icon"></iconify-icon>
                     <span>Permissions</span>
                 </a>
             </li>
             <li>
-                <a href="{{ route('assignRole') }}">
-                    <iconify-icon icon="mdi:shield-account-outline" class="menu-icon"></iconify-icon>
-                    <span>Roles</span>
-                </a>
-            </li>
-            <li>
                 <a href="{{ route('usersList') }}">
                     <iconify-icon icon="flowbite:users-outline" class="menu-icon"></iconify-icon>
                     <span>Users</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('employees.index') }}">
+                    <iconify-icon icon="mdi:account-tie" class="menu-icon"></iconify-icon>
+                    <span>Employees</span>
                 </a>
             </li>
             
