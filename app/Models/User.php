@@ -2,30 +2,20 @@
 
 namespace App\Models;
 
-// use Filament\Models\Contracts\FilamentUser;
-// use Filament\Panel;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-// use Laravel\Fortify\TwoFactorAuthenticatable;
-// use Laravel\Jetstream\HasProfilePhoto;
-// use Laravel\Sanctum\HasApiTokens;
-// use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
-// use Kreait\Firebase\Exception\Auth\UserNotFound;
+use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable // implements  JWTSubject
+class User extends Authenticatable implements JWTSubject
 {
-    // use HasApiTokens;
-    // use HasProfilePhoto;
     use Notifiable;
-    // use TwoFactorAuthenticatable;
 
     /**
      * The attributes that are mass assignable.
@@ -108,22 +98,16 @@ class User extends Authenticatable // implements  JWTSubject
         return 'https://ui-avatars.com/api/?name='.urlencode($name).'&color=7F9CF5&background=EBF4FF';
     }
 
-    // JWT methods - uncomment when JWT package is installed
-    // public function getJWTIdentifier()
-    // {
-    //     return $this->getKey();
-    // }
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
 
-    // public function getJWTCustomClaims()
-    // {
-    //     return [];
-    // }
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
 
-    // Filament panel access - uncomment when Filament is installed
-    // public function canAccessPanel(Panel $panel): bool
-    // {
-    //     return str_ends_with($this->email, '@sandpitnquarry.com') && $this->hasVerifiedEmail();
-    // }
 
     protected static function booted(): void
     {
@@ -285,10 +269,6 @@ class User extends Authenticatable // implements  JWTSubject
         return $this->hasOne(Company::class, 'referrer_id', 'id');
     }
 
-    public function creator(): BelongsTo
-    {
-        return $this->belongsTo(Customer::class, 'creator_id', 'id');
-    }
 
     public function customer_details(): HasMany
     {

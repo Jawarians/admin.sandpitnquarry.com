@@ -48,6 +48,38 @@ Route::post('/login', 'App\Http\Controllers\AuthenticationController@postLogin')
 Route::post('/signin', 'App\Http\Controllers\AuthenticationController@postLogin')->name('signin.post'); // Our app specific
 Route::post('/logout', 'App\Http\Controllers\AuthenticationController@logout')->name('logout');
 
+// API Routes (combined from api.php)
+Route::group(['prefix' => 'api'], function () {
+    // User API Routes
+    Route::group(['prefix' => 'auth'], function () {
+        Route::post('login', [App\Http\Controllers\AccountController::class, 'login']);
+        Route::post('register', [App\Http\Controllers\AccountController::class, 'register']);
+        
+        Route::group(['middleware' => 'auth:api'], function () {
+            Route::post('logout', [App\Http\Controllers\AccountController::class, 'apiLogout']);
+            Route::post('refresh', [App\Http\Controllers\AccountController::class, 'refresh']);
+            Route::get('me', [App\Http\Controllers\AccountController::class, 'me']);
+        });
+    });
+
+    // Customer API Routes (redirected to user routes for backward compatibility)
+    Route::group(['prefix' => 'customer'], function () {
+        Route::post('login', [App\Http\Controllers\AccountController::class, 'login']);
+        Route::post('register', [App\Http\Controllers\AccountController::class, 'register']);
+        
+        Route::group(['middleware' => 'auth:api'], function () {
+            Route::post('logout', [App\Http\Controllers\AccountController::class, 'apiLogout']);
+            Route::post('refresh', [App\Http\Controllers\AccountController::class, 'refresh']);
+            Route::get('me', [App\Http\Controllers\AccountController::class, 'me']);
+        });
+    });
+
+    // Fallback for undefined API routes
+    Route::fallback(function(){
+        return response()->json(['message' => 'Not Found'], 404);
+    });
+});
+
 // Protected routes - Require authentication
 Route::middleware(['auth'])->group(function () {
     // Dashboard root route
