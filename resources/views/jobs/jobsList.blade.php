@@ -219,7 +219,7 @@
                                     </td>
                                     <td>{{ $job->created_at->format('M d, Y H:i:s') }}</td>
                                     <td>
-                                        <a href="{{ route('jobDetails', $job->id) }}" class="btn btn-sm btn-primary">Edit</a>
+                                        <a href="{{ route('jobDetails', $job->id) }}" class="btn btn-sm btn-primary">View</a>
                                         
                                     </td>
                                 </tr>

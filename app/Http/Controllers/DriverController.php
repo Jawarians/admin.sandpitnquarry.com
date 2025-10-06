@@ -13,7 +13,7 @@ class DriverController extends Controller
     public function index()
     {
         $drivers = Driver::with([
-            'user:id,name,email',
+            'user:id,name,email,phone',
             'transporter:id,name',
             'current.truck:id,registration_plate_number',
             'latest'
@@ -65,7 +65,7 @@ class DriverController extends Controller
     public function show(Driver $driver)
     {
         $driver->load([
-            'user:id,name,email',
+            'user:id,name,email,phone',
             'transporter:id,name',
             'current.truck:id,registration_plate_number',
             'latest',
