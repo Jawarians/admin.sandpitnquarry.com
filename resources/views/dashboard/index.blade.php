@@ -4,6 +4,21 @@
     $title='Dashboard';
     $subTitle = 'AI';
     $script= '
+    <style>
+        .dashboard-card-link {
+            transition: transform 0.2s ease-in-out;
+        }
+        .dashboard-card-link:hover {
+            transform: translateY(-3px);
+        }
+        .dashboard-title-link:hover {
+            color: #4b6fff !important;
+        }
+        .dashboard-title-link:hover iconify-icon {
+            transform: translateX(3px);
+            transition: transform 0.2s ease;
+        }
+    </style>
     <script>
         // Pass data to JavaScript
         const dashboardData = {
@@ -60,7 +75,7 @@
             <div class="row row-cols-xxxl-5 row-cols-lg-3 row-cols-sm-2 row-cols-1 gy-4">
                 <div class="col">
                     <div class="card shadow-none border bg-gradient-start-1 h-100">
-                        <div class="card-body p-20">
+                        <a href="{{ route('usersList') }}" class="card-body p-20 text-decoration-none dashboard-card-link">
                             <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
                                 <div>
                                     <p class="fw-medium text-primary-light mb-1">Total Users</p>
@@ -76,12 +91,12 @@
                                 </span>
                                 Last 30 days users
                             </p>
-                        </div>
+                        </a>
                     </div><!-- card end -->
                 </div>
                 <div class="col">
                     <div class="card shadow-none border bg-gradient-start-2 h-100">
-                        <div class="card-body p-20">
+                        <a href="{{ route('ordersList') }}" class="card-body p-20 text-decoration-none dashboard-card-link">
                             <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
                                 <div>
                                     <p class="fw-medium text-primary-light mb-1">Total Orders</p>
@@ -97,12 +112,12 @@
                                 </span>
                                 Last 30 days orders
                             </p>
-                        </div>
+                        </a>
                     </div><!-- card end -->
                 </div>
                 <div class="col">
                     <div class="card shadow-none border bg-gradient-start-3 h-100">
-                        <div class="card-body p-20">
+                        <a href="{{ route('jobsList') }}" class="card-body p-20 text-decoration-none dashboard-card-link">
                             <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
                                 <div>
                                     <p class="fw-medium text-primary-light mb-1">Total Jobs</p>
@@ -118,12 +133,12 @@
                                 </span>
                                 Completed jobs
                             </p>
-                        </div>
+                        </a>
                     </div><!-- card end -->
                 </div>
                 <div class="col">
                     <div class="card shadow-none border bg-gradient-start-4 h-100">
-                        <div class="card-body p-20">
+                        <a href="{{ route('invoiceList') }}" class="card-body p-20 text-decoration-none dashboard-card-link">
                             <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
                                 <div>
                                     <p class="fw-medium text-primary-light mb-1">Total Revenue</p>
@@ -149,12 +164,12 @@
                                 </span>
                                 Current month
                             </p>
-                        </div>
+                        </a>
                     </div><!-- card end -->
                 </div>
                 <div class="col">
                     <div class="card shadow-none border bg-gradient-start-5 h-100">
-                        <div class="card-body p-20">
+                        <a href="{{ route('tripsList') }}" class="card-body p-20 text-decoration-none dashboard-card-link">
                             <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
                                 <div>
                                     <p class="fw-medium text-primary-light mb-1">Total Trips</p>
@@ -170,7 +185,7 @@
                                 </span>
                                 Completed trips
                             </p>
-                        </div>
+                        </a>
                     </div><!-- card end -->
                 </div>
             </div>
@@ -180,7 +195,12 @@
                     <div class="card h-100">
                         <div class="card-body">
                             <div class="d-flex flex-wrap align-items-center justify-content-between">
-                                <h6 class="text-lg mb-0">Order Revenue</h6>
+                                <h6 class="text-lg mb-0">
+                                    <a href="{{ route('invoiceList') }}" class="text-decoration-none d-flex align-items-center gap-1 dashboard-title-link">
+                                        Order Revenue
+                                        <iconify-icon icon="heroicons:arrow-right-20-solid" class="text-primary"></iconify-icon>
+                                    </a>
+                                </h6>
                                 <select class="form-select bg-base form-select-sm w-auto">
                                     <option>Yearly</option>
                                     <option>Monthly</option>
@@ -221,7 +241,12 @@
                     <div class="card h-100">
                         <div class="card-body">
                             <div class="d-flex flex-wrap align-items-center justify-content-between">
-                                <h6 class="text-lg mb-0">Order Tracking</h6>
+                                <h6 class="text-lg mb-0">
+                                    <a href="{{ route('ordersList') }}" class="text-decoration-none d-flex align-items-center gap-1 dashboard-title-link">
+                                        Order Tracking
+                                        <iconify-icon icon="heroicons:arrow-right-20-solid" class="text-primary"></iconify-icon>
+                                    </a>
+                                </h6>
                                 <select class="form-select bg-base form-select-sm w-auto" id="orderTrackingPeriod">
                                     <option value="daily">Daily</option>
                                     <option value="monthly">Monthly</option>
@@ -244,7 +269,12 @@
                 <div class="col-xxl-3 col-xl-6">
                     <div class="card h-100 radius-8 border">
                         <div class="card-body p-24">
-                            <h6 class="mb-12 fw-semibold text-lg mb-16">Job Status</h6>
+                            <h6 class="mb-12 fw-semibold text-lg mb-16">
+                                <a href="{{ route('jobsList') }}" class="text-decoration-none d-flex align-items-center gap-1 dashboard-title-link">
+                                    Job Status
+                                    <iconify-icon icon="heroicons:arrow-right-20-solid" class="text-primary"></iconify-icon>
+                                </a>
+                            </h6>
                             <div class="d-flex align-items-center gap-2 mb-20">
                                 <h6 class="fw-semibold mb-0">{{ number_format($totalJobs) }}</h6>
                                 <p class="text-sm mb-0">
@@ -266,7 +296,12 @@
                 <div class="col-xxl-3 col-xl-6">
                     <div class="card h-100 radius-8 border">
                         <div class="card-body p-24">
-                            <h6 class="mb-12 fw-semibold text-lg mb-16">Total Sales</h6>
+                            <h6 class="mb-12 fw-semibold text-lg mb-16">
+                                <a href="{{ route('invoiceList') }}" class="text-decoration-none d-flex align-items-center gap-1 dashboard-title-link">
+                                    Total Sales
+                                    <iconify-icon icon="heroicons:arrow-right-20-solid" class="text-primary"></iconify-icon>
+                                </a>
+                            </h6>
                             <div class="d-flex align-items-center gap-2 mb-20">
                                 @php
                                     // Calculate total daily sales if available - Fixed for collection
@@ -302,7 +337,12 @@
                     <div class="card h-100 radius-8 border-0 overflow-hidden">
                         <div class="card-body p-24">
                             <div class="d-flex align-items-center flex-wrap gap-2 justify-content-between">
-                                <h6 class="mb-2 fw-bold text-lg">Trip Overview</h6>
+                                <h6 class="mb-2 fw-bold text-lg">
+                                    <a href="{{ route('tripsList') }}" class="text-decoration-none d-flex align-items-center gap-1 dashboard-title-link">
+                                        Trip Overview
+                                        <iconify-icon icon="heroicons:arrow-right-20-solid" class="text-primary"></iconify-icon>
+                                    </a>
+                                </h6>
                                 <div class="">
                                     <select class="form-select form-select-sm w-auto bg-base border text-secondary-light">
                                         <option>Today</option>
@@ -443,8 +483,10 @@
                     <div class="card h-100">
                         <div class="card-body">
                             <div class="d-flex align-items-center flex-wrap gap-2 justify-content-between">
-                                <h6 class="mb-2 fw-bold text-lg mb-0">Top Performer</h6>
-                                <a  href="javascript:void(0)" class="text-primary-600 hover-text-primary d-flex align-items-center gap-1">
+                                <h6 class="mb-2 fw-bold text-lg mb-0">
+                                    <a href="{{ route('usersList') }}" class="text-decoration-none dashboard-title-link">Top Performer</a>
+                                </h6>
+                                <a href="{{ route('usersList') }}" class="text-primary-600 hover-text-primary d-flex align-items-center gap-1 dashboard-title-link">
                                     View All
                                     <iconify-icon icon="solar:alt-arrow-right-linear" class="icon"></iconify-icon>
                                 </a>
@@ -477,7 +519,9 @@
                     <div class="card h-100">
                         <div class="card-body">
                             <div class="d-flex align-items-center flex-wrap gap-2 justify-content-between mb-20">
-                                <h6 class="mb-2 fw-bold text-lg mb-0">Top Order Locations</h6>
+                                <h6 class="mb-2 fw-bold text-lg mb-0">
+                                    <a href="{{ route('ordersList') }}" class="text-decoration-none dashboard-title-link">Top Order Locations</a>
+                                </h6>
                                 <select class="form-select form-select-sm w-auto bg-base border text-secondary-light">
                                     <option>Today</option>
                                     <option>Weekly</option>
