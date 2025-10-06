@@ -12,7 +12,13 @@ class DriverController extends Controller
 {
     public function index()
     {
-        $drivers = Driver::with(['user', 'transporter', 'current.truck', 'latest'])
+        $drivers = Driver::with([
+            'user:id,name,email',
+            'transporter:id,name',
+            'current.truck:id,registration_plate_number',
+            'latest'
+        ])
+            ->select('drivers.*')
             ->where('id', '>', 0)
             ->orderBy('id', 'desc')
             ->paginate(10);
@@ -22,9 +28,9 @@ class DriverController extends Controller
     
     public function create()
     {
-        $users = User::all();
-        $transporters = Transporter::all();
-        $trucks = Truck::all();
+        $users = User::select('id', 'name', 'email')->get();
+        $transporters = Transporter::select('id', 'name')->get();
+        $trucks = Truck::select('id', 'registration_plate_number')->get();
         
         return view('drivers.create', compact('users', 'transporters', 'trucks'));
     }
@@ -58,15 +64,21 @@ class DriverController extends Controller
     
     public function show(Driver $driver)
     {
-        $driver->load(['user', 'transporter', 'current.truck', 'latest', 'assignments.truck']);
+        $driver->load([
+            'user:id,name,email',
+            'transporter:id,name',
+            'current.truck:id,registration_plate_number',
+            'latest',
+            'assignments.truck:id,registration_plate_number'
+        ]);
         return view('drivers.show', compact('driver'));
     }
     
     public function edit(Driver $driver)
     {
-        $users = User::all();
-        $transporters = Transporter::all();
-        $trucks = Truck::all();
+        $users = User::select('id', 'name', 'email')->get();
+        $transporters = Transporter::select('id', 'name')->get();
+        $trucks = Truck::select('id', 'registration_plate_number')->get();
         
         return view('drivers.edit', compact('driver', 'users', 'transporters', 'trucks'));
     }
