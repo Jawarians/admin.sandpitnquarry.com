@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Casts\MoneyCast;
-use Filament\Forms\Components\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -31,13 +30,6 @@ class Withdrawal extends Model
         'user_id',
     ];
 
-    public function scopeOrderEvent(Builder $query): void
-    {
-        $query->orderBy('withdrawal.id', 'desc')
-            ->with([
-                "latest.status"
-            ]);
-    }
 
     public function bank(): BelongsTo
     {

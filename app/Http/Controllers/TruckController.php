@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Truck;
 use App\Models\Transporter;
-use App\Models\TruckDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 

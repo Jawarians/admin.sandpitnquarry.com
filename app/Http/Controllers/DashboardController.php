@@ -238,9 +238,11 @@ class DashboardController extends Controller
             // Log the retrieved data for debugging
             Log::info("Job status data by day:", ['data' => $dailyJobData]);
             
+            // Count unique dates to determine if we have enough data
+            $uniqueDateCount = $dailyJobData->pluck('date')->unique()->count();
+            
             // If there's not enough data for the last 30 days, fall back to overall status counts
-            if ($dailyJobData->isEmpty() || $dailyJobData->count() < 5) {
-                Log::info("Not enough daily job data, falling back to overall status counts");
+            if ($dailyJobData->isEmpty() || $uniqueDateCount <= 1) {
                 
                 return DB::table('jobs')
                     ->join('job_details', 'jobs.id', '=', 'job_details.job_id')
@@ -289,7 +291,7 @@ class DashboardController extends Controller
             }
             
             // If we still don't have enough data, generate some default data
-            if (count($result) < 3) {
+            if (count($result) < 2) {
                 Log::info("Not enough daily data points, generating sample data");
                 
                 // Get the most common statuses
