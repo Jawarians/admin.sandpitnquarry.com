@@ -1,31 +1,43 @@
-# Use official PHP image with necessary extensions
-FROM php:8.2-bookworm
+FROM dunglas/frankenphp:1.3.1
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    git unzip libpng-dev libonig-dev libxml2-dev zip curl && \
-    docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+RUN apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    git \
+    unzip \
+    librabbitmq-dev \
+    libpq-dev
 
-# Install Composer
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
-# Set working directory
-WORKDIR /var/www/html
+# Get NodeJS
+COPY --from=node:20-slim /usr/local/bin /usr/local/bin
+# Get npm
+COPY --from=node:20-slim /usr/local/lib/node_modules /usr/local/lib/node_modules
 
-# Copy project files
-COPY . .
+RUN install-php-extensions \
+    bcmath \
+    gd \
+    intl \
+    pcntl \
+    pgsql \
+    pdo_pgsql \
+    zip
 
-# Install dependencies
-RUN composer install --no-dev --optimize-autoloader
+COPY . /app
 
-# Laravel setup
-RUN php artisan config:clear && \
-    php artisan route:clear && \
-    php artisan view:clear && \
-    chmod -R 775 storage bootstrap/cache
+WORKDIR /app
 
-# Expose the port Cloud Run expects
-EXPOSE 8080
+RUN composer install \
+    --no-interaction \
+    --no-plugins \
+    --no-scripts \
+    --no-dev \
+    --prefer-dist
 
-# Start the Laravel server
-CMD ["php", "-S", "0.0.0.0:8080", "-t", "public"]
+RUN npm install
+
+RUN npm run build
+
+# ENTRYPOINT ["php", "artisan", "octane:frankenphp" ]
+
+CMD php artisan reverb:start & php artisan octane:frankenphp
