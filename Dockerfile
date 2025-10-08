@@ -1,5 +1,5 @@
 # Use official PHP image with necessary extensions
-FROM php:8.2-buster
+FROM php:8.2-bookworm
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -25,7 +25,7 @@ RUN php artisan config:clear && \
     chmod -R 775 storage bootstrap/cache
 
 # Expose the port Cloud Run expects
-EXPOSE 8080
+EXPOSE 8000
 
 # Start the Laravel server
-CMD php artisan serve --host=0.0.0.0 --port=8080
+CMD php artisan serve --host=0.0.0.0 --port=8000
