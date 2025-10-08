@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y \
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 # Set working directory
-WORKDIR /var/www/html/public
+WORKDIR /var/www/html
 
 # Copy project files
 COPY . .
@@ -28,4 +28,4 @@ RUN php artisan config:clear && \
 EXPOSE 8080
 
 # Start the Laravel server
-CMD php artisan serve --host=0.0.0.0 --port=8080 --root=/var/www/html/public
+CMD ["php", "-S", "0.0.0.0:8080", "-t", "public"]
