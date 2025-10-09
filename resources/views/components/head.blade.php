@@ -1,5 +1,6 @@
 <head>
     <meta charset="UTF-8">
+    <meta name="google-site-verification" content="H9LI4bH7U3HD8crtquVd5Bcu_Pr9DCEs41rJFYOtbFM" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - SNQ Admin Panel</title>
     <link rel="icon" type="image/png"  href="https://storage.googleapis.com/snq-website-images/customer/Logo-1.png" sizes="16x16">
