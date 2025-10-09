@@ -1,11 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AiapplicationController;
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\ChartController;
-use App\Http\Controllers\ComponentpageController;
 use App\Http\Controllers\CustomerAccountController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FormsController;
@@ -17,8 +15,6 @@ use App\Http\Controllers\UsersController;
 use App\Http\Controllers\TransporterController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ReloadController;
-use App\Http\Controllers\RoleandaccessController;
-use App\Http\Controllers\CryptocurrencyController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\CoinPromotionController;
@@ -34,20 +30,23 @@ use App\Http\Controllers\WithdrawalController;
 use App\Http\Controllers\TruckController;
 use App\Http\Controllers\WheelController;
 
-// Authentication Routes - No auth required
 // Authentication
-Route::prefix('authentication')->group(function () {
-    Route::controller(AuthenticationController::class)->group(function () {
-        Route::get('/forgotpassword', 'forgotPassword')->name('forgotPassword');
-        Route::get('/signin', 'signin')->name('signin');
-        Route::get('/signup', 'signup')->name('signup');
-    });
+// - Keep legacy /login POST for compatibility (same controller method)
+Route::controller(AuthenticationController::class)->prefix('authentication')->group(function () {
+    Route::get('/forgotpassword', 'forgotPassword')->name('forgotPassword');
+    Route::get('/signin', 'signin')->name('signin');
+    Route::get('/signup', 'signup')->name('signup');
+
+    // Form POST for the signin page
+    Route::post('/signin', 'postLogin')->name('signin.post');
+
+    // Logout (kept here since it's related to authentication)
+    Route::post('/logout', 'logout')->name('logout');
 });
 
-// Authentication POST routes
-Route::post('/login', 'App\Http\Controllers\AuthenticationController@postLogin')->name('login'); // Laravel default
-Route::post('/signin', 'App\Http\Controllers\AuthenticationController@postLogin')->name('signin.post'); // Our app specific
-Route::post('/logout', 'App\Http\Controllers\AuthenticationController@logout')->name('logout');
+// Keep Laravel default /login route for compatibility (points to same method)
+Route::post('/login', [AuthenticationController::class, 'postLogin'])->name('login');
+
 
 // API Routes (combined from api.php)
 Route::group(['prefix' => 'api'], function () {
