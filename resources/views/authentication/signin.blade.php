@@ -1,11 +1,4 @@
-<!DOCTYPE html>
-<html lang="en" data-theme="light">
-
 <x-head/>
-
-
-<body>
-
     <section class="auth d-flex flex-wrap justify-content-end align-items-center">
         <div class="background-image-container">
             <img src="https://storage.googleapis.com/snq-website-images/customer/Merchant.png" alt="Sand Pit n Quarry Admin" class="background-image">
@@ -131,7 +124,3 @@
         }
     });
 </script>
-
-</body>
-
-</html>
