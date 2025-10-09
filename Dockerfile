@@ -37,8 +37,9 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
 # Create a custom virtual host configuration for Cloud Run
+# Use port 8080 directly in the Apache config since Cloud Run expects this port
 RUN { \
-      echo '<VirtualHost *:${PORT}>' ;\
+      echo '<VirtualHost *:8080>' ;\
       echo '  DocumentRoot /var/www/html/public' ;\
       echo '  <Directory /var/www/html/public>' ;\
       echo '    AllowOverride All' ;\
@@ -67,8 +68,21 @@ RUN npm install && npm run build
 COPY docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-# Configure for Cloud Run
-ENV PORT=8000
+# Install diagnostic tools
+RUN apt-get update && apt-get install -y net-tools procps lsof
+
+# Configure for Cloud Run - explicitly set port 8080
+ENV PORT=8080
+
+# Expose port 8080 explicitly for Cloud Run
+EXPOSE 8080
+
+# Set Apache environment variables
+ENV APACHE_RUN_USER=www-data
+ENV APACHE_RUN_GROUP=www-data
+ENV APACHE_PID_FILE=/var/run/apache2/apache2.pid
+ENV APACHE_LOG_DIR=/var/log/apache2
+ENV APACHE_LOCK_DIR=/var/lock/apache2
 
 # Set the entrypoint script
 ENTRYPOINT ["docker-entrypoint.sh"]
