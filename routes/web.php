@@ -30,6 +30,9 @@ use App\Http\Controllers\WithdrawalController;
 use App\Http\Controllers\TruckController;
 use App\Http\Controllers\WheelController;
 
+Route::get('/laravel-version', function () {
+    return app()->version();
+});
 // Authentication
 // - Keep legacy /login POST for compatibility (same controller method)
 Route::controller(AuthenticationController::class)->prefix('authentication')->group(function () {
