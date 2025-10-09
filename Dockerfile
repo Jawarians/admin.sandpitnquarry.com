@@ -46,8 +46,16 @@ RUN chown -R www-data:www-data /var/www/html
 RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Install dependencies
-RUN composer install --no-interaction --no-plugins --no-scripts --prefer-dist
+RUN composer install --optimize-autoloader --no-interaction --no-plugins --no-scripts --prefer-dist
 RUN npm install && npm run build
 
-# Set Apache as the entrypoint
-CMD ["apache2-foreground"]
+# Copy entrypoint script and set permissions
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+# Configure for Cloud Run
+ENV PORT=8080
+RUN sed -i 's/80/${PORT}/g' /etc/apache2/sites-available/000-default.conf /etc/apache2/ports.conf
+
+# Set the entrypoint script
+ENTRYPOINT ["docker-entrypoint.sh"]
