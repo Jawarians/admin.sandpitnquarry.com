@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 
-@include('components.head')
+<x-head/>
 
 
 <body>
