@@ -161,7 +161,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/avatar', 'avatar')->name('avatar');
             Route::get('/badges', 'badges')->name('badges');
             Route::get('/button', 'button')->name('button');
-            Route::get('/calendar', 'calendar')->name('calendar');
+            Route::get('/calendar', 'calendar')->name('componentspage.calendar');
             Route::get('/card', 'card')->name('card');
             Route::get('/carousel', 'carousel')->name('carousel');
             Route::get('/colors', 'colors')->name('colors');
