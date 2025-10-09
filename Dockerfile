@@ -68,7 +68,7 @@ COPY docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 # Configure for Cloud Run
-ENV PORT=8080
+ENV PORT=8000
 
 # Set the entrypoint script
 ENTRYPOINT ["docker-entrypoint.sh"]
