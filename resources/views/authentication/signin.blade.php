@@ -145,7 +145,7 @@
         <div class="auth-right d-flex flex-column justify-content-center">
             <div class="w-100">
                     <div class="text-center mb-4">
-                        <a href="{{ route('index') }}" class="d-inline-block mb-4">
+                        <a href="{{ route('dashboard.index') }}" class="d-inline-block mb-4">
                             <img src="https://storage.googleapis.com/snq-website-images/customer/Logo-1.png" alt="Sand Pit n Quarry" style="max-height: 60px;">
                         </a>
                         <h3 class="mb-2 text-dark fw-bold">SNQ Admin Panel</h3>
