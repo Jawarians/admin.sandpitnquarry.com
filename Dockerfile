@@ -25,6 +25,9 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     pdo_pgsql \
     zip
 
+# Enable Apache modules
+RUN a2enmod rewrite headers
+
 # Install Node.js and npm
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs \
@@ -33,9 +36,18 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
-# Configure Apache
-RUN a2enmod rewrite
-RUN sed -i 's/\/var\/www\/html/\/var\/www\/html\/public/g' /etc/apache2/sites-available/000-default.conf
+# Create a custom virtual host configuration for Cloud Run
+RUN { \
+      echo '<VirtualHost *:${PORT}>' ;\
+      echo '  DocumentRoot /var/www/html/public' ;\
+      echo '  <Directory /var/www/html/public>' ;\
+      echo '    AllowOverride All' ;\
+      echo '    Require all granted' ;\
+      echo '  </Directory>' ;\
+      echo '  ErrorLog ${APACHE_LOG_DIR}/error.log' ;\
+      echo '  CustomLog ${APACHE_LOG_DIR}/access.log combined' ;\
+      echo '</VirtualHost>' ;\
+    } > /etc/apache2/sites-available/000-default.conf
 
 # Set working directory
 WORKDIR /var/www/html
