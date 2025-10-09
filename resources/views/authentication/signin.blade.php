@@ -2,6 +2,9 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 
+{{-- temporarily use include for debugging --}}
+@include('components.head')
+
 <x-head/>
 
 <style>
