@@ -10,6 +10,8 @@ RUN apt-get update \
     libfreetype6-dev \
     libjpeg62-turbo-dev \
     libpng-dev \
+    libicu-dev \
+    pkg-config \
     && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
