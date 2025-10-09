@@ -3,7 +3,7 @@
         <iconify-icon icon="radix-icons:cross-2"></iconify-icon>
     </button>
     <div>
-        <a href="{{ route('index') }}" class="sidebar-logo">
+        <a href="{{ route('dashboard.index') }}" class="sidebar-logo">
             <img src="https://storage.googleapis.com/snq-website-images/customer/Logo-1.png" alt="site logo" class="light-logo">
             <img src="https://storage.googleapis.com/snq-website-images/customer/Logo-1.png" alt="site logo" class="dark-logo">
             <img src="https://storage.googleapis.com/snq-website-images/customer/Logo-1.png" alt="site logo" class="logo-icon">
@@ -18,10 +18,10 @@
                 </a>
                 <ul class="sidebar-submenu">
                     <li>
-                        <a href="{{ route('index') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> AI</a>
+                        <a href="{{ route('dashboard.index') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> AI</a>
                     </li>
                     <li>
-                        <a href="{{ route('dashboardAnalyst') }}"><i class="ri-circle-fill circle-icon text-success-main w-auto"></i> Analyst</a>
+                        <a href="{{ route('dashboard.Analyst') }}"><i class="ri-circle-fill circle-icon text-success-main w-auto"></i> Analyst</a>
                     </li>
                 </ul>
             </li>
@@ -90,27 +90,9 @@
                 </a>
             </li>
             <li>
-                <a href="{{ route('blog') }}">
-                    <iconify-icon icon="mdi:message-text" class="menu-icon"></iconify-icon>
-                    <span>Feedback</span>
-                </a>
-            </li>
-            <li>
                 <a href="{{ route('reloads.index') }}">
                     <iconify-icon icon="material-symbols:payments-outline" class="menu-icon"></iconify-icon>
                     <span>Reloads</span>
-                </a>
-            </li>
-            <li>
-                <a href="{{ route('testimonials') }}">
-                    <iconify-icon icon="mdi:star-outline" class="menu-icon"></iconify-icon>
-                    <span>Reviews</span>
-                </a>
-            </li>
-            <li>
-                <a href="{{ route('blog') }}">
-                    <iconify-icon icon="ic:baseline-whatsapp" class="menu-icon"></iconify-icon>
-                    <span>Whatsapps</span>
                 </a>
             </li>
             <li>
@@ -205,110 +187,5 @@
                     <span>Quarries</span>
                 </a>
             </li>
-            <!-- <li class="sidebar-menu-group-title">Application</li>
-            <li>
-                <a  href="{{ route('gallery') }}">
-                    <iconify-icon icon="solar:gallery-bold-duotone" class="menu-icon"></iconify-icon>
-                    <span>Gallery</span>
-                </a>
-            </li>
-            <li>
-                <a  href="{{ route('pricing') }}">
-                    <iconify-icon icon="solar:tag-price-bold-duotone" class="menu-icon"></iconify-icon>
-                    <span>Pricing</span>
-                </a>
-            </li>
-            <li class="dropdown">
-                <a  href="javascript:void(0)">
-                    <iconify-icon icon="solar:shield-user-outline" class="menu-icon"></iconify-icon>
-                    <span>Authentication</span>
-                </a>
-                <ul class="sidebar-submenu">
-                    <li>
-                        <a  href="{{ route('signin') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Sign In</a>
-                    </li>
-                    <li>
-                        <a  href="{{ route('signup') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Sign Up</a>
-                    </li>
-                   
-                   
-                </ul>
-            </li>
-            <li>
-                <a  href="{{ route('testimonials') }}">
-                    <iconify-icon icon="solar:like-bold-duotone" class="menu-icon"></iconify-icon>
-                    <span>Testimonials</span>
-                </a>
-            </li>
-            <li>
-                <a  href="{{ route('faq') }}">
-                    <iconify-icon icon="solar:question-circle-bold-duotone" class="menu-icon"></iconify-icon>
-                    <span>FAQ</span>
-                </a>
-            </li>
-            <li>
-                <a  href="{{ route('error') }}">
-                    <iconify-icon icon="solar:shield-warning-bold-duotone" class="menu-icon"></iconify-icon>
-                    <span>404</span>
-                </a>
-            </li>
-            <li>
-                <a  href="{{ route('termsCondition') }}">
-                    <iconify-icon icon="solar:file-check-bold-duotone" class="menu-icon"></iconify-icon>
-                    <span>Terms & Condition</span>
-                </a>
-            </li>
-            <li>
-                <a  href="{{ route('comingSoon') }}">
-                    <iconify-icon icon="solar:bell-bold-duotone" class="menu-icon"></iconify-icon>
-                    <span>Coming Soon</span>
-                </a>
-            </li>
-            <li>
-                <a  href="{{ route('maintenance') }}">
-                    <iconify-icon icon="solar:wrench-bold-duotone" class="menu-icon"></iconify-icon>
-                    <span>Under Maintenance</span>
-                </a>
-            </li>
-            <li>
-                <a  href="{{ route('blankPage') }}">
-                    <iconify-icon icon="solar:file-bold-duotone" class="menu-icon"></iconify-icon>
-                    <span>Blank Page</span>
-                </a>
-            </li>
-            <li class="dropdown">
-                <a  href="javascript:void(0)">
-                    <iconify-icon icon="solar:share-outline" class="menu-icon"></iconify-icon>
-                    <span>Multi Level</span>
-                </a>
-                <ul class="sidebar-submenu">
-                    <li>
-                        <a  href="javascript:void(0)"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Level 1.1</a>
-                    </li>
-                    <li>
-                        <a  href="javascript:void(0)"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Level 1.2</a>
-                    </li>
-                    <li class="sub-menu">
-                        <a  href="javascript:void(0)"><i class="ri-circle-fill circle-icon text-info-main w-auto"></i> Level 1.3</a>
-                        <ul class="sidebar-submenu">
-                            <li>
-                                <a href="javascript:void(0)"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Level 2.1</a>
-                            </li>
-                            <li class="sub-menu">
-                                <a href="javascript:void(0)"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Level 2.2</a>
-                                <ul class="sidebar-submenu">
-                                    <li>
-                                        <a href="javascript:void(0)"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Level 3.1</a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:void(0)"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Level 3.2</a>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </li>
-        </ul> -->
     </div>
 </aside>
