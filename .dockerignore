@@ -1,0 +1,34 @@
+# Git
+.git
+.github
+.gitattributes
+.gitignore
+
+# Logs
+*.log
+
+# Dependencies
+/node_modules
+/vendor
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# User uploaded content
+/storage/app/public/*
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+/storage/logs/*
+
+# Build files
+/public/hot
+/public/storage
+
+# Misc
+.idea
+.vscode
+.DS_Store
+Thumbs.db
