@@ -16,7 +16,7 @@
                         <p class="mt-3 text-secondary">Sign in with your <strong>@sandpitnquarry.com</strong> credentials</p>
                     </div>
                     
-                    <form action="{{ route('login') }}" method="POST">
+                    <form action="{{ route('signin') }}" method="POST">
                         @csrf
                         <div class="mb-4">
                             <label for="email" class="form-label text-dark fw-medium mb-2">Email Address</label>
@@ -62,8 +62,6 @@
                         <div class="mt-4 text-center">
                             <p class="text-secondary small">This portal is restricted to authorized personnel only.<br>Access with @sandpitnquarry.com email addresses only</p>
                         </div>
-                        <!-- <div class="mt-32 text-center text-sm">
-                            <p class="mb-0 text-secondary">Don't have an account? <a href="{{ route('signup') }}" class="text-primary fw-semibold">Sign Up</a></p> -->                </form>
             </div>
         </div>
     </section>

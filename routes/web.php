@@ -31,54 +31,14 @@ use App\Http\Controllers\TruckController;
 use App\Http\Controllers\WheelController;
 
 // Authentication
-// - Keep legacy /login POST for compatibility (same controller method)
 Route::controller(AuthenticationController::class)->prefix('authentication')->group(function () {
-    Route::get('/forgotpassword', 'forgotPassword')->name('forgotPassword');
-    Route::get('/signin', 'signin')->name('signin');
-    Route::get('/signup', 'signup')->name('signup');
-
+    Route::get('/signin', [AuthenticationController::class, 'signIn'])->name('signin');
     // Form POST for the signin page
     Route::post('/signin', 'postLogin')->name('signin.post');
-
     // Logout (kept here since it's related to authentication)
     Route::post('/logout', 'logout')->name('logout');
 });
 
-// Keep Laravel default /login route for compatibility (points to same method)
-Route::post('/login', [AuthenticationController::class, 'postLogin'])->name('login');
-
-
-// API Routes (combined from api.php)
-Route::group(['prefix' => 'api'], function () {
-    // User API Routes
-    Route::group(['prefix' => 'auth'], function () {
-        Route::post('login', [App\Http\Controllers\AccountController::class, 'login']);
-        Route::post('register', [App\Http\Controllers\AccountController::class, 'register']);
-        
-        Route::group(['middleware' => 'auth:api'], function () {
-            Route::post('logout', [App\Http\Controllers\AccountController::class, 'apiLogout']);
-            Route::post('refresh', [App\Http\Controllers\AccountController::class, 'refresh']);
-            Route::get('me', [App\Http\Controllers\AccountController::class, 'me']);
-        });
-    });
-
-    // Customer API Routes (redirected to user routes for backward compatibility)
-    Route::group(['prefix' => 'customer'], function () {
-        Route::post('login', [App\Http\Controllers\AccountController::class, 'login']);
-        Route::post('register', [App\Http\Controllers\AccountController::class, 'register']);
-        
-        Route::group(['middleware' => 'auth:api'], function () {
-            Route::post('logout', [App\Http\Controllers\AccountController::class, 'apiLogout']);
-            Route::post('refresh', [App\Http\Controllers\AccountController::class, 'refresh']);
-            Route::get('me', [App\Http\Controllers\AccountController::class, 'me']);
-        });
-    });
-
-    // Fallback for undefined API routes
-    Route::fallback(function(){
-        return response()->json(['message' => 'Not Found'], 404);
-    });
-});
 
 // Protected routes - Require authentication
 Route::middleware(['auth'])->group(function () {
