@@ -5,7 +5,6 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Log;
 use Kreait\Firebase\Factory;
-use Kreait\Firebase\Auth;
 
 class FirebaseServiceProvider extends ServiceProvider
 {

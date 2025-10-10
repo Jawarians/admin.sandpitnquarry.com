@@ -6,21 +6,18 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class RedirectIfNotAuthenticated
+class AuthenticateUser
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
-     * @return mixed
-     */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next, $guard = null)
     {
-        if (!Auth::check()) {
-            return redirect()->route('signin');
+        if (Auth::guard($guard)->check()) {
+            return $next($request);
         }
-        
-        return $next($request);
+
+        if ($request->expectsJson()) {
+            return response()->json(['message' => 'Unauthenticated.'], 401);
+        }
+
+        return redirect()->route('signin');
     }
 }
