@@ -23,11 +23,6 @@ class AuthenticationController extends Controller
         return view('authentication/signin');
     }
 
-    public function signUp()
-    {
-        return view('authentication/signup');
-    }
-    
     public function postLogin(Request $request)
     {
         $validator = Validator::make($request->all(), [
