@@ -59,6 +59,7 @@ COPY . /var/www/html
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html
 RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chmod -R 644 /var/www/html/public/assets
 
 # Install dependencies
 RUN composer install --optimize-autoloader --no-interaction --no-plugins --no-scripts --prefer-dist
