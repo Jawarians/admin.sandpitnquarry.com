@@ -12,7 +12,6 @@ RUN apt-get update \
     libpng-dev \
     libicu-dev \
     pkg-config \
-    curl \
     && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
@@ -37,7 +36,8 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
-# Create a custom VirtualHost configuration for Cloud Run (using port 8080)
+# Create a custom virtual host configuration for Cloud Run
+# Use port 8080 directly in the Apache config since Cloud Run expects this port
 RUN { \
       echo '<VirtualHost *:8080>' ;\
       echo '  DocumentRoot /var/www/html/public' ;\
@@ -50,19 +50,15 @@ RUN { \
       echo '</VirtualHost>' ;\
     } > /etc/apache2/sites-available/000-default.conf
 
-# 🔧 Force Apache to listen on Cloud Run's port (8080)
-RUN sed -i 's/Listen 80/Listen 8080/' /etc/apache2/ports.conf
-
 # Set working directory
 WORKDIR /var/www/html
 
 # Copy project files
 COPY . /var/www/html
 
-# Set permissions for Laravel
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache \
-    && chmod -R 644 /var/www/html/public/assets || true
+# Set permissions
+RUN chown -R www-data:www-data /var/www/html
+RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Install dependencies
 RUN composer install --optimize-autoloader --no-interaction --no-plugins --no-scripts --prefer-dist
@@ -72,12 +68,21 @@ RUN npm install && npm run build
 COPY docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-# Install diagnostic tools (optional)
-RUN apt-get update && apt-get install -y net-tools procps lsof && rm -rf /var/lib/apt/lists/*
+# Install diagnostic tools
+RUN apt-get update && apt-get install -y net-tools procps lsof
 
-# Cloud Run port configuration
+# Configure for Cloud Run - explicitly set port 8080
 ENV PORT=8080
+
+# Expose port 8080 explicitly for Cloud Run
 EXPOSE 8080
 
-# Use entrypoint script
+# Set Apache environment variables
+ENV APACHE_RUN_USER=www-data
+ENV APACHE_RUN_GROUP=www-data
+ENV APACHE_PID_FILE=/var/run/apache2/apache2.pid
+ENV APACHE_LOG_DIR=/var/log/apache2
+ENV APACHE_LOCK_DIR=/var/lock/apache2
+
+# Set the entrypoint script
 ENTRYPOINT ["docker-entrypoint.sh"]
