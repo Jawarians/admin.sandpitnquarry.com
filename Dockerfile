@@ -59,7 +59,8 @@ COPY . /var/www/html
 # Set permissions for Laravel
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache \
-    && chmod -R 644 /var/www/html/public/assets || true
+    && find /var/www/html/public/assets -type d -exec chmod 755 {} \; \
+    && find /var/www/html/public/assets -type f -exec chmod 644 {} \;
 
 # Install dependencies
 RUN composer install --optimize-autoloader --no-interaction --no-plugins --no-scripts --prefer-dist
