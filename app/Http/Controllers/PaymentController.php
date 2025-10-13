@@ -12,14 +12,35 @@ class PaymentController extends Controller
     /**
      * Display a listing of the payments.
      */
-    public function index()
-    {
-        $payments = Payment::with(['latest', 'creator'])
-            ->orderBy('id', 'desc')
-            ->paginate(10);
-        
-        return view('payments.index', compact('payments'));
+    public function index(Request $request)
+{
+    $query = Payment::with(['latest', 'creator']);
+
+    // Filter by search term
+    if ($request->filled('search')) {
+        $searchTerm = addcslashes($request->search, '%_');
+        $query->where(function ($q) use ($searchTerm) {
+            $q->where('reference_number', 'like', '%' . $searchTerm . '%')
+              ->orWhere('remark', 'like', '%' . $searchTerm . '%');
+        });
     }
+
+    // Filter by status (from latest PaymentDetail)
+    if ($request->filled('status') && $request->status != 'Status') {
+        $statusValue = $request->status;
+        $query->whereHas('latest', function ($subQuery) use ($statusValue) {
+            $subQuery->where('status', $statusValue);
+        });
+    }
+
+    // Pagination size
+    $perPage = (int) ($request->per_page ?? 10);
+    $perPage = min(max($perPage, 5), 100);
+
+    $payments = $query->orderBy('id', 'desc')->paginate($perPage);
+
+    return view('payments.index', compact('payments'));
+}
 
     /**
      * Show the form for creating a new payment.

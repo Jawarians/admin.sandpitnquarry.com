@@ -21,14 +21,38 @@ class AccountController extends Controller
         // We'll handle auth in routes instead
     }
     
-    public function index()
-    {
-        $accounts = Account::with(['latest.latest', 'user'])
-            ->orderBy('id', 'desc')
-            ->paginate(10);
-            
-        return view('accounts.index', compact('accounts'));
+    public function index(Request $request)
+{
+    $query = Account::with(['latest.latest', 'user']);
+
+    // Filter by search term (e.g., code or user name)
+    if ($request->filled('search')) {
+        $searchTerm = $request->search;
+        $escapedSearchTerm = addcslashes($searchTerm, '%_');
+        $query->where(function ($q) use ($escapedSearchTerm) {
+            $q->where('code', 'like', '%' . $escapedSearchTerm . '%')
+              ->orWhereHas('user', function ($subQuery) use ($escapedSearchTerm) {
+                  $subQuery->where('name', 'like', '%' . $escapedSearchTerm . '%');
+              });
+        });
     }
+
+    // Filter by status
+    if ($request->filled('status') && $request->status != 'Status') {
+        $statusValue = $request->status;
+        $query->whereHas('latest', function ($subQuery) use ($statusValue) {
+            $subQuery->where('status', $statusValue);
+        });
+    }
+
+    // Pagination size (default 10, allowed: 5,10,25,50,100)
+    $perPage = (int) ($request->per_page ?? 10);
+    $perPage = in_array($perPage, [5, 10, 25, 50, 100]) ? $perPage : 10;
+
+    $accounts = $query->orderBy('id', 'desc')->paginate($perPage);
+
+    return view('accounts.index', compact('accounts'));
+}
     
     public function create()
     {
