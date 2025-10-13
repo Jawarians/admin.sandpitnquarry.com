@@ -17,12 +17,12 @@
                         <span class="text-md fw-medium text-secondary-light mb-0">Show</span>
                         <form method="GET">
                             <select class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px" name="per_page" onchange="this.form.submit()">
-                                <option value="5" {{ request('per_page') == 5 ? 'selected' : '' }}>5</option>
-                                <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
-                                <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
-                                <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
-                                <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
-                            </select>
+    <option value="5" {{ request('per_page') == '5' ? 'selected' : '' }}>5</option>
+    <option value="10" {{ request('per_page', 10) == '10' ? 'selected' : '' }}>10</option>
+    <option value="25" {{ request('per_page') == '25' ? 'selected' : '' }}>25</option>
+    <option value="50" {{ request('per_page') == '50' ? 'selected' : '' }}>50</option>
+    <option value="100" {{ request('per_page') == '100' ? 'selected' : '' }}>100</option>
+</select>
                             <input type="hidden" name="search" value="{{ request('search') }}">
                             <input type="hidden" name="type" value="{{ request('type') }}">
                         </form>
@@ -147,20 +147,20 @@
                                     </li>
                                 @endforeach
 
-                                {{-- Next Page Link --}}
-                                @if ($transporter->hasMorePages())
-                                    <li class="page-item">
-                                        <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" href="{{ $transporters->nextPageUrl() }}">
-                                            <iconify-icon icon="ep:d-arrow-right"></iconify-icon>
-                                        </a>
-                                    </li>
-                                @else
-                                    <li class="page-item disabled">
-                                        <span class="page-link bg-neutral-200 text-neutral-400 fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md">
-                                            <iconify-icon icon="ep:d-arrow-right"></iconify-icon>
-                                        </span>
-                                    </li>
-                                @endif
+                               {{-- Next Page Link --}}
+@if ($transporters->hasMorePages())
+    <li class="page-item">
+        <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" href="{{ $transporters->nextPageUrl() }}">
+            <iconify-icon icon="ep:d-arrow-right"></iconify-icon>
+        </a>
+    </li>
+@else
+    <li class="page-item disabled">
+        <span class="page-link bg-neutral-200 text-neutral-400 fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md">
+            <iconify-icon icon="ep:d-arrow-right"></iconify-icon>
+        </span>
+    </li>
+@endif
                             </ul>
                         </nav>
                     @endif
