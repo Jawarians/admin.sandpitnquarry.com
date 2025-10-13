@@ -15151,13 +15151,13 @@ body {
     }
     
     /* Form styling */
-    .form-control {
+    /* .form-control {
         color: #212529 !important;
         border: 1px solid #dee2e6;
         transition: border-color 0.2s, box-shadow 0.2s;
         padding-left: 45px !important;
         font-size: 15px;
-    }
+    } */
     
     .form-control:focus {
         border-color: #0d6efd;

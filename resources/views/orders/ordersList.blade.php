@@ -133,20 +133,37 @@
                                     <td>{{ isset($order->price_per_unit) ? 'MYR '.number_format($order->price_per_unit,2) : (isset($order->cost_amount) ? 'MYR '.number_format($order->cost_amount,2) : 'N/A') }}</td>
                                     <td>{{ $order->oldest->quantity ?? ($order->order_details->sum('quantity') ?? 'N/A') }}</td>
                                     <td>
-                                        @php
-                                            $transport = $order->order_amounts->firstWhere('order_amountable_type', 'transportation');
-                                            // Only try to resolve the morph relation when the stored type appears to be a PHP class
-                                            // or the referenced class actually exists. This avoids Eloquent trying to instantiate
-                                            // non-class strings like "transportation".
-                                            $hasOrderAmountObj = $transport && (str_contains($transport->order_amountable_type, '\\') || class_exists($transport->order_amountable_type));
-                                            $transportObj = $hasOrderAmountObj ? $transport->order_amountable : null;
-                                        @endphp
-                                        {{ $transport?->amount ? 'MYR '.number_format($transport->amount,2) : 'N/A' }}
-                                    </td>
-                                    <td>{{ $transportObj?->distance_text ?? 'N/A' }}</td>
-                                    <td>{{ $transportObj?->duration_text ?? 'N/A' }}</td>
+                            @php
+                            $transport = $order->transportation_amount;
+                            $feeAmount = 0;
+
+                            if (!is_null($transport) && isset($transport->amount) && !is_null($order->oldest) && isset($order->oldest->total_kg) && $order->oldest->total_kg > 0) {
+                            $feeAmount = $transport->amount / ($order->oldest->total_kg / 1000);
+                            }
+                            @endphp
+                            {{ 'MYR ' . number_format($feeAmount, 2) }}
+                        </td>
+                                   <td>
+                            @if($transport &&
+                            optional($transport->order_amountable)->route &&
+                            optional($transport->order_amountable->route)->distance_text)
+                            {{ $transport->order_amountable->route->distance_text }}
+                            @else
+                            N/A
+                            @endif
+                        </td>
+                        <td>
+                            @if($transport &&
+                            optional($transport->order_amountable)->route)
+                            {{ optional($transport->order_amountable->route)->traffic_text ?? 
+                                   optional($transport->order_amountable->route)->duration_text ?? 
+                                   'N/A' }}
+                            @else
+                            N/A
+                            @endif
+                        </td>
                                     <td>{{ optional($order->wheel)->wheel ?? 'N/A' }}</td>
-                                    <td>{{ $transportObj?->departure_at ? \Carbon\Carbon::parse($transportObj->departure_at)->format('d M Y H:i') : 'N/A' }}</td>
+                                    <td>{{ optional($order->purchase)->created_at ? $order->purchase->created_at->format('M d, Y H:i:s') : 'N/A' }}</td>
                                     <td>{{ $order->latest->total ?? ($order->order_details->sum('quantity') ?? 'N/A') }}</td>
                                     <td>{{ $order->completed ?? 0 }}</td>
                                     <td>{{ $order->ongoing ?? 0 }}</td>

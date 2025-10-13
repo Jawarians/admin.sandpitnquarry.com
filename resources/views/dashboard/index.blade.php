@@ -2,7 +2,6 @@
 
 @php
     $title='Dashboard';
-    $subTitle = 'AI';
     $script= '
     <style>
         .dashboard-card-link {
@@ -288,7 +287,7 @@
 
                             <div id="barChart" class="barChart" style="min-height: 250px; width: 100%; height: 250px;"></div>
                             <div class="text-center mt-2">
-                                <small class="text-muted">Last 7 days</small>
+                                <small class="text">Last 7 days</small>
                             </div>
                         </div>
                     </div>
@@ -328,7 +327,7 @@
 
                             <div id="dailySalesChart" class="dailySalesChart" style="min-height: 200px; width: 100%; height: 200px;"></div>
                             <div class="text-center mt-2">
-                                <small class="text-muted">Last 7 days</small>
+                                <small class="text">Last 7 days</small>
                             </div>
                         </div>
                     </div>

@@ -13,26 +13,6 @@ class TransporterController extends Controller
     {
         return view('transporters/addTransporter');
     }
-    
-    public function transportersGrid(Request $request)
-    {
-        $query = Transporter::query();
-        
-        // Handle search
-        if ($request->has('search') && !empty($request->search)) {
-            $searchTerm = $request->search;
-            $query->where(function($q) use ($searchTerm) {
-                $q->where('name', 'ILIKE', "%{$searchTerm}%")
-                  ->orWhere('registration_number', 'ILIKE', "%{$searchTerm}%");
-            });
-        }
-        
-        // Paginate results for grid view
-        $perPage = $request->get('per_page', 12);
-        $transporters = $query->with('owner')->orderBy('created_at', 'desc')->paginate($perPage);
-        
-        return view('transporters/transportersGrid', compact('transporters'));
-    }
 
     public function transportersList(Request $request)
     {
@@ -46,16 +26,20 @@ class TransporterController extends Controller
                   ->orWhere('registration_number', 'ILIKE', "%{$searchTerm}%");
             });
         }
-        
         // Handle type filter
         if ($request->has('type') && $request->type !== 'Type') {
             $query->where('type', $request->type);
         }
         
-        // Paginate results
-        $perPage = $request->get('per_page', 10);
-        $transporters = $query->with('owner')->orderBy('created_at', 'desc')->paginate($perPage);
+        // Cast pagination parameter to integer to prevent injection
+        $perPage = (int) ($request->per_page ?? 10);
+        // Limit reasonable pagination size
+        $perPage = min(max($perPage, 5), 100);
         
+        // Add index hint if you have an index on id (for larger tables)
+        // $query->from(DB::raw('trucks USE INDEX (primary)'));
+        
+        $transporters = $query->orderBy('id', 'desc')->paginate($perPage);        
         // Get all transporter types for filter dropdown
         $types = DB::table('company_types')->pluck('type');
         
