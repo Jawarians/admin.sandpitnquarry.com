@@ -117,7 +117,11 @@ $script ='<script>
                 </tbody>
             </table>
         </div>
-        @if ($transporters->hasPages())
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mt-24">
+            <span>
+                Showing {{ $transporters->firstItem() ?? 0 }} to {{ $transporters->lastItem() ?? 0 }} of {{ $transporters->total() }} entries
+            </span>
+            @if ($transporters->hasPages())
             <nav aria-label="Transporter pagination">
                 <ul class="pagination d-flex flex-wrap align-items-center gap-2 justify-content-center">
                     {{-- Previous Page Link --}}
@@ -159,10 +163,6 @@ $script ='<script>
                 </ul>
             </nav>
             @endif
-        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mt-24">
-            <span>
-                Showing {{ $transporters->firstItem() ?? 0 }} to {{ $transporters->lastItem() ?? 0 }} of {{ $transporters->total() }} entries
-            </span>
         </div>
     </div>
 </div>
