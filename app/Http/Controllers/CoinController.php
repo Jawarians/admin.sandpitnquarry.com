@@ -12,41 +12,44 @@ use Illuminate\Support\Facades\Auth;
 class CoinController extends Controller
 {
     public function index(Request $request)
-    {
-        $query = Coin::with('user')
-            ->orderBy('id', 'desc');
-            
-        // Apply search if provided
-        if ($request->has('search') && !empty($request->search)) {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('id', 'like', "%{$search}%")
-                  ->orWhereHas('user', function($userQuery) use ($search) {
-                      $userQuery->where('name', 'like', "%{$search}%");
-                  });
-            });
-        }
-        
-        // Filter by type if provided
-        if ($request->has('type') && $request->type !== 'Type') {
-            $query->where('coinable_type', $request->type);
-        }
-        
-        // Get pagination value or default to 10
-        $perPage = $request->per_page ?? 10;
-        
-        // Get the results
-        $coins = $query->paginate($perPage);
-        
-        // Get distinct coin types for filter dropdown
-        $coinTypes = DB::table('coins')
-            ->select('coinable_type')
-            ->distinct()
-            ->pluck('coinable_type')
-            ->toArray();
-            
-        return view('coins.index', compact('coins', 'coinTypes'));
+{
+    $query = Coin::with('user')->orderBy('id', 'desc');
+
+    // Search filter
+    if ($request->filled('search')) {
+        $searchTerm = $request->search;
+        $escapedSearchTerm = addcslashes($searchTerm, '%_');
+        $query->where(function($q) use ($escapedSearchTerm) {
+            $q->where('id', 'like', "%{$escapedSearchTerm}%")
+              ->orWhereHas('user', function($userQuery) use ($escapedSearchTerm) {
+                  $userQuery->where('name', 'like', "%{$escapedSearchTerm}%");
+              });
+        });
     }
+
+    // Type filter
+    if ($request->filled('type') && $request->type !== 'Type') {
+        $query->where('coinable_type', $request->type);
+    }
+
+    // Pagination: allow only 5, 10, 25, 50, 100
+    $allowedPerPage = [5, 10, 25, 50, 100];
+    $perPage = (int) ($request->per_page ?? 10);
+    if (!in_array($perPage, $allowedPerPage)) {
+        $perPage = 10;
+    }
+
+    $coins = $query->paginate($perPage);
+
+    // Distinct coin types for filter dropdown
+    $coinTypes = DB::table('coins')
+        ->select('coinable_type')
+        ->distinct()
+        ->pluck('coinable_type')
+        ->toArray();
+
+    return view('coins.index', compact('coins', 'coinTypes', 'perPage'));
+}
     
     public function create()
     {

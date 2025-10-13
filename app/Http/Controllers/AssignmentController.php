@@ -7,19 +7,39 @@ use Illuminate\Http\Request;
 
 class AssignmentController extends Controller
 {
-    public function index()
-    {
-        $assignments = Assignment::with([
-            'truck', 
-            'truck.transporter', 
-            'driver', 
-            'driver.user'
-        ])
-        ->orderBy('id', 'desc')
-        ->paginate(10);
-            
-        return view('assignments.index', compact('assignments'));
+    public function index(Request $request)
+{
+    $query = Assignment::with([
+        'truck', 
+        'truck.transporter', 
+        'driver', 
+        'driver.user'
+    ]);
+
+    // Filter by search term
+    if ($request->filled('search')) {
+        $searchTerm = addcslashes($request->search, '%_');
+        $query->where(function ($q) use ($searchTerm) {
+            $q->whereHas('truck', function ($subQuery) use ($searchTerm) {
+                $subQuery->where('registration_plate_number', 'like', '%' . $searchTerm . '%');
+            })
+            ->orWhereHas('driver.user', function ($subQuery) use ($searchTerm) {
+                $subQuery->where('name', 'like', '%' . $searchTerm . '%');
+            })
+            ->orWhereHas('truck.transporter', function ($subQuery) use ($searchTerm) {
+                $subQuery->where('name', 'like', '%' . $searchTerm . '%');
+            });
+        });
     }
+
+    // Pagination size
+    $perPage = (int) ($request->per_page ?? 10);
+    $perPage = min(max($perPage, 5), 100);
+
+    $assignments = $query->orderBy('id', 'desc')->paginate($perPage);
+
+    return view('assignments.index', compact('assignments'));
+}
     
     public function create()
     {
