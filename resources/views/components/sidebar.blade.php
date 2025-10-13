@@ -130,15 +130,21 @@
                 </a>
             </li>
             <li>
-                <a href="{{ route('freeDeliveries') }}">
-                    <iconify-icon icon="mdi:truck-fast-outline" class="menu-icon"></iconify-icon>
-                    <span>Free Deliveries</span>
-                </a>
-            </li>
-            <li>
                 <a href="{{ route('orderStatuses') }}">
                     <iconify-icon icon="mdi:package-variant-closed" class="menu-icon"></iconify-icon>
                     <span>Order Statuses</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('ordersList') }}">
+                    <iconify-icon icon="mdi:package-variant-closed" class="menu-icon"></iconify-icon>
+                    <span>Orders</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('freeDeliveries') }}">
+                    <iconify-icon icon="mdi:truck-fast-outline" class="menu-icon"></iconify-icon>
+                    <span>Free Deliveries</span>
                 </a>
             </li>
             <li>

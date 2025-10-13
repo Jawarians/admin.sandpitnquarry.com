@@ -1,7 +1,7 @@
 @extends('layout.layout')
 @php
-    $title = 'Free Deliveries';
-    $subTitle = 'Free Delivery Orders Management';
+$title = 'Free Deliveries';
+$subTitle = 'Free Delivery Orders Management';
 @endphp
 
 @section('content')
@@ -50,25 +50,25 @@
                                 ID
                             </div>
                         </th>
-                        <th scope="col">Customer</th>
-                        <th scope="col">Quarry</th>
-                        <th scope="col">Site</th>
-                        <th scope="col">Product</th>
-                        <th scope="col">Agent</th>
-                        <th scope="col">Unit</th>
-                        <th scope="col">Price/Unit</th>
-                        <th scope="col">Tonne</th>
-                        <th scope="col">Fee</th>
-                        <th scope="col">Distance</th>
-                        <th scope="col">Duration</th>
-                        <th scope="col">Wheel</th>
-                        <th scope="col">Start at</th>
-                        <th scope="col">Quantity</th>
-                        <th scope="col">Completed</th>
-                        <th scope="col">Ongoing</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Created at</th>
-                        <th scope="col" class="text-center">Action</th>
+                       <th scope="col">PO/PI</th>
+                                    <th scope="col">Customer</th>
+                                    <th scope="col">Quarry / Site</th>
+                                    <th scope="col">Product</th>
+                                    <th scope="col">Agent</th>
+                                    <th scope="col">Unit</th>
+                                    <th scope="col">Price / Unit</th>
+                                    <th scope="col">Tonne</th>
+                                    <th scope="col">Fee</th>
+                                    <th scope="col">Distance</th>
+                                    <th scope="col">Duration</th>
+                                    <th scope="col">Wheel</th>
+                                    <th scope="col">Start at</th>
+                                    <th scope="col">Quantity</th>
+                                    <th scope="col">Completed</th>
+                                    <th scope="col">Ongoing</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Created at</th>
+                                    <th scope="col" class="text-center">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -81,9 +81,9 @@
                                 </div>
                                 <div class="d-flex align-items-center gap-2">
                                     {{ $order->id }}
-                                    
-                                        <span class="bg-success-focus text-success-600 px-8 py-2 radius-4 fw-medium text-xs">FREE</span>
-                                   
+
+                                    <span class="bg-success-focus text-success-600 px-8 py-2 radius-4 fw-medium text-xs">FREE</span>
+
                                 </div>
                             </div>
                         </td>
@@ -102,51 +102,51 @@
                         <td>{{ isset($order->price_per_unit) ? 'MYR '.number_format($order->price_per_unit/100,2) : (isset($order->cost_amount) ? 'MYR '.number_format($order->cost_amount/100,2) : 'N/A') }}</td>
                         <td>{{ $order->oldest->quantity ?? ($order->order_details->sum('quantity') ?? 'N/A') }}</td>
                         <td>
-                            @php 
-        $transport = $order->transportation_amount;
-        $feeAmount = 0;
-        
-        if (!is_null($transport) && isset($transport->amount) && !is_null($order->oldest) && isset($order->oldest->total_kg) && $order->oldest->total_kg > 0) {
-            $feeAmount = $transport->amount / ($order->oldest->total_kg / 1000);
-        }
-    @endphp
-    {{ 'MYR ' . number_format($feeAmount, 2) }}
+                            @php
+                            $transport = $order->transportation_amount;
+                            $feeAmount = 0;
+
+                            if (!is_null($transport) && isset($transport->amount) && !is_null($order->oldest) && isset($order->oldest->total_kg) && $order->oldest->total_kg > 0) {
+                            $feeAmount = $transport->amount / ($order->oldest->total_kg / 1000);
+                            }
+                            @endphp
+                            {{ 'MYR ' . number_format($feeAmount, 2) }}
                         </td>
                         <td>
-                            @if($transport && 
-                                optional($transport->order_amountable)->route &&
-                                optional($transport->order_amountable->route)->distance_text)
-                                {{ $transport->order_amountable->route->distance_text }}
+                            @if($transport &&
+                            optional($transport->order_amountable)->route &&
+                            optional($transport->order_amountable->route)->distance_text)
+                            {{ $transport->order_amountable->route->distance_text }}
                             @else
-                                N/A
+                            N/A
                             @endif
                         </td>
                         <td>
-                            @if($transport && 
-                                optional($transport->order_amountable)->route)
-                                {{ optional($transport->order_amountable->route)->traffic_text ?? 
+                            @if($transport &&
+                            optional($transport->order_amountable)->route)
+                            {{ optional($transport->order_amountable->route)->traffic_text ?? 
                                    optional($transport->order_amountable->route)->duration_text ?? 
                                    'N/A' }}
                             @else
-                                N/A
+                            N/A
                             @endif
                         </td>
                         <td>{{ optional($order->wheel)->wheel ?? 'N/A' }}</td>
                         <td>{{ optional($order->purchase)->created_at ? $order->purchase->created_at->format('M d, Y H:i:s') : 'N/A' }}</td>
-                        <td>{{ $order->oldest->total ?? ($order->order_details->sum('quantity') ?? 'N/A') }}</td>
+                         <td>{{ $order->latest->total ?? ($order->order_details->sum('quantity') ?? 'N/A') }}</td>
                         <td>{{ $order->completed ?? 0 }}</td>
                         <td>{{ $order->ongoing ?? 0 }}</td>
                         <td>
                             @if($order->orderStatus)
-                                <span class="bg-success-focus text-success-600 border border-success-main px-16 py-4 radius-4 fw-medium text-sm">{{ $order->orderStatus->name }}</span>
+                            <span class="bg-success-focus text-success-600 border border-success-main px-16 py-4 radius-4 fw-medium text-sm">{{ $order->orderStatus->name }}</span>
                             @else
-                                @if($order->completed >= ($order->oldest->quantity ?? 0))
-                                    <span class="bg-success-focus text-success-600 border border-success-main px-16 py-4 radius-4 fw-medium text-sm">Completed</span>
-                                @elseif(isset($order->latest->status) && $order->latest->status == 'Cancelled')
-                                    <span class="bg-danger-focus text-danger-600 border border-danger-main px-16 py-4 radius-4 fw-medium text-sm">Cancelled</span>
-                                @else
-                                    <span class="bg-warning-focus text-warning-600 border border-warning-main px-16 py-4 radius-4 fw-medium text-sm">Incomplete</span>
-                                @endif
+                            @if($order->completed >= ($order->oldest->quantity ?? 0))
+                            <span class="bg-success-focus text-success-600 border border-success-main px-16 py-4 radius-4 fw-medium text-sm">Completed</span>
+                            @elseif(isset($order->latest->status) && $order->latest->status == 'Cancelled')
+                            <span class="bg-danger-focus text-danger-600 border border-danger-main px-16 py-4 radius-4 fw-medium text-sm">Cancelled</span>
+                            @else
+                            <span class="bg-warning-focus text-warning-600 border border-warning-main px-16 py-4 radius-4 fw-medium text-sm">Incomplete</span>
+                            @endif
                             @endif
                         </td>
                         <td class="text-center">
@@ -165,9 +165,9 @@
                                 <h5 class="text-neutral-500 mb-2">No Free Deliveries Found</h5>
                                 <p class="text-neutral-400 mb-0">
                                     @if(request('search'))
-                                        No free delivery orders match your search criteria.
+                                    No free delivery orders match your search criteria.
                                     @else
-                                        There are no free delivery orders in the system yet.
+                                    There are no free delivery orders in the system yet.
                                     @endif
                                 </p>
                             </div>
@@ -182,11 +182,11 @@
             <span>
                 Showing {{ $freeDeliveries->firstItem() }} to {{ $freeDeliveries->lastItem() }} of {{ $freeDeliveries->total() }} entries
             </span>
-            
+
             @if ($freeDeliveries->hasPages())
-                <nav aria-label="Free deliveries pagination">
-                    {{ $freeDeliveries->links() }}
-                </nav>
+            <nav aria-label="Free deliveries pagination">
+                {{ $freeDeliveries->links() }}
+            </nav>
             @endif
         </div>
 
@@ -209,32 +209,32 @@
                         <h6 class="text-lg text-primary-600 mb-4">Total Value Saved</h6>
                         <h4 class="text-2xl fw-bold text-primary-600 mb-0">
                             @php
-                                $defaultValue = $freeDeliveries->count() * 500;
-                                $transportValues = [];
-                                
-                                // Manually loop through orders instead of using sum() with a callback
-                                foreach ($freeDeliveries as $order) {
-                                    if (!$order->transportation_amount) {
-                                        continue;
-                                    }
-                                    
-                                    if (!isset($order->transportation_amount->amount)) {
-                                        continue;
-                                    }
-                                    
-                                    $amount = $order->transportation_amount->amount;
-                                    
-                                    // Handle formatted string values
-                                    if (is_string($amount) && strpos($amount, '.') !== false) {
-                                        $transportValues[] = (float) str_replace(',', '', $amount) * 100;
-                                    }
-                                    // Handle numeric values
-                                    elseif (is_numeric($amount)) {
-                                        $transportValues[] = $amount * 100;
-                                    }
-                                }
-                                
-                                $totalValue = !empty($transportValues) ? array_sum($transportValues) : $defaultValue;
+                            $defaultValue = $freeDeliveries->count() * 500;
+                            $transportValues = [];
+
+                            // Manually loop through orders instead of using sum() with a callback
+                            foreach ($freeDeliveries as $order) {
+                            if (!$order->transportation_amount) {
+                            continue;
+                            }
+
+                            if (!isset($order->transportation_amount->amount)) {
+                            continue;
+                            }
+
+                            $amount = $order->transportation_amount->amount;
+
+                            // Handle formatted string values
+                            if (is_string($amount) && strpos($amount, '.') !== false) {
+                            $transportValues[] = (float) str_replace(',', '', $amount) * 100;
+                            }
+                            // Handle numeric values
+                            elseif (is_numeric($amount)) {
+                            $transportValues[] = $amount * 100;
+                            }
+                            }
+
+                            $totalValue = !empty($transportValues) ? array_sum($transportValues) : $defaultValue;
                             @endphp
                             MYR {{ number_format($totalValue / 100, 2) }}
                         </h4>

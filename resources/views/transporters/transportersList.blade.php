@@ -115,26 +115,108 @@
                                 </tr>
                                 @endforelse
                             </tbody>
-                        </table>
-                        
-                        <div class="mt-24">
-                            {{ $transporters->appends(request()->query())->links() }}
                         </div>
-                    </div>
+
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mt-24">
+                    <span>
+                        Showing {{ $transporters->firstItem() ?? 0 }} to {{ $transporters->lastItem() ?? 0 }} of {{ $transporters->total() }} entries
+                    </span>
+                    
+                    @if ($transporters->hasPages())
+                        <nav aria-label="Transporter pagination">
+                            <ul class="pagination d-flex flex-wrap align-items-center gap-2 justify-content-center">
+                                {{-- Previous Page Link --}}
+                                @if ($transporters->onFirstPage())
+                                    <li class="page-item disabled">
+                                        <span class="page-link bg-neutral-200 text-neutral-400 fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md">
+                                            <iconify-icon icon="ep:d-arrow-left"></iconify-icon>
+                                        </span>
+                                    </li>
+                                @else
+                                    <li class="page-item">
+                                        <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" href="{{ $transporters->previousPageUrl() }}">
+                                            <iconify-icon icon="ep:d-arrow-left"></iconify-icon>
+                                        </a>
+                                    </li>
+                                @endif
+
+                                {{-- Pagination Elements --}}
+                                @foreach ($transporters->getUrlRange(1, $transporters->lastPage()) as $page => $url)
+                                    <li class="page-item {{ $page == $transporters->currentPage() ? 'active' : '' }}">
+                                        <a class="page-link {{ $page == $transporters->currentPage() ? 'bg-primary-600 text-white' : 'bg-neutral-200 text-secondary-light' }} fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" href="{{ $url }}">{{ $page }}</a>
+                                    </li>
+                                @endforeach
+
+                                {{-- Next Page Link --}}
+                                @if ($transporter->hasMorePages())
+                                    <li class="page-item">
+                                        <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" href="{{ $transporters->nextPageUrl() }}">
+                                            <iconify-icon icon="ep:d-arrow-right"></iconify-icon>
+                                        </a>
+                                    </li>
+                                @else
+                                    <li class="page-item disabled">
+                                        <span class="page-link bg-neutral-200 text-neutral-400 fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md">
+                                            <iconify-icon icon="ep:d-arrow-right"></iconify-icon>
+                                        </span>
+                                    </li>
+                                @endif
+                            </ul>
+                        </nav>
+                    @endif
                 </div>
             </div>
-
-<script>
-    document.getElementById('selectAll').addEventListener('change', function() {
-        const checkboxes = document.querySelectorAll('input[name="checkbox"]');
-        checkboxes.forEach(checkbox => {
-            checkbox.checked = this.checked;
+        </div>
+  <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Select all checkboxes
+            const selectAllCheckbox = document.getElementById('selectAll');
+            const checkboxes = document.querySelectorAll('input[name="checkbox"]');
+            
+            if (selectAllCheckbox) {
+                selectAllCheckbox.addEventListener('change', function() {
+                    checkboxes.forEach(function(checkbox) {
+                        checkbox.checked = selectAllCheckbox.checked;
+                    });
+                });
+            }
+            
+            // Initialize clipboard functionality
+            const clipboard = new ClipboardJS('.copy-text');
+            
+            clipboard.on('success', function(e) {
+                // Create a temporary tooltip
+                const tooltip = document.createElement('div');
+                tooltip.textContent = 'Transporter ID copied';
+                tooltip.className = 'copy-tooltip';
+                document.body.appendChild(tooltip);
+                
+                // Position near the clicked element
+                const rect = e.trigger.getBoundingClientRect();
+                tooltip.style.top = `${rect.bottom + window.scrollY + 5}px`;
+                tooltip.style.left = `${rect.left + window.scrollX}px`;
+                
+                // Remove after 1.5 seconds
+                setTimeout(() => {
+                    tooltip.remove();
+                }, 1500);
+                
+                e.clearSelection();
+            });
         });
-    });
+    </script>
 
-    function copyToClipboard(text) {
-        navigator.clipboard.writeText(text);
-        alert('Transporter ID copied');
-    }
-</script>
+    <style>
+        .copy-text {
+            cursor: pointer;
+        }
+        .copy-tooltip {
+            position: absolute;
+            background: #333;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            z-index: 1000;
+        }
+    </style>
 @endsection

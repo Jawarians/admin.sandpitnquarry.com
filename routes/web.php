@@ -205,7 +205,6 @@ Route::middleware(['auth'])->group(function () {
         Route::controller(TransporterController::class)->group(function () {
             Route::get('/add-transporter', 'addTransporter')->name('addTransporter');
             Route::post('/store-transporter', 'storeTransporter')->name('storeTransporter');
-            Route::get('/transporters-grid', 'transportersGrid')->name('transportersGrid');
             Route::get('/transporters-list', 'transportersList')->name('transportersList');
             Route::get('/view-transporter/{id}', 'viewTransporter')->name('viewTransporter');
             Route::get('/edit-transporter/{id}', 'editTransporter')->name('editTransporter');

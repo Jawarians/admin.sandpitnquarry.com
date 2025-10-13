@@ -63,8 +63,7 @@
                                     <th scope="col">Join Date</th>
                                     <th scope="col">Name</th>
                                     <th scope="col">Email</th>
-                                    <th scope="col">Department</th>
-                                    <th scope="col">Designation</th>
+                                    <th scope="col">Phone</th>
                                     <th scope="col" class="text-center">Status</th>
                                     <th scope="col" class="text-center">Action</th>
                                 </tr>
@@ -94,8 +93,7 @@
                                         </div>
                                     </td>
                                     <td><span class="text-md mb-0 fw-normal text-secondary-light">{{ $user->email ?? 'N/A' }}</span></td>
-                                    <td>{{ $user->department ?? 'N/A' }}</td>
-                                    <td>{{ $user->designation ?? 'User' }}</td>
+                                    <td>{{ $user->phone ?? 'N/A' }}</td>
                                     <td class="text-center">
                                         @if($user->email_verified_at)
                                             <span class="bg-success-focus text-success-600 border border-success-main px-24 py-4 radius-4 fw-medium text-sm">Active</span>

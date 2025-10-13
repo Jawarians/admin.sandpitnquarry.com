@@ -35,7 +35,8 @@ function initializeDailySalesChart() {
             data: salesAmounts
         }],
         chart: {
-            height: 200,
+            height: 300,
+            width: 200,
             type: 'bar',
             toolbar: {
                 show: false
@@ -56,7 +57,7 @@ function initializeDailySalesChart() {
             enabled: false
         },
         legend: {
-            show: false
+            show: true
         },
         grid: {
             borderColor: '#e0e0e0',
