@@ -15,36 +15,35 @@ class TransporterController extends Controller
     }
 
     public function transportersList(Request $request)
-    {
-        $query = Transporter::query();
-        
-        // Handle search
-        if ($request->has('search') && !empty($request->search)) {
-            $searchTerm = $request->search;
-            $query->where(function($q) use ($searchTerm) {
-                $q->where('name', 'ILIKE', "%{$searchTerm}%")
-                  ->orWhere('registration_number', 'ILIKE', "%{$searchTerm}%");
-            });
-        }
-        // Handle type filter
-        if ($request->has('type') && $request->type !== 'Type') {
-            $query->where('type', $request->type);
-        }
-        
-        // Cast pagination parameter to integer to prevent injection
-        $perPage = (int) ($request->per_page ?? 10);
-        // Limit reasonable pagination size
-        $perPage = min(max($perPage, 5), 100);
-        
-        // Add index hint if you have an index on id (for larger tables)
-        // $query->from(DB::raw('trucks USE INDEX (primary)'));
-        
-        $transporters = $query->orderBy('id', 'desc')->paginate($perPage);        
-        // Get all transporter types for filter dropdown
-        $types = DB::table('company_types')->pluck('type');
-        
-        return view('transporters/transportersList', compact('transporters', 'types'));
+{
+    $query = Transporter::with(['owner']);
+
+    // Filter by search term using parameter binding to prevent SQL injection
+    if ($request->filled('search')) {
+        $searchTerm = $request->search;
+        $escapedSearchTerm = addcslashes($searchTerm, '%_');
+        $query->where(function ($q) use ($escapedSearchTerm) {
+            $q->where('name', 'like', '%' . $escapedSearchTerm . '%')
+              ->orWhere('registration_number', 'like', '%' . $escapedSearchTerm . '%');
+        });
     }
+
+    // Filter by type
+    if ($request->filled('type') && $request->type != 'Type') {
+        $query->where('type', $request->type);
+    }
+
+    // Cast pagination parameter to integer to prevent injection
+    $perPage = (int) ($request->per_page ?? 10);
+    $perPage = min(max($perPage, 5), 100);
+
+    $transporters = $query->orderBy('id', 'desc')->paginate($perPage);
+
+    // Get all transporter types for filter dropdown
+    $types = DB::table('company_types')->pluck('type');
+
+    return view('transporters/transportersList', compact('transporters', 'types'));
+}
     
     public function viewTransporter($id)
     {
