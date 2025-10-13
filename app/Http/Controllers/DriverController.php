@@ -10,21 +10,46 @@ use Illuminate\Http\Request;
 
 class DriverController extends Controller
 {
-    public function index()
-    {
-        $drivers = Driver::with([
-            'user:id,name,email,phone',
-            'transporter:id,name',
-            'current.truck:id,registration_plate_number',
-            'latest'
-        ])
-            ->select('drivers.*')
-            ->where('id', '>', 0)
-            ->orderBy('id', 'desc')
-            ->paginate(10);
-            
-        return view('drivers.index', compact('drivers'));
+    public function index(Request $request)
+{
+    $query = Driver::with([
+        'user:id,name,email,phone',
+        'transporter:id,name',
+        'current.truck:id,registration_plate_number',
+        'latest'
+    ]);
+
+    // Filter by search term
+    if ($request->filled('search')) {
+        $searchTerm = addcslashes($request->search, '%_');
+        $query->where(function ($q) use ($searchTerm) {
+            $q->whereHas('user', function ($subQuery) use ($searchTerm) {
+                $subQuery->where('name', 'like', '%' . $searchTerm . '%')
+                         ->orWhere('email', 'like', '%' . $searchTerm . '%')
+                         ->orWhere('phone', 'like', '%' . $searchTerm . '%');
+            })
+            ->orWhereHas('transporter', function ($subQuery) use ($searchTerm) {
+                $subQuery->where('name', 'like', '%' . $searchTerm . '%');
+            });
+        });
     }
+
+    // Filter by status
+    if ($request->filled('status') && $request->status != 'Status') {
+        $statusValue = $request->status;
+        $query->whereHas('latest', function ($subQuery) use ($statusValue) {
+            $subQuery->where('status', $statusValue);
+        });
+    }
+
+    // Pagination size
+    $perPage = (int) ($request->per_page ?? 10);
+    $perPage = min(max($perPage, 5), 100);
+
+    $drivers = $query->orderBy('id', 'desc')->paginate($perPage);
+
+    return view('drivers.index', compact('drivers'));
+}
     
     public function create()
     {
