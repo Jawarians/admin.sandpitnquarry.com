@@ -2,6 +2,7 @@
 
 @php
     $title='Dashboard';
+     $subTitle = 'Analyst';
     $script= '
     <style>
         .dashboard-card-link {

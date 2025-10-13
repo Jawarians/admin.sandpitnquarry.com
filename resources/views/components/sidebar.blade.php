@@ -18,10 +18,10 @@
                 </a>
                 <ul class="sidebar-submenu">
                     <li>
-                        <a href="{{ route('dashboard.index') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> AI</a>
+                        <a href="{{ route('dashboard.index') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Analyst Dashboard</a>
                     </li>
                     <li>
-                        <a href="{{ route('dashboard.Analyst') }}"><i class="ri-circle-fill circle-icon text-success-main w-auto"></i> Analyst</a>
+                        <a href="{{ route('dashboard.Analyst') }}"><i class="ri-circle-fill circle-icon text-success-main w-auto"></i> Operations Dashboard</a>
                     </li>
                 </ul>
             </li>
