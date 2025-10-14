@@ -3,7 +3,7 @@
 @php
     $title='Dashboard';
      $subTitle = 'Analyst';
-    $script= '
+@endphp
     <style>
         .dashboard-card-link {
             transition: transform 0.2s ease-in-out;
@@ -20,55 +20,33 @@
         }
     </style>
     <script>
-        // Pass data to JavaScript
-        const dashboardData = {
-            monthlyOrderData: ' . json_encode($monthlyOrderData) . ',
-            dailyOrderData: ' . json_encode($dailyOrderData) . ',
-            jobsByTypeData: ' . json_encode($jobsByTypeData ?? []) . ',
-            completedTrips: ' . $completedTrips . ',
-            cancelledTrips: ' . $cancelledTrips . ',
-            totalTrips: ' . $totalTrips . ',
-            ordersByLocation: ' . json_encode($ordersByLocation) . ',
-            monthlyTripData: ' . json_encode($monthlyTripData) . ',
-            productCategoryData: ' . json_encode($productCategoryData) . ',
-            dailySalesData: ' . json_encode($dailySalesData ?? []) . '
-        };
-        
-        // Force charts to render even if there are errors elsewhere
-        window.addEventListener("load", function() {
-            if (typeof ApexCharts !== "undefined") {
-                console.log("Window loaded, forcing chart re-initialization");
-                setTimeout(function() {
-                    // Force re-render of problematic charts
-                    try {
-                        if (typeof initProblematicCharts === "function") {
-                            initProblematicCharts();
-                        }
-                    } catch (e) {
-                        console.error("Error in forced chart initialization:", e);
-                    }
-                }, 100);
-            }
-        });
-    </script>
-    
+    const dashboardData = {
+        monthlyOrderData: {!! json_encode($monthlyOrderData) !!},
+        dailyOrderData: {!! json_encode($dailyOrderData) !!},
+        jobsByTypeData: {!! json_encode($jobsByTypeData ?? []) !!},
+        completedTrips: {{ $completedTrips }},
+        cancelledTrips: {{ $cancelledTrips }},
+        totalTrips: {{ $totalTrips }},
+        ordersByLocation: {!! json_encode($ordersByLocation) !!},
+        monthlyTripData: {!! json_encode($monthlyTripData) !!},
+        productCategoryData: {!! json_encode($productCategoryData) !!},
+        dailySalesData: {!! json_encode($dailySalesData ?? []) !!}
+    };
+</script>
     <!-- Load ApexCharts before any chart initialization scripts -->
     <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.37.0/dist/apexcharts.min.js"></script>
-    
-    <!-- Load other chart scripts -->
-    <!-- Load ApexCharts directly from CDN to ensure availability -->
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.37.0/dist/apexcharts.min.js"></script>
-    
+    <script>
+    window.addEventListener("DOMContentLoaded", function() {
+        if (typeof initDashboardCharts === "function") {
+            initDashboardCharts();
+        }
+    });
+</script>
     <!-- Load chart scripts -->
-    <script src="' . asset('assets/js/dashboard-charts.js') . '"></script>
-    <script src="' . asset('assets/js/homeOneChart.js') . '"></script>
-    <script src="' . asset('assets/js/daily-sales-chart.js') . '"></script>
-    <!-- chart-init.js removed to avoid redundancy -->
-    <script src="' . asset('assets/js/chart-emergency-fix.js') . '"></script>
-    
-    <!-- Emergency fix script - guaranteed to render problematic charts -->
-    <script src="' . asset('assets/js/chart-emergency-fix.js') . '"></script>';
-@endphp
+<script src="{{ asset('assets/js/dashboard-charts.js') }}"></script>
+<script src="{{ asset('assets/js/homeOneChart.js') }}"></script>
+<script src="{{ asset('assets/js/daily-sales-chart.js') }}"></script>
+
 
 @section('content')
 
