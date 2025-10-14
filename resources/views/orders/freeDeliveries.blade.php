@@ -8,14 +8,15 @@ $subTitle = 'Free Delivery Orders Management';
 
 <div class="card h-100 p-0 radius-12">
     <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-between">
+        <!-- Filters Row -->
         <div class="d-flex align-items-center flex-wrap gap-3">
             <a href="{{ route('ordersList') }}" class="btn btn-outline-primary text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2">
                 <iconify-icon icon="ep:back" class="icon text-xl line-height-1"></iconify-icon>
                 Back to Orders
             </a>
             <span class="text-md fw-medium text-secondary-light mb-0">Show</span>
-            <form method="GET">
-                <select class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px" name="per_page" onchange="this.form.submit()">
+            <form method="GET" class="d-inline">
+                <select class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-32-px" name="per_page" onchange="this.form.submit()">
                     <option value="5" {{ request('per_page') == 5 ? 'selected' : '' }}>5</option>
                     <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
                     <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
@@ -23,10 +24,29 @@ $subTitle = 'Free Delivery Orders Management';
                     <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
                 </select>
                 <input type="hidden" name="search" value="{{ request('search') }}">
+                <input type="hidden" name="start_date" value="{{ request('start_date') }}">
+                <input type="hidden" name="end_date" value="{{ request('end_date') }}">
             </form>
-            <form class="navbar-search" method="GET">
-                <input type="text" class="bg-base h-40-px w-auto" name="search" placeholder="Search free deliveries..." value="{{ request('search') }}">
+            <form class="navbar-search d-inline-flex align-items-center gap-2" method="GET">
+                <input type="text" class="bg-base h-32-px w-auto form-control form-control-sm" name="search" placeholder="Search free deliveries..." value="{{ request('search') }}">
                 <iconify-icon icon="ion:search-outline" class="icon"></iconify-icon>
+                <input type="hidden" name="per_page" value="{{ request('per_page', 10) }}">
+                <input type="hidden" name="start_date" value="{{ request('start_date') }}">
+                <input type="hidden" name="end_date" value="{{ request('end_date') }}">
+            </form>
+            <!-- Compact Calendar Filter -->
+            <form class="d-inline-flex align-items-center gap-1" method="GET" style="min-width:0;">
+                <div class="input-group input-group-sm" style="width:auto;">
+                    <span class="input-group-text bg-base h-32-px px-2 py-0">From</span>
+                    <input type="date" class="form-control bg-base h-32-px px-2 py-0" name="start_date" value="{{ request('start_date') }}" style="width:120px;">
+                </div>
+                <div class="input-group input-group-sm" style="width:auto;">
+                    <span class="input-group-text bg-base h-32-px px-2 py-0">To</span>
+                    <input type="date" class="form-control bg-base h-32-px px-2 py-0" name="end_date" value="{{ request('end_date') }}" style="width:120px;">
+                </div>
+                <button type="submit" class="btn btn-sm btn-primary h-32-px px-3">Filter</button>
+                <button type="button" id="clearDateFilter" class="btn btn-sm btn-outline-secondary h-32-px px-3">Clear</button>
+                <input type="hidden" name="search" value="{{ request('search') }}">
                 <input type="hidden" name="per_page" value="{{ request('per_page', 10) }}">
             </form>
         </div>
@@ -37,6 +57,16 @@ $subTitle = 'Free Delivery Orders Management';
             </div>
         </div>
     </div>
+    <script>
+        $(document).ready(function() {
+            // Clear date filters
+            $("#clearDateFilter").on("click", function() {
+                $("input[name='start_date']").val("");
+                $("input[name='end_date']").val("");
+                $(this).closest("form").submit();
+            });
+        });
+    </script>
     <div class="card-body p-24">
         <div class="table-responsive scroll-sm">
             <table class="table bordered-table sm-table mb-0">
