@@ -28,7 +28,7 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="card mb-4">
-                    <div class="card-header bg-light">
+                    <div class="card-header">
                         <h5 class="card-title mb-0">Account Information</h5>
                     </div>
                     <div class="card-body">
@@ -81,7 +81,7 @@
             
             <div class="col-md-6">
                 <div class="card mb-4">
-                    <div class="card-header bg-light">
+                    <div class="card-header">
                         <h5 class="card-title mb-0">Credit Information</h5>
                     </div>
                     <div class="card-body">
@@ -119,7 +119,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="card">
-                    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <div class="card-header d-flex justify-content-between align-items-center">
                         <h5 class="card-title mb-0">Account History</h5>
                     </div>
                     <div class="card-body">

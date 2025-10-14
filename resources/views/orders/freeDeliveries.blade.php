@@ -50,25 +50,25 @@ $subTitle = 'Free Delivery Orders Management';
                                 ID
                             </div>
                         </th>
-                       <th scope="col">PO/PI</th>
-                                    <th scope="col">Customer</th>
-                                    <th scope="col">Quarry / Site</th>
-                                    <th scope="col">Product</th>
-                                    <th scope="col">Agent</th>
-                                    <th scope="col">Unit</th>
-                                    <th scope="col">Price / Unit</th>
-                                    <th scope="col">Tonne</th>
-                                    <th scope="col">Fee</th>
-                                    <th scope="col">Distance</th>
-                                    <th scope="col">Duration</th>
-                                    <th scope="col">Wheel</th>
-                                    <th scope="col">Start at</th>
-                                    <th scope="col">Quantity</th>
-                                    <th scope="col">Completed</th>
-                                    <th scope="col">Ongoing</th>
-                                    <th scope="col">Status</th>
-                                    <th scope="col">Created at</th>
-                                    <th scope="col" class="text-center">Action</th>
+                        <th scope="col">PO/PI</th>
+                        <th scope="col">Customer</th>
+                        <th scope="col">Quarry / Site</th>
+                        <th scope="col">Product</th>
+                        <th scope="col">Agent</th>
+                        <th scope="col">Unit</th>
+                        <th scope="col">Price / Unit</th>
+                        <th scope="col">Tonne</th>
+                        <th scope="col">Fee</th>
+                        <th scope="col">Distance</th>
+                        <th scope="col">Duration</th>
+                        <th scope="col">Wheel</th>
+                        <th scope="col">Start at</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Completed</th>
+                        <th scope="col">Ongoing</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Created at</th>
+                        <th scope="col" class="text-center">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -133,7 +133,7 @@ $subTitle = 'Free Delivery Orders Management';
                         </td>
                         <td>{{ optional($order->wheel)->wheel ?? 'N/A' }}</td>
                         <td>{{ optional($order->purchase)->created_at ? $order->purchase->created_at->format('M d, Y H:i:s') : 'N/A' }}</td>
-                         <td>{{ $order->latest->total ?? ($order->order_details->sum('quantity') ?? 'N/A') }}</td>
+                        <td>{{ $order->latest->total ?? ($order->order_details->sum('quantity') ?? 'N/A') }}</td>
                         <td>{{ $order->completed ?? 0 }}</td>
                         <td>{{ $order->ongoing ?? 0 }}</td>
                         <td>
@@ -185,7 +185,90 @@ $subTitle = 'Free Delivery Orders Management';
 
             @if ($freeDeliveries->hasPages())
             <nav aria-label="Free deliveries pagination">
-                {{ $freeDeliveries->links() }}
+                @if ($freeDeliveries->hasPages())
+                <nav aria-label="Free deliveries pagination">
+                    <ul class="pagination d-flex flex-wrap align-items-center gap-2 justify-content-center">
+                        {{-- Previous Page Link --}}
+                        @if ($freeDeliveries->onFirstPage())
+                        <li class="page-item disabled">
+                            <span class="page-link bg-neutral-200 text-neutral-400 fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md">
+                                <iconify-icon icon="ep:d-arrow-left"></iconify-icon>
+                            </span>
+                        </li>
+                        @else
+                        <li class="page-item">
+                            <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" href="{{ $freeDeliveries->appends(request()->except('page'))->previousPageUrl() }}">
+                                <iconify-icon icon="ep:d-arrow-left"></iconify-icon>
+                            </a>
+                        </li>
+                        @endif
+
+                        {{-- Pagination Elements --}}
+                        @php
+                        $currentPage = $freeDeliveries->currentPage();
+                        $lastPage = $freeDeliveries->lastPage();
+                        $window = 2;
+                        $startPage = max(1, $currentPage - $window);
+                        $endPage = min($lastPage, $currentPage + $window);
+                        $ellipsisStart = $startPage > 1;
+                        $ellipsisEnd = $endPage < $lastPage;
+                            $links=$freeDeliveries->appends(request()->except('page'))->getUrlRange($startPage, $endPage);
+                            @endphp
+
+                            {{-- First Page if not in range --}}
+                            @if($ellipsisStart && $startPage > 1)
+                            <li class="page-item">
+                                <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" href="{{ $freeDeliveries->appends(request()->except('page'))->url(1) }}">1</a>
+                            </li>
+                            @if($startPage > 2)
+                            <li class="page-item disabled">
+                                <span class="page-link bg-neutral-200 text-neutral-400 fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md">...</span>
+                            </li>
+                            @endif
+                            @endif
+
+                            {{-- Page Numbers in the window --}}
+                            @foreach ($links as $page => $url)
+                            @if ($page == $freeDeliveries->currentPage())
+                            <li class="page-item active">
+                                <span class="page-link text-white fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md bg-primary-600">{{ $page }}</span>
+                            </li>
+                            @else
+                            <li class="page-item">
+                                <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" href="{{ $url }}">{{ $page }}</a>
+                            </li>
+                            @endif
+                            @endforeach
+
+                            {{-- Last Page if not in range --}}
+                            @if($ellipsisEnd && $endPage < $lastPage)
+                                @if($endPage < $lastPage - 1)
+                                <li class="page-item disabled">
+                                <span class="page-link bg-neutral-200 text-neutral-400 fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md">...</span>
+                                </li>
+                                @endif
+                                <li class="page-item">
+                                    <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" href="{{ $freeDeliveries->appends(request()->except('page'))->url($lastPage) }}">{{ $lastPage }}</a>
+                                </li>
+                                @endif
+
+                                {{-- Next Page Link --}}
+                                @if ($freeDeliveries->hasMorePages())
+                                <li class="page-item">
+                                    <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" href="{{ $freeDeliveries->appends(request()->except('page'))->nextPageUrl() }}">
+                                        <iconify-icon icon="ep:d-arrow-right"></iconify-icon>
+                                    </a>
+                                </li>
+                                @else
+                                <li class="page-item disabled">
+                                    <span class="page-link bg-neutral-200 text-neutral-400 fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md">
+                                        <iconify-icon icon="ep:d-arrow-right"></iconify-icon>
+                                    </span>
+                                </li>
+                                @endif
+                    </ul>
+                </nav>
+                @endif
             </nav>
             @endif
         </div>
