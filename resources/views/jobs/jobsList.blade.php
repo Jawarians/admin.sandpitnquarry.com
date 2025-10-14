@@ -274,7 +274,8 @@ $script ='<script>
                         </li>
                         @else
                         <li class="page-item">
-                            <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" href="{{ $jobs->previousPageUrl() }}">
+                            <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md"
+                                href="{{ $jobs->previousPageUrl() }}&per_page={{ request('per_page', 10) }}&search={{ urlencode(request('search')) }}&start_date={{ urlencode(request('start_date')) }}&end_date={{ urlencode(request('end_date')) }}">
                                 <iconify-icon icon="ep:d-arrow-left"></iconify-icon>
                             </a>
                         </li>
@@ -302,6 +303,7 @@ $script ='<script>
                                 }
                                 @endphp
 
+                                {{-- Pagination Elements with Ellipsis --}}
                                 @foreach ($displayPages as $page)
                                 @if ($page === '...')
                                 <li class="page-item disabled">
@@ -313,7 +315,8 @@ $script ='<script>
                                 </li>
                                 @else
                                 <li class="page-item">
-                                    <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" href="{{ $jobs->url($page) }}">{{ $page }}</a>
+                                    <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md"
+                                        href="{{ $jobs->url($page) }}&per_page={{ request('per_page', 10) }}&search={{ urlencode(request('search')) }}&start_date={{ urlencode(request('start_date')) }}&end_date={{ urlencode(request('end_date')) }}">{{ $page }}</a>
                                 </li>
                                 @endif
                                 @endforeach
@@ -321,7 +324,8 @@ $script ='<script>
                                 {{-- Next Page Link --}}
                                 @if ($jobs->hasMorePages())
                                 <li class="page-item">
-                                    <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" href="{{ $jobs->nextPageUrl() }}">
+                                    <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md"
+                                        href="{{ $jobs->nextPageUrl() }}&per_page={{ request('per_page', 10) }}&search={{ urlencode(request('search')) }}&start_date={{ urlencode(request('start_date')) }}&end_date={{ urlencode(request('end_date')) }}">
                                         <iconify-icon icon="ep:d-arrow-right"></iconify-icon>
                                     </a>
                                 </li>

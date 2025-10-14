@@ -181,7 +181,8 @@ $script ='<script>
                     </li>
                     @else
                     <li class="page-item">
-                        <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" href="{{ $trucks->previousPageUrl() }}">
+                        <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md"
+                            href="{{ $trucks->previousPageUrl() }}&per_page={{ request('per_page', 10) }}&search={{ urlencode(request('search')) }}&status={{ urlencode(request('status')) }}">
                             <iconify-icon icon="ep:d-arrow-left"></iconify-icon>
                         </a>
                     </li>
@@ -209,6 +210,7 @@ $script ='<script>
                             }
                             @endphp
 
+                            {{-- Pagination Elements with Ellipsis --}}
                             @foreach ($displayPages as $page)
                             @if ($page === '...')
                             <li class="page-item disabled">
@@ -220,7 +222,8 @@ $script ='<script>
                             </li>
                             @else
                             <li class="page-item">
-                                <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" href="{{ $trucks->url($page) }}">{{ $page }}</a>
+                                <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md"
+                                    href="{{ $trucks->url($page) }}&per_page={{ request('per_page', 10) }}&search={{ urlencode(request('search')) }}&status={{ urlencode(request('status')) }}">{{ $page }}</a>
                             </li>
                             @endif
                             @endforeach
@@ -228,7 +231,8 @@ $script ='<script>
                             {{-- Next Page Link --}}
                             @if ($trucks->hasMorePages())
                             <li class="page-item">
-                                <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" href="{{ $trucks->nextPageUrl() }}">
+                                <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md"
+                                    href="{{ $trucks->nextPageUrl() }}&per_page={{ request('per_page', 10) }}&search={{ urlencode(request('search')) }}&status={{ urlencode(request('status')) }}">
                                     <iconify-icon icon="ep:d-arrow-right"></iconify-icon>
                                 </a>
                             </li>

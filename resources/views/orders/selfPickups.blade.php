@@ -175,7 +175,8 @@ $subTitle = 'Self Pickup Orders Management';
                     </li>
                     @else
                     <li class="page-item">
-                        <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" href="{{ $selfPickups->previousPageUrl() }}">
+                        <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md"
+                            href="{{ $selfPickups->previousPageUrl() }}&per_page={{ request('per_page', 10) }}&search={{ urlencode(request('search')) }}">
                             <iconify-icon icon="ep:d-arrow-left"></iconify-icon>
                         </a>
                     </li>
@@ -203,6 +204,7 @@ $subTitle = 'Self Pickup Orders Management';
                             }
                             @endphp
 
+                            {{-- Pagination Elements with Ellipsis --}}
                             @foreach ($displayPages as $page)
                             @if ($page === '...')
                             <li class="page-item disabled">
@@ -214,7 +216,8 @@ $subTitle = 'Self Pickup Orders Management';
                             </li>
                             @else
                             <li class="page-item">
-                                <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" href="{{ $selfPickups->url($page) }}">{{ $page }}</a>
+                                <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md"
+                                    href="{{ $selfPickups->url($page) }}&per_page={{ request('per_page', 10) }}&search={{ urlencode(request('search')) }}">{{ $page }}</a>
                             </li>
                             @endif
                             @endforeach
@@ -222,7 +225,8 @@ $subTitle = 'Self Pickup Orders Management';
                             {{-- Next Page Link --}}
                             @if ($selfPickups->hasMorePages())
                             <li class="page-item">
-                                <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" href="{{ $selfPickups->nextPageUrl() }}">
+                                <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md"
+                                    href="{{ $selfPickups->nextPageUrl() }}&per_page={{ request('per_page', 10) }}&search={{ urlencode(request('search')) }}">
                                     <iconify-icon icon="ep:d-arrow-right"></iconify-icon>
                                 </a>
                             </li>
