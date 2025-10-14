@@ -1,19 +1,19 @@
 @extends('layout.layout')
 @php
-    $title = 'Employees List';
-    $subTitle = 'Employees List';
-    $script = '<script>
-                    $(".remove-item-btn").on("click", function() {
-                        $(this).closest("tr").addClass("d-none")
-                    });
-                </script>';
+$title = 'Employees List';
+$subTitle = 'Employees List';
+$script = '<script>
+    $(".remove-item-btn").on("click", function() {
+        $(this).closest("tr").addClass("d-none")
+    });
+</script>';
 @endphp
 
 @section('content')
 <div class="card h-100 p-0 radius-12">
     <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-between">
         <div class="d-flex align-items-center flex-wrap gap-3">
-            <span class="text-md fw-medium text-secondary-light mb-0">Show</span>
+            <span class="text-md fw-medium mb-0">Show</span>
             <form method="GET">
                 <select class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px" name="per_page" onchange="this.form.submit()">
                     <option value="5" {{ request('per_page') == 5 ? 'selected' : '' }}>5</option>
@@ -89,57 +89,57 @@
                         <td>
                             <div class="d-flex align-items-center">
                                 @if($employee->profile_photo_path)
-                                    <img src="{{ asset('storage/' . $employee->profile_photo_path) }}" alt="{{ $employee->name }}" class="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 overflow-hidden">
+                                <img src="{{ asset('storage/' . $employee->profile_photo_path) }}" alt="{{ $employee->name }}" class="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 overflow-hidden">
                                 @else
-                                    <img src="{{ asset('assets/images/user.png') }}" alt="{{ $employee->name }}" class="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 overflow-hidden">
+                                <img src="{{ asset('assets/images/user.png') }}" alt="{{ $employee->name }}" class="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 overflow-hidden">
                                 @endif
                                 <div class="flex-grow-1">
-                                    <span class="text-md mb-0 fw-normal text-secondary-light">{{ $employee->name ?? 'N/A' }}</span>
+                                    <span class="text-md mb-0 fw-normal">{{ $employee->name ?? 'N/A' }}</span>
                                 </div>
                             </div>
                         </td>
-                        <td><span class="text-md mb-0 fw-normal text-secondary-light">{{ $employee->email ?? 'N/A' }}</span></td>
+                        <td><span class="text-md mb-0 fw-normal">{{ $employee->email ?? 'N/A' }}</span></td>
                         <td>
                             @php
-                                $csRoles = $employee->roles->where('pivot.company_id', 1)->pluck('role')->unique();
+                            $csRoles = $employee->roles->where('pivot.company_id', 1)->pluck('role')->unique();
                             @endphp
                             @if($csRoles->count() > 0)
-                                @foreach($csRoles as $role)
-                                    <span class="badge bg-primary">{{ $role }}</span>
-                                @endforeach
+                            @foreach($csRoles as $role)
+                            <span class="badge bg-primary">{{ $role }}</span>
+                            @endforeach
                             @else
-                                <span class="text-muted">N/A</span>
+                            <span class="text-muted">N/A</span>
                             @endif
                         </td>
                         <td>
                             @php
-                                $ppRoles = $employee->roles->where('pivot.company_id', 2)->pluck('role')->unique();
+                            $ppRoles = $employee->roles->where('pivot.company_id', 2)->pluck('role')->unique();
                             @endphp
                             @if($ppRoles->count() > 0)
-                                @foreach($ppRoles as $role)
-                                    <span class="badge bg-secondary">{{ $role }}</span>
-                                @endforeach
+                            @foreach($ppRoles as $role)
+                            <span class="badge bg-secondary">{{ $role }}</span>
+                            @endforeach
                             @else
-                                <span class="text-muted">N/A</span>
+                            <span class="text-muted">N/A</span>
                             @endif
                         </td>
                         <td>
                             @php
-                                $opRoles = $employee->roles->where('pivot.company_id', 3)->pluck('role')->unique();
+                            $opRoles = $employee->roles->where('pivot.company_id', 3)->pluck('role')->unique();
                             @endphp
                             @if($opRoles->count() > 0)
-                                @foreach($opRoles as $role)
-                                    <span class="badge bg-info">{{ $role }}</span>
-                                @endforeach
+                            @foreach($opRoles as $role)
+                            <span class="badge bg-info">{{ $role }}</span>
+                            @endforeach
                             @else
-                                <span class="text-muted">N/A</span>
+                            <span class="text-muted">N/A</span>
                             @endif
                         </td>
                         <td class="text-center">
                             @if($employee->email_verified_at)
-                                <span class="bg-success-focus text-success-600 border border-success-main px-24 py-4 radius-4 fw-medium text-sm">Active</span>
+                            <span class="bg-success-focus text-success-600 border border-success-main px-24 py-4 radius-4 fw-medium text-sm">Active</span>
                             @else
-                                <span class="bg-neutral-200 text-neutral-600 border border-neutral-400 px-24 py-4 radius-4 fw-medium text-sm">Inactive</span>
+                            <span class="bg-neutral-200 text-neutral-600 border border-neutral-400 px-24 py-4 radius-4 fw-medium text-sm">Inactive</span>
                             @endif
                         </td>
                         <td class="text-center">
@@ -168,9 +168,9 @@
                                 <h5 class="text-neutral-500 mb-2">No Employees Found</h5>
                                 <p class="text-neutral-400 mb-0">
                                     @if(request('search'))
-                                        No employees match your search criteria.
+                                    No employees match your search criteria.
                                     @else
-                                        There are no employees in the system yet.
+                                    There are no employees in the system yet.
                                     @endif
                                 </p>
                             </div>
@@ -185,54 +185,54 @@
             <span>
                 Showing {{ $employees->firstItem() ?? 0 }} to {{ $employees->lastItem() ?? 0 }} of {{ $employees->total() }} entries
             </span>
-            
+
             @if ($employees->hasPages())
-                <nav aria-label="Employee pagination">
-                    <ul class="pagination d-flex flex-wrap align-items-center gap-2 justify-content-center">
-                        {{-- Previous Page Link --}}
-                        @if ($employees->onFirstPage())
-                            <li class="page-item disabled">
-                                <span class="page-link bg-neutral-200 text-neutral-400 fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md">
-                                    <iconify-icon icon="ep:d-arrow-left"></iconify-icon>
-                                </span>
-                            </li>
-                        @else
-                            <li class="page-item">
-                                <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" href="{{ $employees->previousPageUrl() }}">
-                                    <iconify-icon icon="ep:d-arrow-left"></iconify-icon>
-                                </a>
-                            </li>
-                        @endif
+            <nav aria-label="Employee pagination">
+                <ul class="pagination d-flex flex-wrap align-items-center gap-2 justify-content-center">
+                    {{-- Previous Page Link --}}
+                    @if ($employees->onFirstPage())
+                    <li class="page-item disabled">
+                        <span class="page-link bg-neutral-200 text-neutral-400 fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md">
+                            <iconify-icon icon="ep:d-arrow-left"></iconify-icon>
+                        </span>
+                    </li>
+                    @else
+                    <li class="page-item">
+                        <a class="page-link bg-neutral-200 fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" href="{{ $employees->previousPageUrl() }}">
+                            <iconify-icon icon="ep:d-arrow-left"></iconify-icon>
+                        </a>
+                    </li>
+                    @endif
 
-                        {{-- Pagination Elements --}}
-                        @foreach ($employees->getUrlRange(1, $employees->lastPage()) as $page => $url)
-                            @if ($page == $employees->currentPage())
-                                <li class="page-item active">
-                                    <span class="page-link text-white fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md bg-primary-600">{{ $page }}</span>
-                                </li>
-                            @else
-                                <li class="page-item">
-                                    <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" href="{{ $url }}">{{ $page }}</a>
-                                </li>
-                            @endif
-                        @endforeach
+                    {{-- Pagination Elements --}}
+                    @foreach ($employees->getUrlRange(1, $employees->lastPage()) as $page => $url)
+                    @if ($page == $employees->currentPage())
+                    <li class="page-item active">
+                        <span class="page-link text-white fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md bg-primary-600">{{ $page }}</span>
+                    </li>
+                    @else
+                    <li class="page-item">
+                        <a class="page-link bg-neutral-200 fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" href="{{ $url }}">{{ $page }}</a>
+                    </li>
+                    @endif
+                    @endforeach
 
-                        {{-- Next Page Link --}}
-                        @if ($employees->hasMorePages())
-                            <li class="page-item">
-                                <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" href="{{ $employees->nextPageUrl() }}">
-                                    <iconify-icon icon="ep:d-arrow-right"></iconify-icon>
-                                </a>
-                            </li>
-                        @else
-                            <li class="page-item disabled">
-                                <span class="page-link bg-neutral-200 text-neutral-400 fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md">
-                                    <iconify-icon icon="ep:d-arrow-right"></iconify-icon>
-                                </span>
-                            </li>
-                        @endif
-                    </ul>
-                </nav>
+                    {{-- Next Page Link --}}
+                    @if ($employees->hasMorePages())
+                    <li class="page-item">
+                        <a class="page-link bg-neutral-200 fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" href="{{ $employees->nextPageUrl() }}">
+                            <iconify-icon icon="ep:d-arrow-right"></iconify-icon>
+                        </a>
+                    </li>
+                    @else
+                    <li class="page-item disabled">
+                        <span class="page-link bg-neutral-200 text-neutral-400 fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md">
+                            <iconify-icon icon="ep:d-arrow-right"></iconify-icon>
+                        </span>
+                    </li>
+                    @endif
+                </ul>
+            </nav>
             @endif
         </div>
     </div>
@@ -261,7 +261,7 @@
                     tooltip.classList.add('tooltip');
                     tooltip.innerText = 'Employee ID copied';
                     tooltip.style.position = 'absolute';
-                    tooltip.style.left = (this.offsetLeft + this.offsetWidth/2) + 'px';
+                    tooltip.style.left = (this.offsetLeft + this.offsetWidth / 2) + 'px';
                     tooltip.style.top = (this.offsetTop - 10) + 'px';
                     tooltip.style.backgroundColor = '#333';
                     tooltip.style.color = '#fff';
@@ -270,7 +270,7 @@
                     tooltip.style.zIndex = '1000';
                     tooltip.style.transform = 'translateX(-50%)';
                     document.body.appendChild(tooltip);
-                    
+
                     // Remove tooltip after 1.5 seconds
                     setTimeout(() => {
                         tooltip.remove();

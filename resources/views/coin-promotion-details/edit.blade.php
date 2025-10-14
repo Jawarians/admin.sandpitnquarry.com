@@ -65,7 +65,7 @@
                     <div class="col-md-12">
                         <label for="promotion_images" class="form-label text-secondary-light mb-10">Promotion Images</label>
                         <input type="text" class="form-control @error('promotion_images') is-invalid @enderror" id="promotion_images" name="promotion_images" value="{{ old('promotion_images', $coinPromotionDetail->promotion_images) }}">
-                        <small class="text-muted">Enter image URLs separated by commas</small>
+                        <small class="form-text text-secondary">Enter image URLs separated by commas</small>
                         @error('promotion_images')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror

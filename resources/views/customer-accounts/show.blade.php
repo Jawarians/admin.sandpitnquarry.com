@@ -27,7 +27,7 @@
                     <table class="table bordered-table sm-table mb-0">
                         <tbody>
                             <tr>
-                                <th style="width: 200px;">ID</th>
+                                <td style="width: 200px;">ID</td>
                                 <td>
                                     <span class="copy-text" data-clipboard-text="{{ $customerAccount->id }}">
                                         {{ $customerAccount->id }}
@@ -35,19 +35,19 @@
                                 </td>
                             </tr>
                             <tr>
-                                <th>Account Holder Name</th>
+                                <td>Account Holder Name</td>
                                 <td>{{ $customerAccount->name }}</td>
                             </tr>
                             <tr>
-                                <th>Account Number</th>
+                                <td>Account Number</td>
                                 <td>{{ $customerAccount->number }}</td>
                             </tr>
                             <tr>
-                                <th>Bank Name</th>
+                                <td>Bank Name</td>
                                 <td>{{ $customerAccount->bank }}</td>
                             </tr>
                             <tr>
-                                <th>Customer</th>
+                                <td>Customer</td>
                                 <td>
                                     <div class="d-flex align-items-center">
                                         @if(optional($customerAccount->customer)->profile_photo_path)
@@ -62,7 +62,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <th>Bank Statement</th>
+                                <td>Bank Statement</td>
                                 <td>
                                     @if($customerAccount->document)
                                         <a href="{{ route('customer-accounts.document', $customerAccount) }}" target="_blank" class="btn btn-sm btn-primary px-12 py-8 radius-8">
@@ -75,7 +75,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <th>Status</th>
+                                <td>Status</td>
                                 <td>
                                     @php
                                         $status = $customerAccount->status;
@@ -105,27 +105,27 @@
                                 </td>
                             </tr>
                             <tr>
-                                <th>Created By</th>
+                                <td>Created By</td>
                                 <td>{{ optional($customerAccount->creator)->name ?? 'N/A' }}</td>
                             </tr>
                             <tr>
-                                <th>Created At</th>
+                                <td>Created At</td>
                                 <td>{{ $customerAccount->created_at ? (is_string($customerAccount->created_at) ? $customerAccount->created_at : $customerAccount->created_at->format('d M Y, h:i A')) : 'N/A' }}</td>
                             </tr>
                             @if($customerAccount->approver)
                                 <tr>
-                                    <th>Approved By</th>
+                                    <td>Approved By</td>
                                     <td>{{ $customerAccount->approver->name }}</td>
                                 </tr>
                             @endif
                             @if($customerAccount->approved_at)
                                 <tr>
-                                    <th>Approved At</th>
+                                    <td>Approved At</td>
                                     <td>{{ is_string($customerAccount->approved_at) ? $customerAccount->approved_at : $customerAccount->approved_at->format('d M Y, h:i A') }}</td>
                                 </tr>
                             @endif
                             <tr>
-                                <th>Last Updated</th>
+                                <td>Last Updated</td>
                                 <td>{{ $customerAccount->updated_at ? (is_string($customerAccount->updated_at) ? $customerAccount->updated_at : $customerAccount->updated_at->format('d M Y, h:i A')) : 'N/A' }}</td>
                             </tr>
                         </tbody>

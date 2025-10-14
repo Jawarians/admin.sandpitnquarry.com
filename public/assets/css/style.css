@@ -15093,3 +15093,6 @@ td.fc-header-center {
   margin-block-start: auto;
 }
 /* === footer css end === */
+.bordered-table td + td {
+    border-left: 2px solid var(--neutral-200);
+}

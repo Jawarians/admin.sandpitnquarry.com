@@ -76,7 +76,7 @@
                                     @error('profile_photo')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
-                                    <small class="form-text text-secondary-light">Recommended size: 300x300 pixels (Max: 2MB)</small>
+                                    <small class="form-text text-secondary">Recommended size: 300x300 pixels (Max: 2MB)</small>
                                 </div>
 
                                 <div class="col-md-6">
