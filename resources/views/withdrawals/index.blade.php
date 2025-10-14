@@ -1,22 +1,22 @@
 @extends('layout.layout')
 @php
-    $title='Withdrawals';
-    $subTitle = 'Withdrawals List';
-    $script ='<script>
-                document.querySelectorAll(".copy-id").forEach(el => {
-                    el.addEventListener("click", function() {
-                        const idText = this.getAttribute("data-id");
-                        navigator.clipboard.writeText(idText).then(() => {
-                            const originalText = this.innerHTML;
-                            this.innerHTML = "ID copied";
-                            
-                            setTimeout(() => {
-                                this.innerHTML = originalText;
-                            }, 1500);
-                        });
-                    });
-                });
-            </script>';
+$title='Withdrawals';
+$subTitle = 'Withdrawals List';
+$script ='<script>
+    document.querySelectorAll(".copy-id").forEach(el => {
+        el.addEventListener("click", function() {
+            const idText = this.getAttribute("data-id");
+            navigator.clipboard.writeText(idText).then(() => {
+                const originalText = this.innerHTML;
+                this.innerHTML = "ID copied";
+
+                setTimeout(() => {
+                    this.innerHTML = originalText;
+                }, 1500);
+            });
+        });
+    });
+</script>';
 @endphp
 
 @section('content')
@@ -48,7 +48,7 @@
                 <select class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px" name="withdrawal_status" onchange="this.form.submit()">
                     <option value="Status" {{ request('withdrawal_status') == 'Status' ? 'selected' : '' }}>Withdrawal Status</option>
                     @foreach($withdrawalStatusOptions as $value => $label)
-                        <option value="{{ $value }}" {{ request('withdrawal_status') == $value ? 'selected' : '' }}>{{ $label }}</option>
+                    <option value="{{ $value }}" {{ request('withdrawal_status') == $value ? 'selected' : '' }}>{{ $label }}</option>
                     @endforeach
                 </select>
                 <input type="hidden" name="search" value="{{ request('search') }}">
@@ -59,7 +59,7 @@
                 <select class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px" name="bank_status" onchange="this.form.submit()">
                     <option value="Status" {{ request('bank_status') == 'Status' ? 'selected' : '' }}>Bank Status</option>
                     @foreach($bankStatusOptions as $value => $label)
-                        <option value="{{ $value }}" {{ request('bank_status') == $value ? 'selected' : '' }}>{{ $label }}</option>
+                    <option value="{{ $value }}" {{ request('bank_status') == $value ? 'selected' : '' }}>{{ $label }}</option>
                     @endforeach
                 </select>
                 <input type="hidden" name="search" value="{{ request('search') }}">
@@ -122,13 +122,13 @@
                         <td>{{ $withdrawal->coins }}</td>
                         <td>
                             @if($withdrawal->latest)
-                                <span class="badge {{ $withdrawal->latest->status == 'Approved' ? 'bg-success-main' : 
+                            <span class="badge {{ $withdrawal->latest->status == 'Approved' ? 'bg-success-main' : 
                                      ($withdrawal->latest->status == 'Pending' ? 'bg-warning-main' : 
                                      ($withdrawal->latest->status == 'Verified' ? 'bg-info-main' : 'bg-danger-main')) }} py-4 px-10 text-sm fw-medium text-white">
-                                    {{ $withdrawal->latest->status }}
-                                </span>
+                                {{ $withdrawal->latest->status }}
+                            </span>
                             @else
-                                N/A
+                            N/A
                             @endif
                         </td>
                         <td>
@@ -137,12 +137,12 @@
                         </td>
                         <td>
                             @if($withdrawal->bank)
-                                <span class="badge {{ $withdrawal->bank->status == 'Approved' ? 'bg-success-main' : 
+                            <span class="badge {{ $withdrawal->bank->status == 'Approved' ? 'bg-success-main' : 
                                      ($withdrawal->bank->status == 'Pending' ? 'bg-warning-main' : 'bg-danger-main') }} py-4 px-10 text-sm fw-medium text-white">
-                                    {{ $withdrawal->bank->status }}
-                                </span>
+                                {{ $withdrawal->bank->status }}
+                            </span>
                             @else
-                                N/A
+                            N/A
                             @endif
                         </td>
                         <td>{{ $withdrawal->created_at ? $withdrawal->created_at->format('d M Y') : 'N/A' }}</td>
@@ -154,7 +154,7 @@
                                 <ul class="dropdown-menu p-0 radius-6">
                                     <li><a class="dropdown-item py-8 px-16 text-sm text-secondary-light" href="{{ route('withdrawals.edit', $withdrawal->id) }}">Edit</a></li>
                                     @if($withdrawal->bank && isset($withdrawal->bank->document))
-                                        <li><a class="dropdown-item py-8 px-16 text-sm text-secondary-light" href="{{ route('withdrawals.bank-statement', $withdrawal->id) }}" target="_blank">Bank Statement</a></li>
+                                    <li><a class="dropdown-item py-8 px-16 text-sm text-secondary-light" href="{{ route('withdrawals.bank-statement', $withdrawal->id) }}" target="_blank">Bank Statement</a></li>
                                     @endif
                                 </ul>
                             </div>
@@ -168,21 +168,89 @@
                 </tbody>
             </table>
         </div>
-        
+
     </div>
-    
+
     <div class="card-footer border-top p-24 bg-base">
         <div class="d-flex align-items-center gap-3 justify-content-between flex-wrap">
             <div class="text-sm mb-0 text-secondary-light">
                 Showing {{ $withdrawals->firstItem() ?? 0 }} to {{ $withdrawals->lastItem() ?? 0 }} of {{ $withdrawals->total() }} entries
             </div>
             <div>
-                {{ $withdrawals->appends([
-                    'search' => request('search'),
-                    'withdrawal_status' => request('withdrawal_status'),
-                    'bank_status' => request('bank_status'),
-                    'per_page' => request('per_page', 10)
-                ])->links() }}
+                <nav aria-label="Withdrawals pagination">
+                    <ul class="pagination d-flex flex-wrap align-items-center gap-2 justify-content-center mb-0">
+                        {{-- Previous Page Link --}}
+                        @if ($withdrawals->onFirstPage())
+                        <li class="page-item disabled">
+                            <span class="page-link bg-neutral-200 text-neutral-400 fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md">
+                                <iconify-icon icon="ep:d-arrow-left"></iconify-icon>
+                            </span>
+                        </li>
+                        @else
+                        <li class="page-item">
+                            <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md"
+                                href="{{ $withdrawals->appends(request()->except('page'))->previousPageUrl() }}">
+                                <iconify-icon icon="ep:d-arrow-left"></iconify-icon>
+                            </a>
+                        </li>
+                        @endif
+
+                        {{-- Pagination Elements with Ellipsis --}}
+                        @php
+                        $total = $withdrawals->lastPage();
+                        $current = $withdrawals->currentPage();
+                        $delta = 2;
+                        $pages = [];
+                        for ($i = 1; $i <= $total; $i++) {
+                            if ($i==1 || $i==$total || ($i>= $current - $delta && $i <= $current + $delta)) {
+                                $pages[]=$i;
+                                }
+                                }
+                                $displayPages=[];
+                                $prev=0;
+                                foreach ($pages as $page) {
+                                if ($prev && $page - $prev> 1) {
+                                $displayPages[] = '...';
+                                }
+                                $displayPages[] = $page;
+                                $prev = $page;
+                                }
+                                @endphp
+
+                                @foreach ($displayPages as $page)
+                                @if ($page === '...')
+                                <li class="page-item disabled">
+                                    <span class="page-link bg-neutral-200 text-neutral-400 fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md">...</span>
+                                </li>
+                                @elseif ($page == $withdrawals->currentPage())
+                                <li class="page-item active">
+                                    <span class="page-link bg-primary-600 text-white fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md">{{ $page }}</span>
+                                </li>
+                                @else
+                                <li class="page-item">
+                                    <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md"
+                                        href="{{ $withdrawals->appends(request()->except('page'))->url($page) }}">{{ $page }}</a>
+                                </li>
+                                @endif
+                                @endforeach
+
+                                {{-- Next Page Link --}}
+                                @if ($withdrawals->hasMorePages())
+                                <li class="page-item">
+                                    <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md"
+                                        href="{{ $withdrawals->appends(request()->except('page'))->nextPageUrl() }}">
+                                        <iconify-icon icon="ep:d-arrow-right"></iconify-icon>
+                                    </a>
+                                </li>
+                                @else
+                                <li class="page-item disabled">
+                                    <span class="page-link bg-neutral-200 text-neutral-400 fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md">
+                                        <iconify-icon icon="ep:d-arrow-right"></iconify-icon>
+                                    </span>
+                                </li>
+                                @endif
+                    </ul>
+                </nav>
             </div>
         </div>
     </div>
