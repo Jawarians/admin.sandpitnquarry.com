@@ -1,12 +1,12 @@
 @extends('layout.layout')
 @php
-    $title='Quarries List';
-    $subTitle = 'Quarry Management';
-    $script ='<script>
-                        $(".remove-item-btn").on("click", function() {
-                            $(this).closest("tr").addClass("d-none")
-                        });
-            </script>';
+$title='Quarries List';
+$subTitle = 'Quarry Management';
+$script ='<script>
+    $(".remove-item-btn").on("click", function() {
+        $(this).closest("tr").addClass("d-none")
+    });
+</script>';
 @endphp
 
 @section('content')
@@ -23,14 +23,14 @@
                     <option value="100" {{ request('per_page') === '100' ? 'selected' : '' }}>100</option>
                 </select>
                 @if(request('search'))
-                    <input type="hidden" name="search" value="{{ request('search') }}">
+                <input type="hidden" name="search" value="{{ request('search') }}">
                 @endif
             </form>
             <form class="navbar-search" method="GET" id="search-form">
                 <input type="text" class="bg-base h-40-px w-auto" name="search" placeholder="Search quarries..." value="{{ request('search') }}">
                 <iconify-icon icon="ion:search-outline" class="icon" onclick="document.getElementById('search-form').submit()"></iconify-icon>
                 @if(request('per_page'))
-                    <input type="hidden" name="per_page" value="{{ request('per_page') }}">
+                <input type="hidden" name="per_page" value="{{ request('per_page') }}">
                 @endif
                 <button type="submit" class="d-none"></button>
             </form>
@@ -117,9 +117,9 @@
                                 <h5 class="text-neutral-500 mb-2">No Quarries Found</h5>
                                 <p class="text-neutral-400 mb-0">
                                     @if(request('search'))
-                                        No quarries match your search criteria.
+                                    No quarries match your search criteria.
                                     @else
-                                        There are no quarries in the system yet.
+                                    There are no quarries in the system yet.
                                     @endif
                                 </p>
                             </div>
@@ -129,61 +129,64 @@
                 </tbody>
             </table>
         </div>
-        
+
         <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mt-24">
             @if($sites->count() > 0)
-                <span>
-                    Showing {{ $sites->firstItem() }} to {{ $sites->lastItem() }} of {{ $sites->total() }} entries
-                </span>
+            <span>
+                Showing {{ $sites->firstItem() }} to {{ $sites->lastItem() }} of {{ $sites->total() }} entries
+            </span>
             @endif
-            
+
             @if ($sites->hasPages())
-                <nav aria-label="Quarry pagination">
-                    <ul class="pagination d-flex flex-wrap align-items-center gap-2 justify-content-center">
-                        {{-- Previous Page Link --}}
-                        @if ($sites->onFirstPage())
-                            <li class="page-item disabled">
-                                <span class="page-link bg-neutral-200 text-neutral-400 fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md">
-                                    <iconify-icon icon="ep:d-arrow-left"></iconify-icon>
-                                </span>
-                            </li>
-                        @else
-                            <li class="page-item">
-                                <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" href="{{ $sites->previousPageUrl() }}">
-                                    <iconify-icon icon="ep:d-arrow-left"></iconify-icon>
-                                </a>
-                            </li>
-                        @endif
+            <nav aria-label="Quarry pagination">
+                <ul class="pagination d-flex flex-wrap align-items-center gap-2 justify-content-center">
+                    {{-- Previous Page Link --}}
+                    @if ($sites->onFirstPage())
+                    <li class="page-item disabled">
+                        <span class="page-link bg-neutral-200 text-neutral-400 fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md">
+                            <iconify-icon icon="ep:d-arrow-left"></iconify-icon>
+                        </span>
+                    </li>
+                    @else
+                    <li class="page-item">
+                        <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md"
+                            href="{{ $sites->previousPageUrl() }}{{ request('per_page') ? '&per_page='.request('per_page') : '' }}{{ request('search') ? '&search='.urlencode(request('search')) : '' }}">
+                            <iconify-icon icon="ep:d-arrow-left"></iconify-icon>
+                        </a>
+                    </li>
+                    @endif
 
-                        {{-- Pagination Elements --}}
-                        @foreach ($sites->getUrlRange(1, $sites->lastPage()) as $page => $url)
-                            @if ($page == $sites->currentPage())
-                                <li class="page-item active">
-                                    <span class="page-link text-white fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md bg-primary-600">{{ $page }}</span>
-                                </li>
-                            @else
-                                <li class="page-item">
-                                    <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" href="{{ $url }}">{{ $page }}</a>
-                                </li>
-                            @endif
-                        @endforeach
+                    {{-- Pagination Elements --}}
+                    @foreach ($sites->getUrlRange(1, $sites->lastPage()) as $page => $url)
+                    @if ($page == $sites->currentPage())
+                    <li class="page-item active">
+                        <span class="page-link text-white fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md bg-primary-600">{{ $page }}</span>
+                    </li>
+                    @else
+                    <li class="page-item">
+                        <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md"
+                            href="{{ $url }}{{ request('per_page') ? '&per_page='.request('per_page') : '' }}{{ request('search') ? '&search='.urlencode(request('search')) : '' }}">{{ $page }}</a>
+                    </li>
+                    @endif
+                    @endforeach
 
-                        {{-- Next Page Link --}}
-                        @if ($sites->hasMorePages())
-                            <li class="page-item">
-                                <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" href="{{ $sites->nextPageUrl() }}">
-                                    <iconify-icon icon="ep:d-arrow-right"></iconify-icon>
-                                </a>
-                            </li>
-                        @else
-                            <li class="page-item disabled">
-                                <span class="page-link bg-neutral-200 text-neutral-400 fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md">
-                                    <iconify-icon icon="ep:d-arrow-right"></iconify-icon>
-                                </span>
-                            </li>
-                        @endif
-                    </ul>
-                </nav>
+                    {{-- Next Page Link --}}
+                    @if ($sites->hasMorePages())
+                    <li class="page-item">
+                        <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md"
+                            href="{{ $sites->nextPageUrl() }}{{ request('per_page') ? '&per_page='.request('per_page') : '' }}{{ request('search') ? '&search='.urlencode(request('search')) : '' }}">
+                            <iconify-icon icon="ep:d-arrow-right"></iconify-icon>
+                        </a>
+                    </li>
+                    @else
+                    <li class="page-item disabled">
+                        <span class="page-link bg-neutral-200 text-neutral-400 fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md">
+                            <iconify-icon icon="ep:d-arrow-right"></iconify-icon>
+                        </span>
+                    </li>
+                    @endif
+                </ul>
+            </nav>
             @endif
         </div>
     </div>

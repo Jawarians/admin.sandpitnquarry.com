@@ -148,7 +148,7 @@ $script ='<script>
                     @else
                     <li class="page-item">
                         <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md"
-                            href="{{ $priceItems->previousPageUrl() }}{{ request('type') ? '&type='.request('type') : '' }}{{ request('view') ? '&view='.request('view') : '' }}">
+                            href="{{ $priceItems->previousPageUrl() }}{{ request('per_page') ? '&per_page='.request('per_page') : '' }}{{ request('search') ? '&search='.urlencode(request('search')) : '' }}{{ request('type') ? '&type='.request('type') : '' }}{{ request('view') ? '&view='.request('view') : '' }}">
                             <iconify-icon icon="material-symbols:arrow-back-ios-rounded"></iconify-icon>
                         </a>
                     </li>
@@ -176,6 +176,7 @@ $script ='<script>
                             }
                             @endphp
 
+                            {{-- Pagination Elements with Ellipsis --}}
                             @foreach ($displayPages as $page)
                             @if ($page === '...')
                             <li class="page-item disabled">
@@ -188,7 +189,7 @@ $script ='<script>
                             @else
                             <li class="page-item">
                                 <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md"
-                                    href="{{ $priceItems->url($page) }}{{ request('type') ? '&type='.request('type') : '' }}{{ request('view') ? '&view='.request('view') : '' }}">{{ $page }}</a>
+                                    href="{{ $priceItems->url($page) }}{{ request('per_page') ? '&per_page='.request('per_page') : '' }}{{ request('search') ? '&search='.urlencode(request('search')) : '' }}{{ request('type') ? '&type='.request('type') : '' }}{{ request('view') ? '&view='.request('view') : '' }}">{{ $page }}</a>
                             </li>
                             @endif
                             @endforeach
@@ -197,7 +198,7 @@ $script ='<script>
                             @if ($priceItems->hasMorePages())
                             <li class="page-item">
                                 <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md"
-                                    href="{{ $priceItems->nextPageUrl() }}{{ request('type') ? '&type='.request('type') : '' }}{{ request('view') ? '&view='.request('view') : '' }}">
+                                    href="{{ $priceItems->nextPageUrl() }}{{ request('per_page') ? '&per_page='.request('per_page') : '' }}{{ request('search') ? '&search='.urlencode(request('search')) : '' }}{{ request('type') ? '&type='.request('type') : '' }}{{ request('view') ? '&view='.request('view') : '' }}">
                                     <iconify-icon icon="material-symbols:arrow-forward-ios-rounded"></iconify-icon>
                                 </a>
                             </li>

@@ -142,7 +142,8 @@ $script ='<script>
                     </li>
                     @else
                     <li class="page-item">
-                        <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" href="{{ $coins->previousPageUrl() }}">
+                        <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md"
+                            href="{{ $coins->previousPageUrl() }}&per_page={{ request('per_page', 10) }}&search={{ urlencode(request('search')) }}&type={{ urlencode(request('type')) }}">
                             <iconify-icon icon="ep:d-arrow-left"></iconify-icon>
                         </a>
                     </li>
@@ -170,6 +171,7 @@ $script ='<script>
                             }
                             @endphp
 
+                            {{-- Pagination Elements with Ellipsis --}}
                             @foreach ($displayPages as $page)
                             @if ($page === '...')
                             <li class="page-item disabled">
@@ -181,7 +183,8 @@ $script ='<script>
                             </li>
                             @else
                             <li class="page-item">
-                                <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" href="{{ $coins->url($page) }}">{{ $page }}</a>
+                                <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md"
+                                    href="{{ $coins->url($page) }}&per_page={{ request('per_page', 10) }}&search={{ urlencode(request('search')) }}&type={{ urlencode(request('type')) }}">{{ $page }}</a>
                             </li>
                             @endif
                             @endforeach
@@ -189,7 +192,8 @@ $script ='<script>
                             {{-- Next Page Link --}}
                             @if ($coins->hasMorePages())
                             <li class="page-item">
-                                <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" href="{{ $coins->nextPageUrl() }}">
+                                <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md"
+                                    href="{{ $coins->nextPageUrl() }}&per_page={{ request('per_page', 10) }}&search={{ urlencode(request('search')) }}&type={{ urlencode(request('type')) }}">
                                     <iconify-icon icon="ep:d-arrow-right"></iconify-icon>
                                 </a>
                             </li>
