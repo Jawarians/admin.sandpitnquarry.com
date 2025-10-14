@@ -139,27 +139,58 @@ $script ='<script>
                     </li>
                     @endif
 
-                    {{-- Pagination Elements --}}
-                    @foreach ($transporters->getUrlRange(1, $transporters->lastPage()) as $page => $url)
-                    <li class="page-item {{ $page == $transporters->currentPage() ? 'active' : '' }}">
-                        <a class="page-link {{ $page == $transporters->currentPage() ? 'bg-primary-600 text-white' : 'bg-neutral-200 text-secondary-light' }} fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" href="{{ $url }}">{{ $page }}</a>
-                    </li>
-                    @endforeach
+                    {{-- Pagination Elements with Ellipsis --}}
+                    @php
+                    $total = $transporters->lastPage();
+                    $current = $transporters->currentPage();
+                    $delta = 2;
+                    $pages = [];
+                    for ($i = 1; $i <= $total; $i++) {
+                        if ($i==1 || $i==$total || ($i>= $current - $delta && $i <= $current + $delta)) {
+                            $pages[]=$i;
+                            }
+                            }
+                            $displayPages=[];
+                            $prev=0;
+                            foreach ($pages as $page) {
+                            if ($prev && $page - $prev> 1) {
+                            $displayPages[] = '...';
+                            }
+                            $displayPages[] = $page;
+                            $prev = $page;
+                            }
+                            @endphp
 
-                    {{-- Next Page Link --}}
-                    @if ($transporters->hasMorePages())
-                    <li class="page-item">
-                        <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" href="{{ $transporters->nextPageUrl() }}">
-                            <iconify-icon icon="ep:d-arrow-right"></iconify-icon>
-                        </a>
-                    </li>
-                    @else
-                    <li class="page-item disabled">
-                        <span class="page-link bg-neutral-200 text-neutral-400 fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md">
-                            <iconify-icon icon="ep:d-arrow-right"></iconify-icon>
-                        </span>
-                    </li>
-                    @endif
+                            @foreach ($displayPages as $page)
+                            @if ($page === '...')
+                            <li class="page-item disabled">
+                                <span class="page-link bg-neutral-200 text-neutral-400 fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md">...</span>
+                            </li>
+                            @elseif ($page == $transporters->currentPage())
+                            <li class="page-item active">
+                                <span class="page-link bg-primary-600 text-white fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md">{{ $page }}</span>
+                            </li>
+                            @else
+                            <li class="page-item">
+                                <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" href="{{ $transporters->url($page) }}">{{ $page }}</a>
+                            </li>
+                            @endif
+                            @endforeach
+
+                            {{-- Next Page Link --}}
+                            @if ($transporters->hasMorePages())
+                            <li class="page-item">
+                                <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" href="{{ $transporters->nextPageUrl() }}">
+                                    <iconify-icon icon="ep:d-arrow-right"></iconify-icon>
+                                </a>
+                            </li>
+                            @else
+                            <li class="page-item disabled">
+                                <span class="page-link bg-neutral-200 text-neutral-400 fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md">
+                                    <iconify-icon icon="ep:d-arrow-right"></iconify-icon>
+                                </span>
+                            </li>
+                            @endif
                 </ul>
             </nav>
             @endif

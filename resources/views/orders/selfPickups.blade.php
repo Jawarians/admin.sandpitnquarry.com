@@ -1,7 +1,7 @@
 @extends('layout.layout')
 @php
-    $title = 'Self Pickups';
-    $subTitle = 'Self Pickup Orders Management';
+$title = 'Self Pickups';
+$subTitle = 'Self Pickup Orders Management';
 @endphp
 
 @section('content')
@@ -102,9 +102,9 @@
                         </td>
                         <td>
                             @if($order->start_date)
-                                <span class="text-md mb-0 fw-normal text-secondary-light">{{ \Carbon\Carbon::parse($order->start_date)->format('M d, Y') }}</span>
+                            <span class="text-md mb-0 fw-normal text-secondary-light">{{ \Carbon\Carbon::parse($order->start_date)->format('M d, Y') }}</span>
                             @else
-                                <span class="text-xs text-secondary-light">Not scheduled</span>
+                            <span class="text-xs text-secondary-light">Not scheduled</span>
                             @endif
                         </td>
                         <td>
@@ -118,9 +118,9 @@
                         </td>
                         <td>
                             @if($order->orderStatus)
-                                <span class="bg-info-focus text-info-600 border border-info-main px-16 py-4 radius-4 fw-medium text-sm">{{ $order->orderStatus->name }}</span>
+                            <span class="bg-info-focus text-info-600 border border-info-main px-16 py-4 radius-4 fw-medium text-sm">{{ $order->orderStatus->name }}</span>
                             @else
-                                <span class="bg-neutral-200 text-neutral-600 border border-neutral-400 px-16 py-4 radius-4 fw-medium text-sm">Unknown</span>
+                            <span class="bg-neutral-200 text-neutral-600 border border-neutral-400 px-16 py-4 radius-4 fw-medium text-sm">Unknown</span>
                             @endif
                         </td>
                         <td>
@@ -145,9 +145,9 @@
                                 <h5 class="text-neutral-500 mb-2">No Self Pickups Found</h5>
                                 <p class="text-neutral-400 mb-0">
                                     @if(request('search'))
-                                        No self pickup orders match your search criteria.
+                                    No self pickup orders match your search criteria.
                                     @else
-                                        There are no self pickup orders in the system yet.
+                                    There are no self pickup orders in the system yet.
                                     @endif
                                 </p>
                             </div>
@@ -162,11 +162,79 @@
             <span>
                 Showing {{ $selfPickups->firstItem() }} to {{ $selfPickups->lastItem() }} of {{ $selfPickups->total() }} entries
             </span>
-            
+
             @if ($selfPickups->hasPages())
-                <nav aria-label="Self pickups pagination">
-                    {{ $selfPickups->links() }}
-                </nav>
+            <nav aria-label="Self pickups pagination">
+                <ul class="pagination d-flex flex-wrap align-items-center gap-2 justify-content-center">
+                    {{-- Previous Page Link --}}
+                    @if ($selfPickups->onFirstPage())
+                    <li class="page-item disabled">
+                        <span class="page-link bg-neutral-200 text-neutral-400 fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md">
+                            <iconify-icon icon="ep:d-arrow-left"></iconify-icon>
+                        </span>
+                    </li>
+                    @else
+                    <li class="page-item">
+                        <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" href="{{ $selfPickups->previousPageUrl() }}">
+                            <iconify-icon icon="ep:d-arrow-left"></iconify-icon>
+                        </a>
+                    </li>
+                    @endif
+
+                    {{-- Pagination Elements with Ellipsis --}}
+                    @php
+                    $total = $selfPickups->lastPage();
+                    $current = $selfPickups->currentPage();
+                    $delta = 2;
+                    $pages = [];
+                    for ($i = 1; $i <= $total; $i++) {
+                        if ($i==1 || $i==$total || ($i>= $current - $delta && $i <= $current + $delta)) {
+                            $pages[]=$i;
+                            }
+                            }
+                            $displayPages=[];
+                            $prev=0;
+                            foreach ($pages as $page) {
+                            if ($prev && $page - $prev> 1) {
+                            $displayPages[] = '...';
+                            }
+                            $displayPages[] = $page;
+                            $prev = $page;
+                            }
+                            @endphp
+
+                            @foreach ($displayPages as $page)
+                            @if ($page === '...')
+                            <li class="page-item disabled">
+                                <span class="page-link bg-neutral-200 text-neutral-400 fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md">...</span>
+                            </li>
+                            @elseif ($page == $selfPickups->currentPage())
+                            <li class="page-item active">
+                                <span class="page-link bg-primary-600 text-white fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md">{{ $page }}</span>
+                            </li>
+                            @else
+                            <li class="page-item">
+                                <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" href="{{ $selfPickups->url($page) }}">{{ $page }}</a>
+                            </li>
+                            @endif
+                            @endforeach
+
+                            {{-- Next Page Link --}}
+                            @if ($selfPickups->hasMorePages())
+                            <li class="page-item">
+                                <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" href="{{ $selfPickups->nextPageUrl() }}">
+                                    <iconify-icon icon="ep:d-arrow-right"></iconify-icon>
+                                </a>
+                            </li>
+                            @else
+                            <li class="page-item disabled">
+                                <span class="page-link bg-neutral-200 text-neutral-400 fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md">
+                                    <iconify-icon icon="ep:d-arrow-right"></iconify-icon>
+                                </span>
+                            </li>
+                            @endif
+                </ul>
+            </nav>
             @endif
         </div>
 
