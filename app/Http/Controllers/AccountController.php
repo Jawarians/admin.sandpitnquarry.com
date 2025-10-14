@@ -30,11 +30,13 @@ class AccountController extends Controller
         $searchTerm = $request->search;
         $escapedSearchTerm = addcslashes($searchTerm, '%_');
         $query->where(function ($q) use ($escapedSearchTerm) {
-            $q->where('code', 'like', '%' . $escapedSearchTerm . '%')
-              ->orWhereHas('user', function ($subQuery) use ($escapedSearchTerm) {
-                  $subQuery->where('name', 'like', '%' . $escapedSearchTerm . '%');
-              });
-        });
+    $q->orWhereHas('latest', function ($subQuery) use ($escapedSearchTerm) {
+        $subQuery->where('code', 'like', '%' . $escapedSearchTerm . '%');
+    })
+    ->orWhereHas('user', function ($subQuery) use ($escapedSearchTerm) {
+        $subQuery->where('name', 'like', '%' . $escapedSearchTerm . '%');
+    });
+});
     }
 
     // Filter by status
