@@ -33,12 +33,14 @@ class SessionTimeout
             $lastActivity = $this->session->get('last_activity');
 
             // If we have a last activity time and it's expired, log the user out
-            if (isset($lastActivity) && (time() - $lastActivity) > ($this->timeout * 60)) {
+            if (isset($lastActivity) && (time() - $lastActivity) > ($this->timeout * 5)) {
                 Auth::logout();
-                $this->session->flush();
-                $this->session->regenerate();
+
+                // Properly invalidate session and regenerate CSRF token
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
                 
-                return redirect()->route('login')
+                return redirect()->route('signin')
                     ->with('message', 'You have been logged out due to inactivity.');
             }
 
