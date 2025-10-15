@@ -31,14 +31,10 @@ $subTitle = 'Analyst';
         cancelledTrips: {{ (int) $cancelledTrips }},
         totalTrips: {{ (int) $totalTrips }},
         ordersByLocation: {!! json_encode($ordersByLocation) !!},
-        monthlyTripData: {!! json_encode($monthlyTripData) !!},
-        productCategoryData: {!! json_encode($productCategoryData) !!},
         dailySalesData: {!! json_encode($dailySalesData ?? []) !!}
     };
 </script>
 
-<!-- Load ApexCharts before any chart initialization scripts -->
-<script src="https://cdn.jsdelivr.net/npm/apexcharts@3.37.0/dist/apexcharts.min.js"></script>
 
 <!-- Load chart scripts -->
 <script src="{{ asset('assets/js/dashboard-charts.js') }}"></script>
@@ -156,7 +152,6 @@ $subTitle = 'Analyst';
                     $currentMonth = date('n');
                     $currentMonthData = $monthlyOrderData->firstWhere('month', date('M'));
                     $currentMonthRevenue = $currentMonthData ? ($currentMonthData['revenue'] ?? 0) : 0;
-
                     $revenueClass = $currentMonthRevenue >= 0 ? 'text-success-main' : 'text-danger-main';
                     $arrowIcon = $currentMonthRevenue >= 0 ? 'bxs:up-arrow' : 'bxs:down-arrow';
                     $prefix = $currentMonthRevenue >= 0 ? '+' : '';
@@ -295,11 +290,11 @@ $subTitle = 'Analyst';
             </div>
         </div>
     </div>
-    <div class="col-xxl-3 col-xl-6">
+    <div class="col-xxl-6 col-xl-12">
         <div class="card h-100 radius-8 border">
             <div class="card-body p-24">
                 <h6 class="mb-12 fw-semibold text-lg mb-16">
-                    <a href="{{ route('invoiceList') }}" class="text-decoration-none d-flex align-items-center gap-1 dashboard-title-link">
+                    <a href="{{ route('prices') }}" class="text-decoration-none d-flex align-items-center gap-1 dashboard-title-link">
                         Total Sales
                         <iconify-icon icon="heroicons:arrow-right-20-solid" class="text-primary"></iconify-icon>
                     </a>
