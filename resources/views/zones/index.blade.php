@@ -256,7 +256,7 @@ $script ='<script>
 
             // Submit via AJAX
             $.ajax({
-                url: '{{ route("business.zones.postcodes.update") }}',
+                url: '{{ route("zones.postcodes.update") }}',
                 type: 'POST',
                 data: {
                     zone_id: zoneId,

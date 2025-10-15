@@ -6,7 +6,8 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Schema;
-
+use Illuminate\Support\Facades\View; 
+use App\Models\Price;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -79,5 +80,9 @@ class AppServiceProvider extends ServiceProvider
             'tonne_refund' => 'App\Models\TonneRefund',
             'waiting_charges' => 'App\Models\WaitingCharges',
         ]);
+         // make $prices available to the sidebar view
+        View::composer('components.sidebar', function ($view) {
+            $view->with('prices', Price::orderBy('name')->get());
+        });
     }
 }
