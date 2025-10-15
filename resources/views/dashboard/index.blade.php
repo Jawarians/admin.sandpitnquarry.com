@@ -44,8 +44,9 @@
 </script>
     <!-- Load chart scripts -->
 <script src="{{ asset('assets/js/dashboard-charts.js') }}"></script>
+<script src="{{ asset('assets/js/chart-emergency-fix.js') }}"></script>
 <script src="{{ asset('assets/js/homeOneChart.js') }}"></script>
-<script src="{{ asset('assets/js/daily-sales-chart.js') }}"></script>
+
 
 
 @section('content')

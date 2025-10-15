@@ -31,18 +31,12 @@ $script ='<script>
                 </select>
                 <input type="hidden" name="search" value="{{ request('search') }}">
                 <input type="hidden" name="type" value="{{ request('type') }}">
-                <input type="hidden" name="direction" value="{{ request('direction') }}">
-                <input type="hidden" name="date_from" value="{{ request('date_from') }}">
-                <input type="hidden" name="date_to" value="{{ request('date_to') }}">
             </form>
             <form class="navbar-search" method="GET">
                 <input type="text" class="bg-base h-40-px w-auto" name="search" placeholder="Search" value="{{ request('search') }}">
                 <iconify-icon icon="ion:search-outline" class="icon"></iconify-icon>
                 <input type="hidden" name="type" value="{{ request('type') }}">
                 <input type="hidden" name="per_page" value="{{ request('per_page', 10) }}">
-                <input type="hidden" name="direction" value="{{ request('direction') }}">
-                <input type="hidden" name="date_from" value="{{ request('date_from') }}">
-                <input type="hidden" name="date_to" value="{{ request('date_to') }}">
             </form>
             <form method="GET">
                 <select class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px" name="type" onchange="this.form.submit()">
@@ -53,9 +47,6 @@ $script ='<script>
                 </select>
                 <input type="hidden" name="search" value="{{ request('search') }}">
                 <input type="hidden" name="per_page" value="{{ request('per_page', 10) }}">
-                <input type="hidden" name="direction" value="{{ request('direction') }}">
-                <input type="hidden" name="date_from" value="{{ request('date_from') }}">
-                <input type="hidden" name="date_to" value="{{ request('date_to') }}">
             </form>
         </div>
         <a href="{{ route('coins.create') }}" class="btn btn-primary text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2">
@@ -63,77 +54,7 @@ $script ='<script>
             Add New Coin
         </a>
     </div>
-  <div class="card mb-4">
-    <div class="card-body">
-        <form method="GET" class="row g-2 align-items-end">
-            <div class="col-auto">
-                <label class="form-label">Type</label>
-                <select name="type" class="form-select">
-                    <option>Type</option>
-                    @foreach($coinTypes as $ct)
-                        <option value="{{ $ct }}" {{ request('type') == $ct ? 'selected' : '' }}>{{ $ct }}</option>
-                    @endforeach
-                </select>
-            </div>
-
-            <div class="col-auto">
-                <label class="form-label">Direction</label>
-                <select name="direction" class="form-select">
-                    <option value="all" {{ ($direction ?? 'all') == 'all' ? 'selected' : '' }}>All</option>
-                    <option value="in" {{ ($direction ?? '') == 'in' ? 'selected' : '' }}>In (Reload, Order, Tonne_refund, Bonus, Refund)</option>
-                    <option value="out" {{ ($direction ?? '') == 'out' ? 'selected' : '' }}>Out (Waiting_charges, Withdrawal, Purchase)</option>
-                </select>
-            </div>
-
-            <div class="col-auto">
-                <label class="form-label">From</label>
-                <input type="date" class="form-control" name="date_from" value="{{ request('date_from') }}">
-            </div>
-
-            <div class="col-auto">
-                <label class="form-label">To</label>
-                <input type="date" class="form-control" name="date_to" value="{{ request('date_to') }}">
-            </div>
-
-            <div class="col-auto">
-                <label class="form-label d-block">&nbsp;</label>
-                <button class="btn btn-primary" type="submit">Filter</button>
-                <a href="{{ route('coins.index') }}" class="btn btn-outline-secondary">Reset</a>
-            </div>
-        </form>
-    </div>
-</div>
-
-<div class="card mb-4">
-    <div class="card-body">
-        <h6 class="mb-3">Coins Audit — In / Out</h6>
-        <div id="coinsAuditChart" style="height: 300px;"></div>
-    </div>
-</div>
-
-<!-- ensure ApexCharts is loaded; if layout already includes it you can remove this -->
-<script src="https://cdn.jsdelivr.net/npm/apexcharts@3.37.0/dist/apexcharts.min.js"></script>
-<script>
-    (function() {
-        const series = {!! json_encode($chartSeries ?? []) !!};
-        const categories = {!! json_encode($seriesDates ?? []) !!};
-        if (!series || series.length === 0) return;
-
-        const options = {
-            chart: { type: 'area', height: 300, stacked: false, zoom: { enabled: false } },
-            series: series,
-            xaxis: { categories: categories, labels: { rotate: -45 } },
-            yaxis: { title: { text: 'Amount' } },
-            stroke: { curve: 'smooth' },
-            colors: ['#14b8a6', '#ef4444'],
-            tooltip: { shared: true, intersect: false },
-            legend: { position: 'top' }
-        };
-
-        const chart = new ApexCharts(document.querySelector("#coinsAuditChart"), options);
-        chart.render();
-    })();
-</script>
+    <div class="card-body p-24">
         @if(session('success'))
         <div class="alert alert-success mb-4">
             {{ session('success') }}
