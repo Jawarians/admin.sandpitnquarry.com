@@ -39,7 +39,6 @@ Route::controller(AuthenticationController::class)->prefix('authentication')->gr
     Route::post('/logout', 'logout')->name('logout');
 });
 
-
 // Protected routes - Require authentication
 Route::middleware(['auth'])->group(function () {
     // Dashboard root route
@@ -48,41 +47,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/analyst','analyst')->name('dashboard.Analyst');
     });
 
-    // // Home controller routes
-    // Route::controller(HomeController::class)->group(function () {
-    //     Route::get('calendar','calendar')->name('calendar');
-    //     Route::get('chatmessage','chatMessage')->name('chatMessage');
-    //     Route::get('chatempty','chatempty')->name('chatempty');
-    //     Route::get('email','email')->name('email');
-    //     Route::get('error','error1')->name('error');
-    //     Route::get('faq','faq')->name('faq');
-    //     Route::get('gallery','gallery')->name('gallery');
-    //     Route::get('kanban','kanban')->name('kanban');
-    //     Route::get('pricing','pricing')->name('pricing');
-    //     Route::get('termscondition','termsCondition')->name('termsCondition');
-    //     Route::get('widgets','widgets')->name('widgets');
-    //     Route::get('chatprofile','chatProfile')->name('chatProfile');
-    //     Route::get('veiwdetails','veiwDetails')->name('veiwDetails');
-    //     Route::get('blankPage','blankPage')->name('blankPage');
-    //     Route::get('comingSoon','comingSoon')->name('comingSoon');
-    //     Route::get('maintenance','maintenance')->name('maintenance');
-    //     Route::get('starred','starred')->name('starred');
-    //     Route::get('testimonials','testimonials')->name('testimonials');
-    // });
-
-    // aiApplication
-    Route::prefix('aiapplication')->group(function () {
-        Route::controller(AiapplicationController::class)->group(function () {
-            Route::get('/codegenerator', 'codeGenerator')->name('codeGenerator');
-            Route::get('/codegeneratornew', 'codeGeneratorNew')->name('codeGeneratorNew');
-            Route::get('/imagegenerator','imageGenerator')->name('imageGenerator');
-            Route::get('/textgeneratornew','textGeneratorNew')->name('textGeneratorNew');
-            Route::get('/textgenerator','textGenerator')->name('textGenerator');
-            Route::get('/videogenerator','videoGenerator')->name('videoGenerator');
-            Route::get('/voicegenerator','voiceGenerator')->name('voiceGenerator');
-        });
-    });
-    
     // chart
     Route::prefix('chart')->group(function () {
         Route::controller(ChartController::class)->group(function () {
@@ -92,17 +56,17 @@ Route::middleware(['auth'])->group(function () {
         });
     });
 
-    // Business Prices and Zones
-    Route::prefix('business')->group(function () {
+    // Prices and Zones
+    Route::prefix('prices')->group(function () {
         // Price item routes
-        Route::get('/prices', 'App\Http\Controllers\PriceItemController@index')->name('business.prices');
-        Route::get('/prices/tonne/{priceId}', 'App\Http\Controllers\PriceItemController@tonnePrices')->name('business.prices.tonne');
-        Route::get('/prices/load/{priceId}', 'App\Http\Controllers\PriceItemController@loadPrices')->name('business.prices.load');
-        Route::post('/prices/tonne/update', 'App\Http\Controllers\PriceItemController@updateTonnePrice')->name('business.prices.tonne.update');
-        Route::post('/prices/load/update', 'App\Http\Controllers\PriceItemController@updateLoadPrice')->name('business.prices.load.update');
-        Route::get('/zones', 'App\Http\Controllers\PriceItemController@zones')->name('business.zones');
-        Route::post('/zones/postcodes/update', 'App\Http\Controllers\PriceItemController@updatePostcodes')->name('business.zones.postcodes.update');
-        Route::post('/zones/postcodes/add', 'App\Http\Controllers\PriceItemController@addPostcode')->name('business.zones.postcodes.add');
+        Route::get('/prices', 'App\Http\Controllers\PriceItemController@index')->name('prices');
+        Route::get('/prices/tonne/{priceId}', 'App\Http\Controllers\PriceItemController@tonnePrices')->name('prices.tonne');
+        Route::get('/prices/load/{priceId}', 'App\Http\Controllers\PriceItemController@loadPrices')->name('prices.load');
+        Route::post('/prices/tonne/update', 'App\Http\Controllers\PriceItemController@updateTonnePrice')->name('prices.tonne.update');
+        Route::post('/prices/load/update', 'App\Http\Controllers\PriceItemController@updateLoadPrice')->name('prices.load.update');
+        Route::get('/zones', 'App\Http\Controllers\PriceItemController@zones')->name('zones');
+        Route::post('/zones/postcodes/update', 'App\Http\Controllers\PriceItemController@updatePostcodes')->name('zones.postcodes.update');
+        Route::post('/zones/postcodes/add', 'App\Http\Controllers\PriceItemController@addPostcode')->name('zones.postcodes.add');
         
         // Price Items CRUD routes
         Route::get('/price-items', 'App\Http\Controllers\PriceItemController@index')->name('price.items.index');
@@ -114,31 +78,6 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/price-items/{id}', 'App\Http\Controllers\PriceItemController@destroy')->name('price.items.destroy');
     });
 
-    // // Componentpage
-    // Route::prefix('componentspage')->group(function () {
-    //     Route::controller(ComponentpageController::class)->group(function () {
-    //         Route::get('/alert', 'alert')->name('alert');
-    //         Route::get('/avatar', 'avatar')->name('avatar');
-    //         Route::get('/badges', 'badges')->name('badges');
-    //         Route::get('/button', 'button')->name('button');
-    //         Route::get('/card', 'card')->name('card');
-    //         Route::get('/carousel', 'carousel')->name('carousel');
-    //         Route::get('/colors', 'colors')->name('colors');
-    //         Route::get('/dropdown', 'dropdown')->name('dropdown');
-    //         Route::get('/imageupload', 'imageUpload')->name('imageUpload');
-    //         Route::get('/list', 'list')->name('list');
-    //         Route::get('/pagination', 'pagination')->name('pagination');
-    //         Route::get('/progress', 'progress')->name('progress');
-    //         Route::get('/radio', 'radio')->name('radio');
-    //         Route::get('/starrating', 'starRating')->name('starRating');
-    //         Route::get('/switch', 'switch')->name('switch');
-    //         Route::get('/tabs', 'tabs')->name('tabs');
-    //         Route::get('/tags', 'tags')->name('tags');
-    //         Route::get('/tooltip', 'tooltip')->name('tooltip');
-    //         Route::get('/typography', 'typography')->name('typography');
-    //         Route::get('/videos', 'videos')->name('videos');
-    //     });
-    // });
     // Forms
     Route::prefix('forms')->group(function () {
         Route::controller(FormsController::class)->group(function () {
@@ -179,13 +118,6 @@ Route::middleware(['auth'])->group(function () {
         });
     });
 
-    // Table
-    Route::prefix('table')->group(function () {
-        Route::controller(TableController::class)->group(function () {
-            Route::get('/tablebasic', 'tableBasic')->name('tableBasic');
-            Route::get('/tabledata', 'tableData')->name('tableData');
-        });
-    });
 
     // Users
     Route::prefix('users')->group(function () {
@@ -225,25 +157,6 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('/{id}', 'destroy')->name('employees.destroy');
         });
     });
-
-    // Blog
-    Route::prefix('blog')->group(function () {
-        Route::controller(BlogController::class)->group(function () {
-            Route::get('/addBlog', 'addBlog')->name('addBlog');
-            Route::get('/blog', 'blog')->name('blog');
-            Route::get('/blogDetails', 'blogDetails')->name('blogDetails');
-        });
-    });
-
-    // // Cryptocurrency
-    // Route::prefix('cryptocurrency')->group(function () {
-    //     Route::controller(CryptocurrencyController::class)->group(function () {
-    //         Route::get('/marketplace', 'marketplace')->name('marketplace');
-    //         Route::get('/marketplacedetails', 'marketplaceDetails')->name('marketplaceDetails');
-    //         Route::get('/portfolio', 'portfolio')->name('portfolio');
-    //         Route::get('/wallet', 'wallet')->name('wallet');
-    //     });
-    // });
 
     // Orders
     Route::prefix('orders')->group(function () {

@@ -12,7 +12,7 @@
     <div class="sidebar-menu-area">
         <ul class="sidebar-menu" id="sidebar-menu">
             <li class="dropdown">
-                <a  href="javascript:void(0)">
+                <a href="javascript:void(0)">
                     <iconify-icon icon="solar:home-smile-angle-outline" class="menu-icon"></iconify-icon>
                     <span>Dashboard</span>
                 </a>
@@ -26,7 +26,7 @@
                 </ul>
             </li>
             <li class="sidebar-menu-group-title">Sales</li>
-             <li>
+            <li>
                 <a href="{{ route('accounts.index') }}">
                     <iconify-icon icon="mdi:account-cash" class="menu-icon"></iconify-icon>
                     <span>Accounts</span>
@@ -101,7 +101,7 @@
                     <span>Withdrawals</span>
                 </a>
             </li>
-            
+
             <li class="sidebar-menu-group-title">User</li>
             <li>
                 <a href="{{ route('usersList') }}">
@@ -115,7 +115,7 @@
                     <span>Employees</span>
                 </a>
             </li>
-            
+
             <li class="sidebar-menu-group-title">Order</li>
             <li>
                 <a href="{{ route('jobsList') }}">
@@ -165,21 +165,33 @@
                     <span>Trip Statuses</span>
                 </a>
             </li>
-            
             <li class="sidebar-menu-group-title">Price</li>
             <li>
-                <a href="{{ route('business.prices') }}">
+                <a href="{{ route('prices') }}">
                     <iconify-icon icon="mdi:cash" class="menu-icon"></iconify-icon>
                     <span>Prices</span>
                 </a>
             </li>
+            @foreach($prices as $price)
             <li>
-                <a href="{{ route('business.zones') }}">
+                <a href="{{ route('prices.tonne', ['priceId' => $price->id]) }}">
+                    <iconify-icon icon="mdi:weight-kilogram" class="menu-icon"></iconify-icon>
+                    <span>{{ $price->name }} Tonne Prices</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('prices.load', ['priceId' => $price->id]) }}">
+                    <iconify-icon icon="mdi:truck-cargo-container" class="menu-icon"></iconify-icon>
+                    <span>{{ $price->name }} Load Prices</span>
+                </a>
+            </li>
+            @endforeach
+            <li>
+                <a href="{{ route('zones') }}">
                     <iconify-icon icon="mdi:map" class="menu-icon"></iconify-icon>
                     <span>Zones</span>
                 </a>
             </li>
-            
             <li class="sidebar-menu-group-title">Products</li>
             <li>
                 <a href="{{ route('products.index') }}">
