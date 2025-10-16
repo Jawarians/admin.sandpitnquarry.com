@@ -1,15 +1,12 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Models\User;
 use App\Models\Order;
 use App\Models\Job;
 use App\Models\Trip;
-use App\Models\Product;
 
 class DashboardController extends Controller
 {
@@ -61,11 +58,6 @@ class DashboardController extends Controller
         $cancelledTrips = Trip::where('status', 'Cancelled')->count();
         $monthlyTripData = $this->getMonthlyTripData();
         
-        // Product stats
-        $totalProducts = Product::count();
-        $activeProducts = Product::where('active', true)->count();
-        $productCategoryData = $this->getProductCategoryData();
-        
         // Geography data
         $ordersByLocation = $this->getOrdersByLocation();
         
@@ -77,36 +69,10 @@ class DashboardController extends Controller
             'totalOrders', 'recentOrders', 'orderRevenue', 'monthlyOrderData', 'dailyOrderData',
             'totalJobs', 'completedJobs', 'ongoingJobs', 'jobsByTypeData',
             'totalTrips', 'completedTrips', 'cancelledTrips', 'monthlyTripData',
-            'totalProducts', 'activeProducts', 'productCategoryData',
             'ordersByLocation', 'debugMonthlyOrderData', 'dailySalesData'
         ));
     }
-    
-    public function index2()
-    {
-        return view('dashboard/index2');
-    }
-    
-    public function index3()
-    {
-        return view('dashboard/index3');
-    }
-    
-    public function index4()
-    {
-        return view('dashboard/index4');
-    }
-    
-    public function index5()
-    {
-        return view('dashboard/index5');
-    }
-    
-    public function index6()
-    {
-        return view('dashboard/index6');
-    }
-    
+
     /**
      * Debug view for charts
      */
@@ -118,27 +84,6 @@ class DashboardController extends Controller
         
         return view('dashboard.chart-debug', compact('monthlyOrderData', 'debugMonthlyOrderData'));
     }
-    
-    public function index7()
-    {
-        return view('dashboard/index7');
-    }
-    
-    public function index8()
-    {
-        return view('dashboard/index8');
-    }
-    
-    public function index9()
-    {
-        return view('dashboard/index9');
-    }
-    
-    public function index10()
-    {
-        return view('dashboard/index10');
-    }
-
     /**
      * Analyst dashboard: quick metrics and recent items for Orders, Jobs, Trips.
      */
@@ -235,9 +180,6 @@ class DashboardController extends Controller
                 ->orderBy('date')
                 ->get();
             
-            // Log the retrieved data for debugging
-            Log::info("Job status data by day:", ['data' => $dailyJobData]);
-            
             // Count unique dates to determine if we have enough data
             $uniqueDateCount = $dailyJobData->pluck('date')->unique()->count();
             
@@ -292,8 +234,6 @@ class DashboardController extends Controller
             
             // If we still don't have enough data, generate some default data
             if (count($result) < 2) {
-                Log::info("Not enough daily data points, generating sample data");
-                
                 // Get the most common statuses
                 $statuses = ['Pending', 'Assigned', 'In Progress', 'Completed', 'Cancelled'];
                 if (!empty($allStatuses)) {
@@ -394,41 +334,6 @@ class DashboardController extends Controller
         }
             
         return $result;
-    }
-
-    /**
-     * Get product data by category
-     */
-    private function getProductCategoryData()
-    {
-        file_put_contents(
-            storage_path('logs/chart-data.log'), 
-            "=== Product Category Data ===\n", 
-            FILE_APPEND
-        );
-        
-        $data = Product::selectRaw('product_category_id, COUNT(*) as count')
-            ->groupBy('product_category_id')
-            ->get()
-            ->pluck('count', 'product_category_id');
-            
-        file_put_contents(
-            storage_path('logs/chart-data.log'), 
-            "Product category data: " . json_encode($data->toArray(), JSON_PRETTY_PRINT) . "\n", 
-            FILE_APPEND
-        );
-        
-        // If there's no data, provide some defaults to ensure chart renders
-        if ($data->isEmpty()) {
-            $data = collect([12, 18, 22, 20]);
-            file_put_contents(
-                storage_path('logs/chart-data.log'), 
-                "Using default product data\n", 
-                FILE_APPEND
-            );
-        }
-        
-        return $data;
     }
 
     /**
