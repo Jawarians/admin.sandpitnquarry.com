@@ -144,12 +144,12 @@ function initializeJobStatusChart(jobData) {
             };
         });
         
-        // Create the chart
         const jobOptions = {
             series: series,
             chart: {
                 type: 'bar',
-                height: 230,
+                height: 250,               // changed from 230 -> use same as container
+                offsetY: 0,                // ensure no vertical offset
                 stacked: true,
                 toolbar: {
                     show: false
@@ -166,11 +166,21 @@ function initializeJobStatusChart(jobData) {
                 enabled: false
             },
             xaxis: {
-                categories: dates
+                categories: dates,
+                axisBorder: { show: false },   // hide axis border line
+                axisTicks: { show: false }
             },
             yaxis: {
                 title: {
                     text: 'Job Count'
+                }
+            },
+            grid: {
+                padding: {
+                    bottom: 0,
+                    top: 0,
+                    left: 0,
+                    right: 0
                 }
             },
             legend: {
@@ -194,42 +204,53 @@ function initializeJobStatusChart(jobData) {
         jobChart.render();
     }
     
-    // Function to render a simple bar chart showing job counts by status
-    function renderSimpleJobStatusChart(simpleJobData) {
-        const categories = Object.keys(simpleJobData);
-        const values = Object.values(simpleJobData);
+    // // Function to render a simple bar chart showing job counts by status
+    // function renderSimpleJobStatusChart(simpleJobData) {
+    //     const categories = Object.keys(simpleJobData);
+    //     const values = Object.values(simpleJobData);
         
-        const jobOptions = {
-            series: [{
-                name: 'Job Count',
-                data: values
-            }],
-            chart: {
-                type: 'bar',
-                height: 230,
-                toolbar: {
-                    show: false
-                }
-            },
-            plotOptions: {
-                bar: {
-                    horizontal: false,
-                    columnWidth: '55%',
-                    borderRadius: 2
-                },
-            },
-            dataLabels: {
-                enabled: false
-            },
-            xaxis: {
-                categories: categories
-            },
-            colors: ['#6259ca']
-        };
+    //     const jobOptions = {
+    //         series: [{
+    //             name: 'Job Count',
+    //             data: values
+    //         }],
+    //         chart: {
+    //             type: 'bar',
+    //             height: 250,               // changed from 230
+    //             offsetY: 0,
+    //             toolbar: {
+    //                 show: false
+    //             }
+    //         },
+    //         plotOptions: {
+    //             bar: {
+    //                 horizontal: false,
+    //                 columnWidth: '55%',
+    //                 borderRadius: 2
+    //             },
+    //         },
+    //         dataLabels: {
+    //             enabled: false
+    //         },
+    //         xaxis: {
+    //             categories: categories,
+    //             axisBorder: { show: false },
+    //             axisTicks: { show: false }
+    //         },
+    //         grid: {
+    //             padding: {
+    //                 bottom: 0,
+    //                 top: 0,
+    //                 left: 0,
+    //                 right: 0
+    //             }
+    //         },
+    //         colors: ['#6259ca']
+    //     };
 
-        const jobChart = new ApexCharts(document.querySelector("#barChart"), jobOptions);
-        jobChart.render();
-    }
+    //     const jobChart = new ApexCharts(document.querySelector("#barChart"), jobOptions);
+    //     jobChart.render();
+    // }
 }
 
 // Function to initialize the Trip Overview chart
