@@ -29,7 +29,6 @@
 })();
 
 function initProblematicCharts() {
-    initializeJobStatusChart();
     initializeDailySalesChart();
     
     // Also try to add a resize trigger to force recalculation
