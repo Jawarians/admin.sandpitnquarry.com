@@ -282,11 +282,7 @@ $subTitle = 'Analyst';
                         Completion Rate
                     </p>
                 </div>
-
                 <div id="barChart" class="barChart" style="min-height: 250px; width: 100%; height: 250px;"></div>
-                <div class="text-center mt-2">
-                    <small class="text">Last 7 days</small>
-                </div>
             </div>
         </div>
     </div>
@@ -528,19 +524,12 @@ $subTitle = 'Analyst';
                 </div>
 
                 <div class="row gy-4">
-                    <div class="col-lg-6">
-                        <div id="world-map" class="h-100 border radius-8"></div>
-
-                        <!-- Map will be initialized by dashboard-charts.js -->
-                    </div>
-
-                    <div class="col-lg-6">
-                        <div class="h-100 border p-16 pe-0 radius-8">
+                    <div class="col-lg-12">
+                        <div class="h-100 border p-8 pe-0 radius-8">
                             <div class="max-h-266-px overflow-y-auto scroll-sm pe-16">
                                 @php
                                 $maxCount = $ordersByLocation->max('count');
                                 @endphp
-
                                 @foreach($ordersByLocation as $index => $location)
                                 <div class="d-flex align-items-center justify-content-between gap-3 mb-12 pb-2">
                                     <div class="d-flex align-items-center w-100">
