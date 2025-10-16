@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Trip;
 use App\Models\TripStatus;
-use App\Models\TripDetail;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class TripController extends Controller
 {
@@ -29,13 +29,37 @@ class TripController extends Controller
             $searchTerm = $request->search;
             $query->where(function($q) use ($searchTerm) {
                 $q->where('id', 'LIKE', "%{$searchTerm}%")
-                  ->orWhere('trip_number', 'LIKE', "%{$searchTerm}%")
-                  ->orWhereHas('driver', function($subQ) use ($searchTerm) {
-                      $subQ->where('name', 'LIKE', "%{$searchTerm}%");
-                  })
-                  ->orWhereHas('truck', function($subQ) use ($searchTerm) {
-                      $subQ->where('plate_number', 'LIKE', "%{$searchTerm}%");
-                  });
+                  ->orWhere('code', 'LIKE', "%{$searchTerm}%");
+
+                // Transporter: job.transporter (name, registration_number)
+                $q->orWhereHas('job.transporter', function($subQ) use ($searchTerm) {
+                    $subQ->where('name', 'LIKE', "%{$searchTerm}%")
+                         ->orWhere('registration_number', 'LIKE', "%{$searchTerm}%");
+                });
+
+                // Transporter via latest.assignment.truck.transporter
+                $q->orWhereHas('latest.assignment.truck.transporter', function($subQ) use ($searchTerm) {
+                    $subQ->where('name', 'LIKE', "%{$searchTerm}%")
+                         ->orWhere('registration_number', 'LIKE', "%{$searchTerm}%");
+                });
+
+                // Driver name via latest assignment
+                $q->orWhereHas('latest.assignment.driver.user', function($subQ) use ($searchTerm) {
+                    $subQ->where('name', 'LIKE', "%{$searchTerm}%");
+                });
+
+                // Truck plate/registration via latest.assignment.truck or truck.latest
+                $q->orWhereHas('latest.assignment.truck', function($subQ) use ($searchTerm) {
+                    $subQ->where('registration_plate_number', 'LIKE', "%{$searchTerm}%");
+                });
+
+                $q->orWhereHas('job.order.oldest.site', function($subQ) use ($searchTerm) {
+                    $subQ->where('name', 'LIKE', "%{$searchTerm}%");
+                });
+
+                $q->orWhereHas('job.order.latest.site', function($subQ) use ($searchTerm) {
+                    $subQ->where('name', 'LIKE', "%{$searchTerm}%");
+                });
             });
         }
 
@@ -46,20 +70,40 @@ class TripController extends Controller
         
         // Handle created_at date range filter
         if ($request->has('created_start_date') && !empty($request->created_start_date)) {
-            $query->whereDate('created_at', '>=', $request->created_start_date);
+            try {
+                $start = Carbon::parse($request->created_start_date)->startOfDay();
+                $query->where('created_at', '>=', $start);
+            } catch (\Exception $e) {
+                // ignore invalid date
+            }
         }
-        
+
         if ($request->has('created_end_date') && !empty($request->created_end_date)) {
-            $query->whereDate('created_at', '<=', $request->created_end_date);
+            try {
+                $end = Carbon::parse($request->created_end_date)->endOfDay();
+                $query->where('created_at', '<=', $end);
+            } catch (\Exception $e) {
+                // ignore invalid date
+            }
         }
         
         // Handle updated_at date range filter
         if ($request->has('updated_start_date') && !empty($request->updated_start_date)) {
-            $query->whereDate('updated_at', '>=', $request->updated_start_date);
+            try {
+                $start = Carbon::parse($request->updated_start_date)->startOfDay();
+                $query->where('updated_at', '>=', $start);
+            } catch (\Exception $e) {
+                // ignore invalid date
+            }
         }
-        
+
         if ($request->has('updated_end_date') && !empty($request->updated_end_date)) {
-            $query->whereDate('updated_at', '<=', $request->updated_end_date);
+            try {
+                $end = Carbon::parse($request->updated_end_date)->endOfDay();
+                $query->where('updated_at', '<=', $end);
+            } catch (\Exception $e) {
+                // ignore invalid date
+            }
         }
 
         // Paginate results
