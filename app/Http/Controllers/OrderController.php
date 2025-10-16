@@ -178,7 +178,7 @@ class OrderController extends Controller
         return view('orders/orderStatuses', compact('statuses'));
     }
 
-    public function freeDeliveries(Request $request)
+public function freeDeliveries(Request $request)
     {
         // Also, only include orders with address_id > 0
         $query = Order::with([
@@ -194,20 +194,60 @@ class OrderController extends Controller
             'transportation_amount.order_amountable.route',
         ])->where('address_id', '>', 0);
         
-        // Handle search
-        if ($request->has('search') && !empty($request->search)) {
-            $searchTerm = $request->search;
+        // Handle search - broadened to more relations/fields
+        if ($request->filled('search')) {
+            $searchTerm = trim($request->input('search'));
             $query->where(function($q) use ($searchTerm) {
-                $q->where('id', 'LIKE', "%{$searchTerm}%")
-                  ->orWhereHas('user', function($subQ) use ($searchTerm) {
+                // numeric id search
+                if (is_numeric($searchTerm)) {
+                    $q->where('id', 'LIKE', "%{$searchTerm}%");
+                } else {
+                    // cast id to text for non-numeric partial matches (Postgres-safe)
+                    $q->whereRaw("CAST(id AS TEXT) LIKE ?", ["%{$searchTerm}%"]);
+                }
+
+                // only add order_number clause if column exists to avoid SQL errors on PG
+                if (Schema::hasColumn('orders', 'order_number')) {
+                    $q->orWhere('order_number', 'LIKE', "%{$searchTerm}%");
+                }
+
+                $q->orWhereHas('user', function($subQ) use ($searchTerm) {
+                      $subQ->where('name', 'LIKE', "%{$searchTerm}%");
+                  })
+                  ->orWhereHas('product', function($subQ) use ($searchTerm) {
+                      $subQ->where('name', 'LIKE', "%{$searchTerm}%");
+                  })
+                  ->orWhereHas('creator', function($subQ) use ($searchTerm) {
+                      $subQ->where('name', 'LIKE', "%{$searchTerm}%");
+                  })
+                  ->orWhereHas('oldest.site', function($subQ) use ($searchTerm) {
                       $subQ->where('name', 'LIKE', "%{$searchTerm}%");
                   });
             });
         }
 
-        // Paginate results
-        $perPage = $request->get('per_page', 10);
-        $freeDeliveries = $query->orderBy('created_at', 'desc')->paginate($perPage);
+        // Date filters (created_at) - supports start, end, or both
+        if ($request->filled('start_date') || $request->filled('end_date')) {
+            try {
+                if ($request->filled('start_date') && $request->filled('end_date')) {
+                    $start = Carbon::parse($request->input('start_date'))->startOfDay();
+                    $end = Carbon::parse($request->input('end_date'))->endOfDay();
+                    $query->whereBetween('created_at', [$start, $end]);
+                } elseif ($request->filled('start_date')) {
+                    $start = Carbon::parse($request->input('start_date'))->startOfDay();
+                    $query->where('created_at', '>=', $start);
+                } else {
+                    $end = Carbon::parse($request->input('end_date'))->endOfDay();
+                    $query->where('created_at', '<=', $end);
+                }
+            } catch (\Exception $e) {
+                // Invalid date input: ignore date filter (fail-safe)
+            }
+        }
+
+        // Paginate results and keep query string so pagination preserves filters
+        $perPage = (int)$request->get('per_page', 10);
+        $freeDeliveries = $query->orderBy('created_at', 'desc')->paginate($perPage)->withQueryString();
         
         // Process each order for display
         $freeDeliveries->each(function ($order) {
@@ -215,18 +255,24 @@ class OrderController extends Controller
             $order->completed = $order->completed ?? 0;
             $order->ongoing = $order->ongoing ?? 0;
             
-            // Format transportation_amount if it exists
+            // Keep transportation_amount as numeric MYR value (float), not a formatted string
             if ($order->transportation_amount && isset($order->transportation_amount->amount)) {
-                // Assuming amount is stored in cents and needs to be converted to dollars/ringgit
-                if (is_numeric($order->transportation_amount->amount)) {
-                    $order->transportation_amount->amount = number_format($order->transportation_amount->amount / 100, 2);
+                $amt = $order->transportation_amount->amount;
+                // numeric (cents) -> convert to unit (e.g. MYR)
+                if (is_numeric($amt)) {
+                    $order->transportation_amount->amount = $amt / 100;
+                } else {
+                    // try clean string then convert
+                    $clean = str_replace(',', '', $amt);
+                    if (is_numeric($clean)) {
+                        $order->transportation_amount->amount = $clean / 100;
+                    }
                 }
             }
         });
         
         return view('orders/freeDeliveries', compact('freeDeliveries'));
     }
-
     /**
      * Display a listing of self-pickup orders
      *
