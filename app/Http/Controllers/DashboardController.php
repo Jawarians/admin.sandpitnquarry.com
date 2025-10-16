@@ -179,33 +179,7 @@ class DashboardController extends Controller
                 ->groupBy('date', 'job_details.status')
                 ->orderBy('date')
                 ->get();
-            
-            // Count unique dates to determine if we have enough data
-            $uniqueDateCount = $dailyJobData->pluck('date')->unique()->count();
-            
-            // If there's not enough data for the last 30 days, fall back to overall status counts
-            if ($dailyJobData->isEmpty() || $uniqueDateCount <= 1) {
-                
-                return DB::table('jobs')
-                    ->join('job_details', 'jobs.id', '=', 'job_details.job_id')
-                    ->selectRaw('job_details.status, COUNT(*) as count')
-                    ->whereIn('job_details.id', function($query) {
-                        // Get the latest job_detail for each job
-                        $query->select(DB::raw('MAX(id)'))
-                            ->from('job_details')
-                            ->groupBy('job_id');
-                    })
-                    ->groupBy('job_details.status')
-                    ->get()
-                    ->mapWithKeys(function($item) {
-                        return [$item->status => $item->count];
-                    });
-            }
-            
-            // Process the data for chart display
-            // Format for chart: { "Day 1": {Pending: 5, Completed: 10}, "Day 2": {...} }
             $result = [];
-            
             // Get all unique statuses to ensure we have consistent data across days
             $allStatuses = $dailyJobData->pluck('status')->unique()->values()->toArray();
             
@@ -231,43 +205,9 @@ class DashboardController extends Controller
                 
                 $result[$formattedDate] = $dayData;
             }
-            
-            // If we still don't have enough data, generate some default data
-            if (count($result) < 2) {
-                // Get the most common statuses
-                $statuses = ['Pending', 'Assigned', 'In Progress', 'Completed', 'Cancelled'];
-                if (!empty($allStatuses)) {
-                    $statuses = array_merge($statuses, $allStatuses);
-                    $statuses = array_unique($statuses);
-                }
-                
-                // Generate last 7 days with sample data
-                $result = [];
-                for ($i = 6; $i >= 0; $i--) {
-                    $date = date('M d', strtotime("-$i days"));
-                    $dayData = [];
-                    
-                    foreach ($statuses as $status) {
-                        // Generate random counts between 1-15
-                        $dayData[$status] = rand(1, 15);
-                    }
-                    
-                    $result[$date] = $dayData;
-                }
-            }
-            
             return $result;
         } catch (\Exception $e) {
             Log::error("Error in getJobsByType: " . $e->getMessage());
-            
-            // Return simple fallback data
-            return [
-                'Pending' => 12,
-                'Assigned' => 8,
-                'In Progress' => 15,
-                'Completed' => 25,
-                'Cancelled' => 5
-            ];
         }
     }
 

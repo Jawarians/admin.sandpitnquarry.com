@@ -282,7 +282,7 @@ $subTitle = 'Analyst';
                         Completion Rate
                     </p>
                 </div>
-                <div id="barChart" class="barChart" style="min-height: 250px; width: 100%; height: 250px;"></div>
+               <div id="barChart" class="barChart" style="min-height:250px; width:100%; height:250px; padding:0; margin:0; display:block;"></div>
             </div>
         </div>
     </div>
