@@ -303,21 +303,8 @@ $subTitle = 'Price Item Management';
                     });
                 }
 
-                $input.on('input', function() {
-                    // save immediately on input
-                    doSave();
-                });
-
-                $input.on('blur', function() {
-                    doSave();
-                });
-
-                $input.on('keydown', function(e) {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        doSave();
-                    }
-                });
+                // Remove immediate auto-save handlers; saving is delegated to Save button only
+                // Inputs will be saved when their associated .price-save-btn is clicked.
             });
         }
 
@@ -331,20 +318,93 @@ $subTitle = 'Price Item Management';
             };
         });
 
-        // Delegate Save button clicks to trigger input blur (which triggers save)
+        // Delegate Save button clicks to trigger a save for the associated input
         $(document).on('click', '.price-save-btn', function() {
             const $btn = $(this);
             const $input = $btn.closest('div').find('input[type="number"]');
             if ($input && $input.length) {
-                $input.trigger('blur');
+                // Build payload and run the same save routine used in attachAutoSave
+                const payload = {
+                    price_id: $input.data('price-id'),
+                    zone_id: $input.data('zone-id'),
+                    product_id: $input.data('product-id'),
+                    wheel_id: $input.data('wheel-id'),
+                    amount: $input.val(),
+                    _token: '{{ csrf_token() }}'
+                };
+
+                // Visual feedback
+                $input.removeClass('is-saved is-error').addClass('is-saving');
+
+                $.ajax({
+                    url: '{{ route("prices.load.update") }}',
+                    method: 'POST',
+                    data: payload,
+                    dataType: 'json',
+                    headers: { 'Accept': 'application/json' },
+                    success: function(response) {
+                        if (response && response.success) {
+                            const query = {
+                                price_id: payload.price_id,
+                                product_id: payload.product_id,
+                                wheel_id: payload.wheel_id,
+                                zone_id: payload.zone_id
+                            };
+
+                            $.ajax({
+                                url: '{{ route("prices.item.get") }}',
+                                method: 'GET',
+                                data: query,
+                                dataType: 'json',
+                                headers: { 'Accept': 'application/json' },
+                                success: function(getResp) {
+                                    if (getResp && getResp.success) {
+                                        if (typeof getResp.amount_display !== 'undefined') {
+                                            $input.val(getResp.amount_display);
+                                        }
+                                        $input.data('lastSaved', $input.val());
+                                        $input.removeClass('is-saving is-error').addClass('is-saved');
+                                        setTimeout(function() { $input.removeClass('is-saved'); }, 1200);
+                                        const evt = new CustomEvent('price.updated', { detail: getResp });
+                                        window.dispatchEvent(evt);
+                                    } else {
+                                        $input.removeClass('is-saving is-saved').addClass('is-error');
+                                        toastr.error(getResp.message || 'Failed to fetch saved price');
+                                    }
+                                },
+                                error: function(xhr) {
+                                    $input.removeClass('is-saving is-saved').addClass('is-error');
+                                }
+                            });
+
+                            if (response.deleted) {
+                                $input.val('');
+                            }
+                        } else {
+                            $input.removeClass('is-saving is-saved').addClass('is-error');
+                            toastr.error(response.message || 'Failed to update price');
+                        }
+                    },
+                    error: function(xhr) {
+                        $input.removeClass('is-saving is-saved').addClass('is-error');
+                        if (xhr && xhr.responseJSON && xhr.responseJSON.message) {
+                            toastr.error(xhr.responseJSON.message);
+                        } else if (xhr && xhr.responseJSON && xhr.responseJSON.errors) {
+                            const keys = Object.keys(xhr.responseJSON.errors);
+                            if (keys.length) toastr.error(xhr.responseJSON.errors[keys[0]][0]);
+                        } else {
+                            toastr.error('Failed to update price');
+                        }
+                    }
+                });
             }
         });
 
-        // Enter key fallback
+        // Enter key fallback: prevent form submission but do NOT auto-save. Saving must be done via Save button.
         $(document).on('keypress', '.tonne-price-input, .load-price-input', function(e) {
             if (e.key === 'Enter' || e.which === 13) {
                 e.preventDefault();
-                $(this).trigger('blur');
+                // do nothing else — user should click Save to persist changes
             }
         });
     });
