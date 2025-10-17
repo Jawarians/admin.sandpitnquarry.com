@@ -60,10 +60,13 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('prices')->group(function () {
         // Price item routes
         Route::get('/prices', 'App\Http\Controllers\PriceItemController@index')->name('prices');
+    Route::get('/prices/create', 'App\Http\Controllers\PriceItemController@createPrice')->name('prices.create');
+    Route::post('/prices', 'App\Http\Controllers\PriceItemController@storePrice')->name('prices.store');
         Route::get('/prices/tonne/{priceId}', 'App\Http\Controllers\PriceItemController@tonnePrices')->name('prices.tonne');
         Route::get('/prices/load/{priceId}', 'App\Http\Controllers\PriceItemController@loadPrices')->name('prices.load');
         Route::post('/prices/tonne/update', 'App\Http\Controllers\PriceItemController@updateTonnePrice')->name('prices.tonne.update');
         Route::post('/prices/load/update', 'App\Http\Controllers\PriceItemController@updateLoadPrice')->name('prices.load.update');
+    Route::get('/prices/item', 'App\Http\Controllers\PriceItemController@getPriceItem')->name('prices.item.get');
         Route::get('/zones', 'App\Http\Controllers\PriceItemController@zones')->name('zones');
         Route::post('/zones/postcodes/update', 'App\Http\Controllers\PriceItemController@updatePostcodes')->name('zones.postcodes.update');
         Route::post('/zones/postcodes/add', 'App\Http\Controllers\PriceItemController@addPostcode')->name('zones.postcodes.add');

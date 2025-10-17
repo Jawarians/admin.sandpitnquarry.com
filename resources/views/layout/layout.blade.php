@@ -32,6 +32,8 @@
 
     <!-- ..::  scripts  start ::.. -->
     <x-script  script='{!! isset($script) ? $script : "" !!}' />
+    <!-- Render any view-specific pushed scripts -->
+    @stack('scripts')
     <!-- ..::  scripts  end ::.. -->
 
 </body>

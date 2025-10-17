@@ -8,6 +8,7 @@ use App\Models\Site;
 use App\Models\Product;
 use App\Models\Price;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class PriceItemController extends Controller
 {
@@ -211,49 +212,63 @@ class PriceItemController extends Controller
      */
     public function updateTonnePrice(Request $request)
     {
-        $priceId = $request->input('price_id');
-        $siteId = $request->input('site_id');
-        $productId = $request->input('product_id');
-        $wheelId = $request->input('wheel_id', 1); // Default to 1 for tonne prices
-        $amount = $request->input('amount', 0);
-        $amount = $amount * 100; // Multiply by 100 before storing
-        $creatorId = $request->input('creator_id', 0);
-        
+        $data = $request->validate([
+            'price_id' => 'required|integer|exists:prices,id',
+            'site_id' => 'required|integer|exists:sites,id',
+            'product_id' => 'required|integer|exists:products,id',
+            'wheel_id' => 'sometimes|integer',
+            'amount' => 'nullable|numeric',
+        ]);
+
+    $wheelId = $data['wheel_id'] ?? 1;
+    $amountRaw = $data['amount'] ?? 0;
+        // convert to integer cents (round to 2 decimals)
+        $amount = (int) round(floatval($amountRaw) * 100);
+    $creatorId = $request->user()?->id ?? $request->input('creator_id', 0);
+
         try {
             if ($amount <= 0) {
-                // Delete the price item if amount is 0 or negative
-                PriceItem::where('price_id', $priceId)
+                PriceItem::where('price_id', $data['price_id'])
                     ->where('price_itemable_type', 'site')
-                    ->where('price_itemable_id', $siteId)
-                    ->where('product_id', $productId)
+                    ->where('price_itemable_id', $data['site_id'])
+                    ->where('product_id', $data['product_id'])
                     ->where('wheel_id', $wheelId)
                     ->delete();
-            } else {
-                // Create or update the price item
-                PriceItem::updateOrCreate(
-                    [
-                        'price_id' => $priceId,
-                        'price_itemable_type' => 'site',
-                        'price_itemable_id' => $siteId,
-                        'product_id' => $productId,
-                        'wheel_id' => $wheelId,
-                    ],
-                    [
-                        'amount' => $amount,
-                        'creator_id' => $creatorId,
-                    ]
-                );
+
+                return response()->json(['success' => true, 'deleted' => true, 'message' => 'Price item deleted']);
             }
-            
+
+            $attributes = [
+                'price_id' => $data['price_id'],
+                'price_itemable_type' => 'site',
+                'price_itemable_id' => $data['site_id'],
+                'product_id' => $data['product_id'],
+                'wheel_id' => $wheelId,
+            ];
+
+            $values = [
+                'amount' => $amount,
+            ];
+
+            if (!empty($creatorId) && $creatorId > 0) {
+                $values['creator_id'] = $creatorId;
+            }
+
+            $item = PriceItem::updateOrCreate($attributes, $values);
+
+            // reload to get casts applied
+            $item->refresh();
+            Log::info('PriceItem saved', ['price_item_id' => $item->id, 'amount' => $item->amount]);
+
             return response()->json([
                 'success' => true,
+                'id' => $item->id,
+                'amount_raw' => $item->amount,
+                'amount_display' => is_numeric($item->amount) ? ($item->amount / 100) : null,
                 'message' => 'Price updated successfully'
             ]);
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to update price: ' . $e->getMessage()
-            ], 500);
+            return response()->json(['success' => false, 'message' => 'Failed to update price: ' . $e->getMessage()], 500);
         }
     }
     
@@ -265,50 +280,122 @@ class PriceItemController extends Controller
      */
     public function updateLoadPrice(Request $request)
     {
-        $priceId = $request->input('price_id');
-        $zoneId = $request->input('zone_id');
-        $productId = $request->input('product_id');
-        $wheelId = $request->input('wheel_id');
-        $amount = $request->input('amount', 0);
-        $amount = $amount * 100; // Multiply by 100 before storing
-        $creatorId = $request->input('creator_id', 0);
-        
+        $data = $request->validate([
+            'price_id' => 'required|integer|exists:prices,id',
+            'zone_id' => 'required|integer|exists:zones,id',
+            'product_id' => 'required|integer|exists:products,id',
+            'wheel_id' => 'sometimes|integer',
+            'amount' => 'nullable|numeric',
+        ]);
+
+    $wheelId = $data['wheel_id'] ?? 0;
+    $amountRaw = $data['amount'] ?? 0;
+    $amount = (int) round(floatval($amountRaw) * 100);
+    $creatorId = $request->user()?->id ?? $request->input('creator_id', 0);
+
         try {
             if ($amount <= 0) {
-                // Delete the price item if amount is 0 or negative
-                PriceItem::where('price_id', $priceId)
+                PriceItem::where('price_id', $data['price_id'])
                     ->where('price_itemable_type', 'zone')
-                    ->where('price_itemable_id', $zoneId)
-                    ->where('product_id', $productId)
+                    ->where('price_itemable_id', $data['zone_id'])
+                    ->where('product_id', $data['product_id'])
                     ->where('wheel_id', $wheelId)
                     ->delete();
-            } else {
-                // Create or update the price item
-                PriceItem::updateOrCreate(
-                    [
-                        'price_id' => $priceId,
-                        'price_itemable_type' => 'zone',
-                        'price_itemable_id' => $zoneId,
-                        'product_id' => $productId,
-                        'wheel_id' => $wheelId,
-                    ],
-                    [
-                        'amount' => $amount,
-                        'creator_id' => $creatorId,
-                    ]
-                );
+
+                return response()->json(['success' => true, 'deleted' => true, 'message' => 'Price item deleted']);
             }
-            
+
+            $attributes = [
+                'price_id' => $data['price_id'],
+                'price_itemable_type' => 'zone',
+                'price_itemable_id' => $data['zone_id'],
+                'product_id' => $data['product_id'],
+                'wheel_id' => $wheelId,
+            ];
+
+            $values = [
+                'amount' => $amount,
+            ];
+
+            if (!empty($creatorId) && $creatorId > 0) {
+                $values['creator_id'] = $creatorId;
+            }
+
+            $item = PriceItem::updateOrCreate($attributes, $values);
+
+            $item->refresh();
+            Log::info('PriceItem saved', ['price_item_id' => $item->id, 'amount' => $item->amount]);
+
             return response()->json([
                 'success' => true,
+                'id' => $item->id,
+                'amount_raw' => $item->amount,
+                'amount_display' => is_numeric($item->amount) ? ($item->amount / 100) : null,
                 'message' => 'Price updated successfully'
             ]);
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to update price: ' . $e->getMessage()
-            ], 500);
+            return response()->json(['success' => false, 'message' => 'Failed to update price: ' . $e->getMessage()], 500);
         }
+    }
+
+    /**
+     * Return a canonical PriceItem as JSON by identifying keys.
+     * Accepts query parameters: price_id, product_id, wheel_id (optional), site_id or zone_id (one required).
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function getPriceItem(Request $request)
+    {
+        $data = $request->validate([
+            'price_id' => 'required|integer|exists:prices,id',
+            'product_id' => 'required|integer|exists:products,id',
+            'wheel_id' => 'sometimes|integer',
+            'site_id' => 'sometimes|integer|exists:sites,id',
+            'zone_id' => 'sometimes|integer|exists:zones,id',
+        ]);
+
+        // Determine the polymorphic type and id
+        if (!empty($data['site_id'])) {
+            $type = 'site';
+            $itemableId = $data['site_id'];
+        } elseif (!empty($data['zone_id'])) {
+            $type = 'zone';
+            $itemableId = $data['zone_id'];
+        } else {
+            return response()->json(['success' => false, 'message' => 'Either site_id or zone_id is required'], 400);
+        }
+
+        $wheelId = $data['wheel_id'] ?? 0;
+
+        $query = PriceItem::where('price_id', $data['price_id'])
+            ->where('price_itemable_type', $type)
+            ->where('price_itemable_id', $itemableId)
+            ->where('product_id', $data['product_id'])
+            ->where('wheel_id', $wheelId);
+
+        $item = $query->first();
+
+        if (! $item) {
+            return response()->json(['success' => false, 'message' => 'Price item not found'], 404);
+        }
+
+        // Ensure casts/refresh
+        $item->refresh();
+
+        return response()->json([
+            'success' => true,
+            'id' => $item->id,
+            'price_id' => $item->price_id,
+            'price_itemable_type' => $item->price_itemable_type,
+            'price_itemable_id' => $item->price_itemable_id,
+            'product_id' => $item->product_id,
+            'wheel_id' => $item->wheel_id,
+            'amount_raw' => $item->amount,
+            'amount_display' => is_numeric($item->amount) ? ($item->amount / 100) : null,
+            'created_at' => $item->created_at,
+            'updated_at' => $item->updated_at,
+        ]);
     }
     
     /**
@@ -373,6 +460,37 @@ class PriceItemController extends Controller
                 'message' => 'Failed to add postcode: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    /**
+     * Show form to create a new Price
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function createPrice()
+    {
+        return view('prices.create');
+    }
+
+    /**
+     * Store a newly created Price
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function storePrice(Request $request)
+    {
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'published_at' => 'nullable|date',
+        ]);
+
+    // set creator id if available
+    $data['creator_id'] = $request->user()?->id ?? 0;
+
+        $price = Price::create($data);
+
+        return redirect()->route('prices')->with('success', 'Price created successfully');
     }
     
     /**
