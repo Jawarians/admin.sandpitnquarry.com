@@ -17,9 +17,41 @@ $script ='<script>
 @endphp
 
 @section('content')
+@php
+    // Define which coin types are considered inside (inflow) and outside (outflow)
+    $insideTypes = ['Reload', 'Tonne_refund', 'Refund', 'bonus', 'order'];
+    $outsideTypes = ['Waiting_charges', 'withdrawal', 'purchase'];
+
+    $totalInside = 0;
+    $totalOutside = 0;
+    $totalIn = 0; // alias for totalInside
+    $totalOut = 0; // alias for totalOutside
+
+    foreach ($coins as $c) {
+        $amt = ($c->amount ?? 0) / 100;
+        if (in_array($c->coinable_type, $insideTypes)) {
+            $totalInside += $amt;
+            $totalIn += $amt;
+        } elseif (in_array($c->coinable_type, $outsideTypes)) {
+            $totalOutside += $amt;
+            $totalOut += $amt;
+        }
+    }
+
+    // Prepare lightweight payload for client-side aggregation
+    $chartRecords = [];
+    foreach ($coins as $c) {
+        $chartRecords[] = [
+            'date' => $c->created_at->format('Y-m-d H:i:s'),
+            'type' => $c->coinable_type,
+            'amount' => ($c->amount ?? 0) / 100
+        ];
+    }
+@endphp
 <div class="card h-100 p-0 radius-12">
+    {{-- Chart area will sit inside card-body above the table to match table width --}}
     <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-between">
-        <div class="d-flex align-items-center flex-wrap gap-3">
+    <div class="d-flex align-items-center flex-wrap gap-3">
             <span class="text-md fw-medium text-secondary-light mb-0">Show</span>
             <form method="GET">
                 <select class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px" name="per_page" onchange="this.form.submit()">
@@ -55,6 +87,31 @@ $script ='<script>
         </a>
     </div>
     <div class="card-body p-24">
+        {{-- Large chart block placed above the table, matching table width --}}
+        <div class="mb-4">
+            <div class="d-flex align-items-center justify-content-between mb-3 gap-3">
+                <div class="d-flex align-items-center gap-3">
+                    <label class="text-sm fw-medium">Group by</label>
+                    <select id="coinsGroupBy" class="form-select form-select-sm w-auto">
+                        <option value="day">Day</option>
+                        <option value="week">Week</option>
+                        <option value="month" selected>Month</option>
+                    </select>
+                    <label class="text-sm fw-medium ms-12">Stacked</label>
+                    <input type="checkbox" id="coinsStacked" />
+                    <label class="text-sm fw-medium ms-12">Show by Type</label>
+                    <input type="checkbox" id="coinsShowTypes" />
+                    <button id="exportCsv" class="btn btn-sm btn-outline-secondary ms-12">Export CSV</button>
+                </div>
+            </div>
+
+            <div class="w-100 card p-3">
+                @php
+                    $allTypes = array_values(array_unique(array_map(function($r){ return $r['type']; }, $chartRecords)));
+                @endphp
+                <canvas id="coinsAuditBarChart" style="width:100%;height:320px;display:block;" data-records="{{ base64_encode(json_encode($chartRecords)) }}" data-types="{{ base64_encode(json_encode($allTypes)) }}"></canvas>
+            </div>
+        </div>
         @if(session('success'))
         <div class="alert alert-success mb-4">
             {{ session('success') }}
@@ -211,3 +268,240 @@ $script ='<script>
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    // Read raw records prepared server-side from canvas data-records attribute (base64 encoded)
+    const rawDataAttr = document.getElementById('coinsAuditBarChart').dataset.records || '';
+    let rawRecords = [];
+    try {
+        if (rawDataAttr) {
+            const decoded = atob(rawDataAttr);
+            rawRecords = JSON.parse(decoded || '[]');
+        }
+    } catch (err) {
+        console.error('Failed to parse chart data', err);
+        rawRecords = [];
+    }
+
+    const groupSelect = document.getElementById('coinsGroupBy');
+    const stackedToggle = document.getElementById('coinsStacked');
+    const showTypesToggle = document.getElementById('coinsShowTypes');
+    const exportBtn = document.getElementById('exportCsv');
+        const canvas = document.getElementById('coinsAuditBarChart');
+
+        function groupKey(dateObj, mode) {
+            const y = dateObj.getFullYear();
+            const m = dateObj.getMonth() + 1;
+            const d = dateObj.getDate();
+            if (mode === 'month') return `${y}-${String(m).padStart(2,'0')}`;
+            if (mode === 'week') {
+                // Week label as YYYY-WW
+                const onejan = new Date(dateObj.getFullYear(),0,1);
+                const week = Math.ceil((((dateObj - onejan) / 86400000) + onejan.getDay()+1)/7);
+                return `${y}-W${String(week).padStart(2,'0')}`;
+            }
+            // day
+            return `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+        }
+
+        function aggregate(records, mode) {
+            const map = new Map();
+            records.forEach(r => {
+                const dt = new Date(r.date);
+                const key = groupKey(dt, mode);
+                if (!map.has(key)) map.set(key, {inside: 0, outside: 0});
+                const amt = parseFloat(r.amount) || 0;
+                const type = r.type;
+                // same inside/outside mapping as server
+                const insideTypes = ['Reload', 'Tonne_refund', 'Refund', 'bonus', 'order'];
+                const outsideTypes = ['Waiting_charges', 'withdrawal', 'purchase'];
+                if (insideTypes.indexOf(type) !== -1) map.get(key).inside += amt;
+                else if (outsideTypes.indexOf(type) !== -1) map.get(key).outside += amt;
+            });
+            // sort keys
+            const keys = Array.from(map.keys()).sort();
+            const labels = keys;
+            const inside = keys.map(k => map.get(k).inside);
+            const outside = keys.map(k => map.get(k).outside);
+            return {labels, inside, outside};
+        }
+
+        // aggregate per-type when requested
+        function aggregateByType(records, mode, types) {
+            const map = new Map();
+            records.forEach(r => {
+                const dt = new Date(r.date);
+                const key = groupKey(dt, mode);
+                if (!map.has(key)) map.set(key, {});
+                const amt = parseFloat(r.amount) || 0;
+                const t = r.type;
+                const row = map.get(key);
+                row[t] = (row[t] || 0) + amt;
+            });
+            const keys = Array.from(map.keys()).sort();
+            const labels = keys;
+            const datasets = types.map(function(type) {
+                return keys.map(k => map.get(k)[type] || 0);
+            });
+            return {labels, datasets};
+        }
+
+    // initialize chart
+    const ctx = canvas.getContext('2d');
+    let barChart = null;
+
+        function drawChart(mode, stacked) {
+            const data = aggregate(rawRecords, mode);
+            // Determine effective theme by checking page background luminance first,
+            // fallback to prefers-color-scheme if background is not informative.
+            function parseRgb(rgbString) {
+                // supports rgb(r,g,b) and rgba(r,g,b,a)
+                const m = rgbString.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
+                if (!m) return null;
+                return [parseInt(m[1], 10), parseInt(m[2], 10), parseInt(m[3], 10)];
+            }
+
+            function luminance(r, g, b) {
+                // sRGB luminance
+                const a = [r, g, b].map(function(v) {
+                    v /= 255;
+                    return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+                });
+                return 0.2126 * a[0] + 0.7152 * a[1] + 0.0722 * a[2];
+            }
+
+            let isDark = false;
+            try {
+                const bodyBg = getComputedStyle(document.body).backgroundColor || '';
+                const rgb = parseRgb(bodyBg);
+                if (rgb) {
+                    const L = luminance(rgb[0], rgb[1], rgb[2]);
+                    // threshold chosen so that L < 0.5 is considered dark background
+                    isDark = L < 0.5;
+                } else if (window.matchMedia) {
+                    isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                }
+            } catch (e) {
+                if (window.matchMedia) isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            }
+
+            // read types list for per-type view
+            const typesListRaw = canvas.dataset.types || '';
+            let typesList = [];
+            try { typesList = typesListRaw ? JSON.parse(atob(typesListRaw)) : []; } catch(e) { typesList = []; }
+
+            const cfg = {
+                type: 'bar',
+                data: {
+                    labels: data.labels,
+                    datasets: (showTypesToggle && showTypesToggle.checked && typesList.length) ? (function() {
+                        // color palette
+                        const palette = ['#10b981','#ef4444','#06b6d4','#f59e0b','#7c3aed','#0ea5e9','#f97316','#84cc16'];
+                        const res = [];
+                        const typed = aggregateByType(rawRecords, mode, typesList);
+                        for (let i = 0; i < typesList.length; i++) {
+                            res.push({ label: typesList[i], data: typed.datasets[i], backgroundColor: palette[i % palette.length] });
+                        }
+                        return res;
+                    })() : [
+                        { label: 'Inside', data: data.inside, backgroundColor: '#10b981' },
+                        { label: 'Outside', data: data.outside, backgroundColor: '#ef4444' }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    interaction: { mode: 'index', intersect: false },
+                    stacked: stacked,
+                    scales: {
+                        x: { stacked: stacked, title: { display: true, text: 'Period',} },
+                        y: { stacked: stacked, title: { display: true, text: 'Amount', } }
+                    },
+                    plugins: {
+                        legend: { position: 'top',},
+                    }
+                }
+            };
+
+            if (barChart) barChart.destroy();
+            barChart = new Chart(ctx, cfg);
+            // ensure canvas height corresponds to style height
+            barChart.resize();
+        }
+
+        // initial draw
+        drawChart(groupSelect.value, stackedToggle.checked);
+
+        // controls
+        groupSelect.addEventListener('change', function() {
+            drawChart(this.value, stackedToggle.checked);
+        });
+        stackedToggle.addEventListener('change', function() {
+            drawChart(groupSelect.value, this.checked);
+        });
+        showTypesToggle.addEventListener('change', function() {
+            drawChart(groupSelect.value, stackedToggle.checked);
+        });
+
+        // redraw when window resizes to keep chart full-width
+        let resizeTimeout = null;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(function() {
+                drawChart(groupSelect.value, stackedToggle.checked);
+            }, 150);
+        });
+
+        // listen for color scheme changes and redraw to update text/grid colors
+        if (window.matchMedia) {
+            const mq = window.matchMedia('(prefers-color-scheme: dark)');
+            mq.addEventListener && mq.addEventListener('change', function() {
+                drawChart(groupSelect.value, stackedToggle.checked);
+            });
+        }
+
+        // CSV export for auditors
+        exportBtn.addEventListener('click', function() {
+            if (showTypesToggle && showTypesToggle.checked) {
+                const typesListRaw = canvas.dataset.types || '';
+                let typesList = [];
+                try { typesList = typesListRaw ? JSON.parse(atob(typesListRaw)) : []; } catch(e) { typesList = []; }
+                const typed = aggregateByType(rawRecords, groupSelect.value, typesList);
+                // header
+                let csv = 'Period,' + typesList.join(',') + '\n';
+                for (let i = 0; i < typed.labels.length; i++) {
+                    const row = [typed.labels[i]];
+                    for (let j = 0; j < typesList.length; j++) row.push(typed.datasets[j][i] || 0);
+                    csv += row.join(',') + '\n';
+                }
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `coins_audit_types_${groupSelect.value}.csv`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                URL.revokeObjectURL(url);
+            } else {
+                const data = aggregate(rawRecords, groupSelect.value);
+                let csv = 'Period,Inside,Outside\n';
+                for (let i = 0; i < data.labels.length; i++) {
+                    csv += `${data.labels[i]},${data.inside[i] || 0},${data.outside[i] || 0}\n`;
+                }
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `coins_audit_${groupSelect.value}.csv`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                URL.revokeObjectURL(url);
+            }
+        });
+    });
+</script>
+@endpush
