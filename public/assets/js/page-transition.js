@@ -401,25 +401,31 @@
 
   // Initialize when document is ready
   $(document).ready(function() {
-    // Setup theme first to prevent flash
+    // Historically this script handled no-flash page transitions by
+    // intercepting link clicks and swapping page content via AJAX.
+    // That interferes with some page-level initializers (charts/graphs)
+    // which expect a full page load. To avoid breaking dashboard graphs
+    // we disable the navigation interception while keeping the code
+    // in place so it can be re-enabled later if desired.
+
+    // Apply theme handling and styles (safe to run on initial load)
     setupThemeHandling();
-    
     preloadCriticalAssets();
     setupPageStyles();
-    initPageTransition();
-    
-    // Remove any existing overlays (just in case)
+
+    // Do NOT call initPageTransition() to avoid intercepting clicks.
+    // initPageTransition();
+
+    // Clean up any overlays and ensure sidebar state is correct
     $('#page-transition-overlay').remove();
-    
-    // Ensure sidebar active state is set correctly on initial load
     updateSidebarActiveState();
-    
-    // Store current page in cache
+
+    // Store current page in cache (optional)
     const currentUrl = window.location.href;
     pageCache[currentUrl] = $('html').html();
-    
-    // Initialize browser history
-    window.history.replaceState({path: currentUrl}, document.title, currentUrl);
+
+    // Do not replace history state or pushState; allow normal navigation
+    // window.history.replaceState({path: currentUrl}, document.title, currentUrl);
   });
 
 })(jQuery);
