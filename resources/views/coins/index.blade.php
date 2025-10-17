@@ -19,8 +19,8 @@ $script ='<script>
 @section('content')
 @php
     // Define which coin types are considered inside (inflow) and outside (outflow)
-    $insideTypes = ['Reload', 'Tonne_refund', 'Refund', 'bonus', 'order'];
-    $outsideTypes = ['Waiting_charges', 'withdrawal', 'purchase'];
+    $insideTypes = ['reload', 'tonne_refund', 'refund', 'bonus', 'order'];
+    $outsideTypes = ['waiting_charges', 'withdrawal', 'purchase'];
 
     $totalInside = 0;
     $totalOutside = 0;
@@ -316,8 +316,8 @@ $script ='<script>
                 const amt = parseFloat(r.amount) || 0;
                 const type = r.type;
                 // same inside/outside mapping as server
-                const insideTypes = ['Reload', 'Tonne_refund', 'Refund', 'bonus', 'order'];
-                const outsideTypes = ['Waiting_charges', 'withdrawal', 'purchase'];
+                const insideTypes = ['reload', 'tonne_refund', 'refund', 'bonus', 'order'];
+                const outsideTypes = ['waiting_charges', 'withdrawal', 'purchase'];
                 if (insideTypes.indexOf(type) !== -1) map.get(key).inside += amt;
                 else if (outsideTypes.indexOf(type) !== -1) map.get(key).outside += amt;
             });

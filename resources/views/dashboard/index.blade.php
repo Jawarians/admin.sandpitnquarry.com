@@ -1,8 +1,8 @@
 @extends('layout.layout')
 
 @php
-$title='Dashboard';
-$subTitle = 'Analyst';
+$title = "Dashboard";
+$subTitle = "Analyst";
 @endphp
 <style>
     .dashboard-card-link {
@@ -22,17 +22,26 @@ $subTitle = 'Analyst';
         transition: transform 0.2s ease;
     }
 </style>
+@php
+$dashboardPayload = [
+    'monthlyOrderData' => $monthlyOrderData,
+    'dailyOrderData' => $dailyOrderData,
+    'jobsByTypeData' => $jobsByTypeData ?? [],
+    'completedTrips' => (int) $completedTrips,
+    'cancelledTrips' => (int) $cancelledTrips,
+    'totalTrips' => (int) $totalTrips,
+    'ordersByLocation' => $ordersByLocation,
+    'dailySalesData' => $dailySalesData ?? []
+];
+@endphp
+
+<script type="application/json" id="dashboard-data">
+@json($dashboardPayload)
+</script>
+
 <script>
-    const dashboardData = {
-        monthlyOrderData: {!! json_encode($monthlyOrderData) !!},
-        dailyOrderData: {!! json_encode($dailyOrderData) !!},
-        jobsByTypeData: {!! json_encode($jobsByTypeData ?? []) !!},
-        completedTrips: {{ (int) $completedTrips }},
-        cancelledTrips: {{ (int) $cancelledTrips }},
-        totalTrips: {{ (int) $totalTrips }},
-        ordersByLocation: {!! json_encode($ordersByLocation) !!},
-        dailySalesData: {!! json_encode($dailySalesData ?? []) !!}
-    };
+    // Parse server-provided JSON data safely into JS.
+    const dashboardData = JSON.parse(document.getElementById('dashboard-data').textContent || '{}');
 </script>
 
 
@@ -149,12 +158,12 @@ $subTitle = 'Analyst';
                 <p class="fw-medium text-sm text-primary-light mt-12 mb-0 d-flex align-items-center gap-2">
                     @php
                     // Safely calculate the sum of revenue for the current month
-                    $currentMonth = date('n');
-                    $currentMonthData = $monthlyOrderData->firstWhere('month', date('M'));
-                    $currentMonthRevenue = $currentMonthData ? ($currentMonthData['revenue'] ?? 0) : 0;
-                    $revenueClass = $currentMonthRevenue >= 0 ? 'text-success-main' : 'text-danger-main';
-                    $arrowIcon = $currentMonthRevenue >= 0 ? 'bxs:up-arrow' : 'bxs:down-arrow';
-                    $prefix = $currentMonthRevenue >= 0 ? '+' : '';
+                    $currentMonth = date("n");
+                    $currentMonthData = $monthlyOrderData->firstWhere("month", date("M"));
+                    $currentMonthRevenue = $currentMonthData ? ($currentMonthData["revenue"] ?? 0) : 0;
+                    $revenueClass = $currentMonthRevenue >= 0 ? "text-success-main" : "text-danger-main";
+                    $arrowIcon = $currentMonthRevenue >= 0 ? "bxs:up-arrow" : "bxs:down-arrow";
+                    $prefix = $currentMonthRevenue >= 0 ? "+" : "";
                     @endphp
                     <span class="d-inline-flex align-items-center gap-1 {{ $revenueClass }}">
                         <iconify-icon icon="{{ $arrowIcon }}" class="text-xs"></iconify-icon> {{ $prefix }}RM{{ number_format(abs($currentMonthRevenue), 2) }}
@@ -209,8 +218,8 @@ $subTitle = 'Analyst';
                     <h6 class="mb-0">RM{{ number_format($orderRevenue, 2) }}</h6>
                     @php
                     // Safely calculate revenue growth percentage
-                    $firstRevenue = $monthlyOrderData->first() ? ($monthlyOrderData->first()['revenue'] ?? 0) : 0;
-                    $lastRevenue = $monthlyOrderData->last() ? ($monthlyOrderData->last()['revenue'] ?? 0) : 0;
+                    $firstRevenue = $monthlyOrderData->first() ? ($monthlyOrderData->first()["revenue"] ?? 0) : 0;
+                    $lastRevenue = $monthlyOrderData->last() ? ($monthlyOrderData->last()["revenue"] ?? 0) : 0;
 
                     if ($firstRevenue > 0) {
                     $growthPercentage = ($lastRevenue / $firstRevenue - 1) * 100;
@@ -220,8 +229,8 @@ $subTitle = 'Analyst';
                     $growthPercentage = 0; // Both are 0
                     }
 
-                    $badgeClass = $growthPercentage >= 0 ? 'bg-success-focus text-success-main br-success' : 'bg-danger-focus text-danger-main br-danger';
-                    $arrowIcon = $growthPercentage >= 0 ? 'bxs:up-arrow' : 'bxs:down-arrow';
+                    $badgeClass = $growthPercentage >= 0 ? "bg-success-focus text-success-main br-success" : "bg-danger-focus text-danger-main br-danger";
+                    $arrowIcon = $growthPercentage >= 0 ? "bxs:up-arrow" : "bxs:down-arrow";
                     @endphp
                     <span class="text-sm fw-semibold rounded-pill {{ $badgeClass }} border px-8 py-4 line-height-1 d-flex align-items-center gap-1">
                         {{ number_format(abs($growthPercentage), 1) }}% <iconify-icon icon="{{ $arrowIcon }}" class="text-xs"></iconify-icon>
