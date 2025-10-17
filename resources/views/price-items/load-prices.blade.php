@@ -53,16 +53,19 @@ $subTitle = 'Price Item Management';
                         @foreach($wheels as $wheel)
                         @foreach($products as $product)
                         <td>
-                            <input
-                                type="number"
-                                class="form-control form-control-sm load-price-input"
-                                data-price-id="{{ $price->id }}"
-                                data-zone-id="{{ $zone['id'] }}"
-                                data-product-id="{{ $product->id }}"
-                                data-wheel-id="{{ $wheel }}"
-                                value="{{ ($zone['wheels'][$wheel]['products'][$product->id]['amount'] ?? 0) / 100 }}"
-                                step="0.01"
-                                min="0">
+                            <div class="d-flex align-items-center gap-2">
+                                <input
+                                    type="number"
+                                    class="form-control form-control-sm load-price-input"
+                                    data-price-id="{{ $price->id }}"
+                                    data-zone-id="{{ $zone['id'] }}"
+                                    data-product-id="{{ $product->id }}"
+                                    data-wheel-id="{{ $wheel }}"
+                                    value="{{ ($zone['wheels'][$wheel]['products'][$product->id]['amount'] ?? 0) / 100 }}"
+                                    step="0.01"
+                                    min="0">
+                                <button type="button" class="btn btn-sm btn-outline-primary price-save-btn" title="Save">Save</button>
+                            </div>
                         </td>
                         @endforeach
                         @endforeach
@@ -162,45 +165,186 @@ $subTitle = 'Price Item Management';
 @push('scripts')
 <script>
     $(document).ready(function() {
-        function saveLoadPrice(input) {
-            const priceId = $(input).data('price-id');
-            const zoneId = $(input).data('zone-id');
-            const productId = $(input).data('product-id');
-            const wheelId = $(input).data('wheel-id');
-            const amount = $(input).val();
+        // Small visual styles for save state
+        const styleId = 'price-input-states-style';
+        if (!document.getElementById(styleId)) {
+            const s = document.createElement('style');
+            s.id = styleId;
+            s.innerHTML = `
+                .is-saving { outline: 2px dashed #f59e0b !important; box-shadow: 0 0 6px rgba(245,158,11,0.25) !important; }
+                /* Hover shows green while saving to indicate active save */
+                .is-saving:hover { outline: 2px solid #10b981 !important; box-shadow: 0 0 8px rgba(16,185,129,0.25) !important; }
+                .is-saved { outline: 2px solid #10b981 !important; box-shadow: 0 0 6px rgba(16,185,129,0.15) !important; }
+                .is-error { outline: 2px solid #ef4444 !important; box-shadow: 0 0 6px rgba(239,68,68,0.15) !important; }
+            `;
+            document.head.appendChild(s);
+        }
 
-            $.ajax({
-                url: '{{ route("prices.load.update") }}',
-                method: 'POST',
-                data: {
-                    _token: '{{ csrf_token() }}',
-                    price_id: priceId,
-                    zone_id: zoneId,
-                    product_id: productId,
-                    wheel_id: wheelId,
-                    amount: amount
-                },
-                success: function(response) {
-                    if (response.success) {
-                        toastr.success('Price updated successfully');
-                    } else {
-                        toastr.error('Failed to update price');
-                    }
-                },
-                error: function() {
-                    toastr.error('Failed to update price');
+        // Update matching inputs when a canonical price update occurs
+        window.addEventListener('price.updated', function(e) {
+            try {
+                const data = e.detail;
+                const priceId = data.price_id;
+                const productId = data.product_id;
+                const wheelId = data.wheel_id;
+                const itemableType = data.price_itemable_type;
+                const itemableId = data.price_itemable_id;
+
+                const selectorParts = [];
+                selectorParts.push('[data-price-id="'+priceId+'"]');
+                selectorParts.push('[data-product-id="'+productId+'"]');
+                if (wheelId !== null && typeof wheelId !== 'undefined') {
+                    selectorParts.push('[data-wheel-id="'+wheelId+'"]');
                 }
+                if (itemableType === 'site') {
+                    selectorParts.push('[data-site-id="'+itemableId+'"]');
+                } else if (itemableType === 'zone') {
+                    selectorParts.push('[data-zone-id="'+itemableId+'"]');
+                }
+
+                const selector = selectorParts.join('');
+                const inputs = document.querySelectorAll(selector);
+                inputs.forEach(function(input) {
+                    if (typeof data.amount_display !== 'undefined') {
+                        input.value = data.amount_display;
+                        input.classList.remove('is-saving', 'is-error');
+                        input.classList.add('is-saved');
+                        setTimeout(function() { input.classList.remove('is-saved'); }, 1200);
+                        if (window.jQuery && window.jQuery(input).data) {
+                            window.jQuery(input).data('lastSaved', String(data.amount_display));
+                        }
+                    }
+                });
+            } catch (err) {
+                console.debug('price.updated handler error', err);
+            }
+        });
+
+        // Shared immediate auto-save for inputs (no debounce) — same behavior as tonne view
+        function attachAutoSave(selector, url, buildPayload) {
+            $(selector).each(function() {
+                const $input = $(this);
+                $input.data('lastSaved', $input.val());
+
+                function doSave() {
+                    const current = $input.val();
+                    if ($input.data('lastSaved') === current) return;
+
+                    $input.removeClass('is-saved is-error').addClass('is-saving');
+
+                    const payload = buildPayload($input);
+                    payload._token = '{{ csrf_token() }}';
+
+                    $.ajax({
+                        url: url,
+                        method: 'POST',
+                        data: payload,
+                        dataType: 'json',
+                        headers: { 'Accept': 'application/json' },
+                        success: function(response) {
+                            console.debug('save success', response);
+                            if (response && response.success) {
+                                // After POST returns, fetch canonical item from server
+                                const query = {
+                                    price_id: payload.price_id,
+                                    product_id: payload.product_id,
+                                    wheel_id: payload.wheel_id,
+                                    zone_id: payload.zone_id
+                                };
+
+                                $.ajax({
+                                    url: '{{ route("prices.item.get") }}',
+                                    method: 'GET',
+                                    data: query,
+                                    dataType: 'json',
+                                    headers: { 'Accept': 'application/json' },
+                                    success: function(getResp) {
+                                        if (getResp && getResp.success) {
+                                            if (typeof getResp.amount_display !== 'undefined') {
+                                                $input.val(getResp.amount_display);
+                                            }
+                                            $input.data('lastSaved', $input.val());
+                                            $input.removeClass('is-saving is-error').addClass('is-saved');
+                                            setTimeout(function() { $input.removeClass('is-saved'); }, 1200);
+                                            // dispatch a custom event so other parts of the UI can react (Livewire-like)
+                                            const evt = new CustomEvent('price.updated', { detail: getResp });
+                                            window.dispatchEvent(evt);
+                                        } else {
+                                            $input.removeClass('is-saving is-saved').addClass('is-error');
+                                            toastr.error(getResp.message || 'Failed to fetch saved price');
+                                        }
+                                    },
+                                    error: function(xhr) {
+                                        console.debug('get canonical error', xhr);
+                                        $input.removeClass('is-saving is-saved').addClass('is-error');
+                                    }
+                                });
+
+                                if (response.deleted) {
+                                    $input.val('');
+                                }
+                            } else {
+                                $input.removeClass('is-saving is-saved').addClass('is-error');
+                                toastr.error(response.message || 'Failed to update price');
+                            }
+                        },
+                        error: function(xhr) {
+                            console.debug('save error', xhr);
+                            $input.removeClass('is-saving is-saved').addClass('is-error');
+                            if (xhr && xhr.responseJSON && xhr.responseJSON.message) {
+                                toastr.error(xhr.responseJSON.message);
+                            } else if (xhr && xhr.responseJSON && xhr.responseJSON.errors) {
+                                const keys = Object.keys(xhr.responseJSON.errors);
+                                if (keys.length) toastr.error(xhr.responseJSON.errors[keys[0]][0]);
+                            } else {
+                                toastr.error('Failed to update price');
+                            }
+                        }
+                    });
+                }
+
+                $input.on('input', function() {
+                    // save immediately on input
+                    doSave();
+                });
+
+                $input.on('blur', function() {
+                    doSave();
+                });
+
+                $input.on('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        doSave();
+                    }
+                });
             });
         }
 
-        $('.load-price-input').on('input', function() {
-            saveLoadPrice(this);
+        attachAutoSave('.load-price-input', '{{ route("prices.load.update") }}', function($input) {
+            return {
+                price_id: $input.data('price-id'),
+                zone_id: $input.data('zone-id'),
+                product_id: $input.data('product-id'),
+                wheel_id: $input.data('wheel-id'),
+                amount: $input.val()
+            };
         });
 
-        $('.load-price-input').on('keydown', function(e) {
-            if (e.key === 'Enter') {
+        // Delegate Save button clicks to trigger input blur (which triggers save)
+        $(document).on('click', '.price-save-btn', function() {
+            const $btn = $(this);
+            const $input = $btn.closest('div').find('input[type="number"]');
+            if ($input && $input.length) {
+                $input.trigger('blur');
+            }
+        });
+
+        // Enter key fallback
+        $(document).on('keypress', '.tonne-price-input, .load-price-input', function(e) {
+            if (e.key === 'Enter' || e.which === 13) {
                 e.preventDefault();
-                saveLoadPrice(this);
+                $(this).trigger('blur');
             }
         });
     });
