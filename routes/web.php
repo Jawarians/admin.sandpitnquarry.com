@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AiapplicationController;
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\ChartController;
 use App\Http\Controllers\CustomerAccountController;
@@ -10,10 +9,8 @@ use App\Http\Controllers\FormsController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\PaymentGatewayController;
-use App\Http\Controllers\TableController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\TransporterController;
-use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ReloadController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\JobController;
@@ -44,7 +41,7 @@ Route::middleware(['auth'])->group(function () {
     // Dashboard root route
     Route::controller(DashboardController::class)->group(function () {
         Route::get('/', 'index')->name('dashboard.index');
-        Route::get('/analyst','analyst')->name('dashboard.Analyst');
+        Route::get('/analyst', 'analyst')->name('dashboard.Analyst');
     });
 
     // chart
@@ -60,25 +57,16 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('prices')->group(function () {
         // Price item routes
         Route::get('/prices', 'App\Http\Controllers\PriceItemController@index')->name('prices');
-    Route::get('/prices/create', 'App\Http\Controllers\PriceItemController@createPrice')->name('prices.create');
-    Route::post('/prices', 'App\Http\Controllers\PriceItemController@storePrice')->name('prices.store');
-        Route::get('/prices/tonne/{priceId}', 'App\Http\Controllers\PriceItemController@tonnePrices')->name('prices.tonne');
-        Route::get('/prices/load/{priceId}', 'App\Http\Controllers\PriceItemController@loadPrices')->name('prices.load');
-        Route::post('/prices/tonne/update', 'App\Http\Controllers\PriceItemController@updateTonnePrice')->name('prices.tonne.update');
-        Route::post('/prices/load/update', 'App\Http\Controllers\PriceItemController@updateLoadPrice')->name('prices.load.update');
-    Route::get('/prices/item', 'App\Http\Controllers\PriceItemController@getPriceItem')->name('prices.item.get');
+        Route::get('/prices/create', 'App\Http\Controllers\PriceItemController@createPrice')->name('prices.create');
+        Route::post('/prices', 'App\Http\Controllers\PriceItemController@storePrice')->name('prices.store');
+        Route::get('/tonne/{priceId}', 'App\Http\Controllers\PriceItemController@tonnePrices')->name('prices.tonne');
+        Route::get('/load/{priceId}', 'App\Http\Controllers\PriceItemController@loadPrices')->name('prices.load');
+        Route::post('/tonne/update', 'App\Http\Controllers\PriceItemController@updateTonnePrice')->name('prices.tonne.update');
+        Route::post('/load/update', 'App\Http\Controllers\PriceItemController@updateLoadPrice')->name('prices.load.update');
+        Route::get('/prices/item', 'App\Http\Controllers\PriceItemController@getPriceItem')->name('prices.item.get');
         Route::get('/zones', 'App\Http\Controllers\PriceItemController@zones')->name('zones');
         Route::post('/zones/postcodes/update', 'App\Http\Controllers\PriceItemController@updatePostcodes')->name('zones.postcodes.update');
         Route::post('/zones/postcodes/add', 'App\Http\Controllers\PriceItemController@addPostcode')->name('zones.postcodes.add');
-        
-        // Price Items CRUD routes
-        Route::get('/price-items', 'App\Http\Controllers\PriceItemController@index')->name('price.items.index');
-        Route::get('/price-items/create', 'App\Http\Controllers\PriceItemController@create')->name('price.items.create');
-        Route::post('/price-items', 'App\Http\Controllers\PriceItemController@store')->name('price.items.store');
-        Route::get('/price-items/{id}', 'App\Http\Controllers\PriceItemController@show')->name('price.items.show');
-        Route::get('/price-items/{id}/edit', 'App\Http\Controllers\PriceItemController@edit')->name('price.items.edit');
-        Route::put('/price-items/{id}', 'App\Http\Controllers\PriceItemController@update')->name('price.items.update');
-        Route::delete('/price-items/{id}', 'App\Http\Controllers\PriceItemController@destroy')->name('price.items.destroy');
     });
 
     // Forms
@@ -111,7 +99,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/notification-alert', 'notificationAlert')->name('notificationAlert');
             Route::get('/payment-gateway', 'paymentGateway')->name('paymentGateway');
         });
-        
+
         // Payment Gateway secure routes
         Route::controller(PaymentGatewayController::class)->group(function () {
             Route::get('/payment-gateway-secure', 'index')->name('paymentGatewaySecure');
@@ -134,7 +122,7 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('/delete-user/{id}', 'deleteUser')->name('deleteUser');
         });
     });
-    
+
     // Transporters
     Route::prefix('transporters')->group(function () {
         Route::controller(TransporterController::class)->group(function () {
@@ -194,9 +182,9 @@ Route::middleware(['auth'])->group(function () {
     // Products
     Route::prefix('products')->group(function () {
         Route::controller(ProductController::class)->group(function () {
-            Route::get('/','index')->name('products.index');
-            Route::get('/create','create')->name('products.create');
-            Route::post('/store','store')->name('products.store');
+            Route::get('/', 'index')->name('products.index');
+            Route::get('/create', 'create')->name('products.create');
+            Route::post('/store', 'store')->name('products.store');
         });
     });
 
@@ -210,7 +198,7 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/{id}', 'App\Http\Controllers\SiteController@update')->name('sites.update');
         Route::delete('/{id}', 'App\Http\Controllers\SiteController@destroy')->name('sites.destroy');
     });
-    
+
     // Accounts
     Route::prefix('accounts')->group(function () {
         Route::controller(AccountController::class)->group(function () {
@@ -223,7 +211,7 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('/{account}', 'destroy')->name('accounts.destroy');
         });
     });
-    
+
     // Customer Accounts
     Route::prefix('customer-accounts')->group(function () {
         Route::controller(CustomerAccountController::class)->group(function () {
@@ -237,7 +225,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/{customerAccount}/document', 'viewDocument')->name('customer-accounts.document');
         });
     });
-    
+
     // Reloads
     Route::prefix('reloads')->group(function () {
         Route::controller(ReloadController::class)->group(function () {
@@ -245,7 +233,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/{reload}', 'show')->name('reloads.show');
         });
     });
-    
+
     // Withdrawals
     Route::prefix('withdrawals')->group(function () {
         Route::controller(WithdrawalController::class)->group(function () {
@@ -255,7 +243,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/{withdrawal}/bank-statement', 'viewBankStatement')->name('withdrawals.bank-statement');
         });
     });
-    
+
     // Coins
     Route::prefix('coins')->group(function () {
         Route::controller(CoinController::class)->group(function () {
@@ -267,7 +255,7 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('/{coin}', 'destroy')->name('coins.destroy');
         });
     });
-    
+
     // Coin Promotions
     Route::prefix('coin-promotions')->group(function () {
         Route::controller(CoinPromotionController::class)->group(function () {
@@ -279,7 +267,7 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('/{coinPromotion}', 'destroy')->name('coin-promotions.destroy');
         });
     });
-    
+
     // Coin Promotion Details
     Route::prefix('coin-promotion-details')->group(function () {
         Route::controller(CoinPromotionDetailController::class)->group(function () {
@@ -290,7 +278,7 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('/{coinPromotionDetail}', 'destroy')->name('coin-promotion-details.destroy');
         });
     });
-    
+
     // Assignments
     Route::prefix('assignments')->group(function () {
         Route::controller(AssignmentController::class)->group(function () {
@@ -303,7 +291,7 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('/{assignment}', 'destroy')->name('assignments.destroy');
         });
     });
-    
+
     // Payments
     Route::prefix('payments')->group(function () {
         Route::controller(PaymentController::class)->group(function () {
@@ -331,7 +319,7 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('/{driver}', 'destroy')->name('drivers.destroy');
         });
     });
-    
+
     // Trucks
     Route::prefix('trucks')->group(function () {
         Route::controller(TruckController::class)->group(function () {
@@ -344,7 +332,7 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('/{truck}', 'destroy')->name('trucks.destroy');
         });
     });
-    
+
     // Wheels
     Route::prefix('wheels')->group(function () {
         Route::controller(WheelController::class)->group(function () {
