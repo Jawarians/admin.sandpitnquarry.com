@@ -31,8 +31,9 @@ class DashboardController extends Controller
         
         // Order stats
         $totalOrders = Order::count();
-        $recentOrders = Order::where('created_at', '>=', now()->subDays(30))->count();
-        $orderRevenue = Order::sum('cost_amount'); // Using cost_amount instead of total_amount
+    $recentOrders = Order::where('created_at', '>=', now()->subDays(30))->count();
+    // cost_amount is stored as an integer (cents). Convert to currency (RM) by dividing by 100.
+    $orderRevenue = Order::sum('cost_amount') / 100; // Using cost_amount instead of total_amount
         $monthlyOrderData = $this->getMonthlyOrderData();
         
         // Add debug information for order revenue data
@@ -123,6 +124,7 @@ class DashboardController extends Controller
         }
         
         // Get actual order data
+        // SUM(cost_amount) returns integer cents; we'll divide by 100 when merging
         $orderData = Order::selectRaw('EXTRACT(MONTH FROM created_at) as month, COUNT(*) as count, SUM(cost_amount) as revenue')
             ->whereRaw('EXTRACT(YEAR FROM created_at) = ?', [$currentYear])
             ->groupBy(DB::raw('EXTRACT(MONTH FROM created_at)'))
@@ -132,10 +134,12 @@ class DashboardController extends Controller
         // Merge actual data with the base array
         foreach ($orderData as $item) {
             $month = (int)$item->month;
+            $revenueCents = $item->revenue ?? 0;
             $allMonths[$month] = [
                 'month' => $month,
                 'count' => $item->count,
-                'revenue' => $item->revenue ?? 0 // Replace null with 0
+                // convert cents to RM
+                'revenue' => $revenueCents / 100
             ];
         }
         
@@ -151,6 +155,7 @@ class DashboardController extends Controller
             return [
                 'month' => $monthNames[$item['month']],
                 'count' => $item['count'],
+                // already converted to RM above
                 'revenue' => $item['revenue'] ?? 0 // Ensure no null values
             ];
         });
@@ -296,6 +301,7 @@ class DashboardController extends Controller
      */
     private function getDailyOrderData()
     {
+        // SUM(cost_amount) is cents; we'll convert to RM in the mapper
         return Order::selectRaw('DATE(created_at) as order_date, COUNT(*) as count, SUM(cost_amount) as revenue')
             ->whereRaw('created_at >= ?', [now()->subDays(30)])
             ->groupBy('order_date')
@@ -305,7 +311,8 @@ class DashboardController extends Controller
                 return [
                     'date' => date('d M', strtotime($item->order_date)),
                     'count' => $item->count,
-                    'revenue' => $item->revenue
+                    // convert cents to RM
+                    'revenue' => ($item->revenue ?? 0) / 100
                 ];
             });
     }
@@ -315,6 +322,7 @@ class DashboardController extends Controller
      */
     private function getDailySalesData()
     {
+        // daily sales: convert summed cents to RM in the mapper
         return Order::selectRaw('DATE(created_at) as order_date, SUM(cost_amount) as amount')
             ->whereRaw('created_at >= ?', [now()->subDays(7)])
             ->groupBy('order_date')
@@ -323,7 +331,8 @@ class DashboardController extends Controller
             ->map(function($item) {
                 return [
                     'date' => date('d M', strtotime($item->order_date)),
-                    'amount' => $item->amount
+                    // convert cents to RM
+                    'amount' => ($item->amount ?? 0) / 100
                 ];
             });
     }
