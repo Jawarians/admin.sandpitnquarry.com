@@ -58,6 +58,12 @@
                 </a>
             </li>
             <li>
+                <a href="{{ route('transporter-withdrawals.index') }}">
+                    <iconify-icon icon="mdi:bank-transfer" class="menu-icon"></iconify-icon>
+                    <span>Transporter Withdrawals</span>
+                </a>
+            </li>
+            <li>
                 <a href="{{ route('drivers.index') }}">
                     <iconify-icon icon="mdi:account-hard-hat" class="menu-icon"></iconify-icon>
                     <span>Drivers</span>
