@@ -26,6 +26,8 @@ use App\Http\Controllers\CoinController;
 use App\Http\Controllers\WithdrawalController;
 use App\Http\Controllers\TruckController;
 use App\Http\Controllers\WheelController;
+use App\Http\Controllers\BusinessPriceController;
+use App\Http\Controllers\TransporterWithdrawalController;
 
 // Authentication
 Route::controller(AuthenticationController::class)->prefix('authentication')->group(function () {
@@ -332,7 +334,23 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('/{truck}', 'destroy')->name('trucks.destroy');
         });
     });
-
+    // Business Prices
+    Route::prefix('business-prices')->group(function () {
+        Route::controller(BusinessPriceController::class)->group(function () {
+        Route::get('/', 'index')->name('business-prices.index');
+        Route::get('/{id}/edit-status', 'editStatus')->name('business-prices.edit-status');
+        Route::post('/{id}/update-status', 'updateStatus')->name('business-prices.update-status');
+        });
+    });
+    
+    //Transporter Withdrawals
+    Route::prefix('transporter-withdrawals')->group(function () {
+        Route::controller(TransporterWithdrawalController::class)->group(function () {
+            Route::get('/', 'index')->name('transporter-withdrawals.index');
+            Route::post('/{id}/update-status', 'updateStatus')->name('transporter-withdrawals.update-status');
+        });
+    });
+    
     // Wheels
     Route::prefix('wheels')->group(function () {
         Route::controller(WheelController::class)->group(function () {
@@ -350,8 +368,4 @@ Route::middleware(['auth'])->group(function () {
     });
 });
 
-// Business Prices
-use App\Http\Controllers\BusinessPriceController;
-Route::get('/business-prices', [BusinessPriceController::class, 'index'])->name('business-prices.index');
-    Route::get('business-prices/{id}/edit-status', [BusinessPriceController::class, 'editStatus'])->name('business-prices.edit-status');
-    Route::post('business-prices/{id}/update-status', [BusinessPriceController::class, 'updateStatus'])->name('business-prices.update-status');
+
