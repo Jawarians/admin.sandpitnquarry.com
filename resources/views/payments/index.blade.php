@@ -89,23 +89,22 @@
                                         </td>
                                         <td><span class="text-md mb-0 fw-normal text-secondary-light">{{ $payment->reference_number }}</span></td>
                                         <td><span class="text-md mb-0 fw-normal text-secondary-light">{{ $payment->remark }}</span></td>
-                                        <td><span class="text-md mb-0 fw-normal text-secondary-light">{{ $payment->paid_at->format('Y-m-d H:i') }}</span></td>
+                                        <td><span class="text-md mb-0 fw-normal text-secondary-light">{{ optional($payment->paid_at)->format('Y-m-d H:i') ?? '-' }}</span></td>
                                         <td class="text-center">
                                             @php
                                                 $status = optional($payment->latest)->status;
                                                 $statusClass = 'badge bg-info';
-                                                
-                                                if ($status == 'Approve') {
+                                                if ($status === 'Approve') {
                                                     $statusClass = 'badge bg-success';
-                                                } elseif ($status == 'Pending') {
+                                                } elseif ($status === 'Pending') {
                                                     $statusClass = 'badge bg-warning';
-                                                } elseif ($status == 'Reject') {
+                                                } elseif ($status === 'Reject') {
                                                     $statusClass = 'badge bg-danger';
                                                 }
                                             @endphp
                                             <span class="{{ $statusClass }}">{{ $status ?? 'N/A' }}</span>
                                         </td>
-                                        <td><span class="text-md mb-0 fw-normal text-secondary-light">{{ $payment->created_at->format('Y-m-d H:i') }}</span></td>
+                                        <td><span class="text-md mb-0 fw-normal text-secondary-light">{{ optional($payment->created_at)->format('Y-m-d H:i') ?? '-' }}</span></td>
                                         <td class="text-center">
                                             <div class="d-flex align-items-center gap-2 justify-content-center">
                                                 <a href="{{ route('payments.show', $payment) }}" class="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle" title="View">
