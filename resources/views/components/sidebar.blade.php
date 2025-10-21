@@ -31,6 +31,12 @@
                     <iconify-icon icon="mdi:account-cash" class="menu-icon"></iconify-icon>
                     <span>Accounts</span>
                 </a>
+                </li>
+                <li>
+                    <a href="{{ route('business-prices.index') }}">
+                        <iconify-icon icon="mdi:cash-multiple" class="menu-icon"></iconify-icon>
+                        <span>Business Prices</span>
+                    </a>
             </li>
             <li>
                 <a href="{{ route('payments.index') }}">

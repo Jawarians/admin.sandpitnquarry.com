@@ -349,3 +349,9 @@ Route::middleware(['auth'])->group(function () {
         });
     });
 });
+
+// Business Prices
+use App\Http\Controllers\BusinessPriceController;
+Route::get('/business-prices', [BusinessPriceController::class, 'index'])->name('business-prices.index');
+    Route::get('business-prices/{id}/edit-status', [BusinessPriceController::class, 'editStatus'])->name('business-prices.edit-status');
+    Route::post('business-prices/{id}/update-status', [BusinessPriceController::class, 'updateStatus'])->name('business-prices.update-status');
