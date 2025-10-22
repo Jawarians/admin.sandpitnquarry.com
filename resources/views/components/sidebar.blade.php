@@ -69,6 +69,12 @@
                     <span>Drivers</span>
                 </a>
             </li>
+                <li>
+                    <a href="{{ route('packages.index') }}">
+                        <iconify-icon icon="mdi:package-variant" class="menu-icon"></iconify-icon>
+                        <span>Packages</span>
+                    </a>
+                </li>
             <li>
                 <a href="{{ route('trucks.index') }}">
                     <iconify-icon icon="mdi:truck" class="menu-icon"></iconify-icon>
