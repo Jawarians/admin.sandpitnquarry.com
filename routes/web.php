@@ -366,6 +366,19 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/api/get-wheels', 'getWheels')->name('wheels.get_wheels');
         });
     });
+
+        // Packages
+        Route::prefix('packages')->group(function () {
+            Route::controller(App\Http\Controllers\PackageController::class)->group(function () {
+                Route::get('/', 'index')->name('packages.index');
+                Route::get('/create', 'create')->name('packages.create');
+                Route::post('/', 'store')->name('packages.store');
+                Route::get('/{package}', 'show')->name('packages.show');
+                Route::get('/{package}/edit', 'edit')->name('packages.edit');
+                Route::put('/{package}', 'update')->name('packages.update');
+                Route::delete('/{package}', 'destroy')->name('packages.destroy');
+            });
+        });
 });
 
 
