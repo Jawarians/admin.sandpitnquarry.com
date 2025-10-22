@@ -28,6 +28,8 @@ use App\Http\Controllers\TruckController;
 use App\Http\Controllers\WheelController;
 use App\Http\Controllers\BusinessPriceController;
 use App\Http\Controllers\TransporterWithdrawalController;
+use App\Http\Controllers\PackageController;
+use App\Http\Controllers\PermissionController;
 
 // Authentication
 Route::controller(AuthenticationController::class)->prefix('authentication')->group(function () {
@@ -369,7 +371,7 @@ Route::middleware(['auth'])->group(function () {
 
         // Packages
         Route::prefix('packages')->group(function () {
-            Route::controller(App\Http\Controllers\PackageController::class)->group(function () {
+            Route::controller(PackageController::class)->group(function () {
                 Route::get('/', 'index')->name('packages.index');
                 Route::get('/create', 'create')->name('packages.create');
                 Route::post('/', 'store')->name('packages.store');
@@ -377,6 +379,14 @@ Route::middleware(['auth'])->group(function () {
                 Route::get('/{package}/edit', 'edit')->name('packages.edit');
                 Route::put('/{package}', 'update')->name('packages.update');
                 Route::delete('/{package}', 'destroy')->name('packages.destroy');
+            });
+        });
+
+        // Packages
+        Route::prefix('permissions')->group(function () {
+            Route::controller(PermissionController::class)->group(function () {
+                Route::get('/', 'index')->name('permissions.index');
+                Route::post('/assign', 'assign')->name('permissions.assign');
             });
         });
 });
