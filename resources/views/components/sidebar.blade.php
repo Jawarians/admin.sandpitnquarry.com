@@ -134,6 +134,13 @@
                 </a>
             </li>
 
+                <li>
+                    <a href="{{ route('permissions.index') }}">
+                        <iconify-icon icon="mdi:shield-key" class="menu-icon"></iconify-icon>
+                        <span>Permissions</span>
+                    </a>
+                </li>
+
             <li class="sidebar-menu-group-title">Order</li>
             <li>
                 <a href="{{ route('jobsList') }}">
