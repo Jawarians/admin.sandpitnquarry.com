@@ -19,17 +19,18 @@ class DriverController extends Controller
         'latest'
     ]);
 
-    // Filter by search term
+    // Filter by search term (case-insensitive)
     if ($request->filled('search')) {
         $searchTerm = addcslashes($request->search, '%_');
-        $query->where(function ($q) use ($searchTerm) {
-            $q->whereHas('user', function ($subQuery) use ($searchTerm) {
-                $subQuery->where('name', 'like', '%' . $searchTerm . '%')
-                         ->orWhere('email', 'like', '%' . $searchTerm . '%')
-                         ->orWhere('phone', 'like', '%' . $searchTerm . '%');
+        $searchTermLower = strtolower($searchTerm);
+        $query->where(function ($q) use ($searchTermLower) {
+            $q->whereHas('user', function ($subQuery) use ($searchTermLower) {
+                $subQuery->whereRaw('LOWER(name) LIKE ?', ['%' . $searchTermLower . '%'])
+                         ->orWhereRaw('LOWER(email) LIKE ?', ['%' . $searchTermLower . '%'])
+                         ->orWhereRaw('LOWER(phone) LIKE ?', ['%' . $searchTermLower . '%']);
             })
-            ->orWhereHas('transporter', function ($subQuery) use ($searchTerm) {
-                $subQuery->where('name', 'like', '%' . $searchTerm . '%');
+            ->orWhereHas('transporter', function ($subQuery) use ($searchTermLower) {
+                $subQuery->whereRaw('LOWER(name) LIKE ?', ['%' . $searchTermLower . '%']);
             });
         });
     }

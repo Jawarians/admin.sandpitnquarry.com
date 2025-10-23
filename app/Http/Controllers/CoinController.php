@@ -15,14 +15,15 @@ class CoinController extends Controller
 {
     $query = Coin::with('user')->orderBy('id', 'desc');
 
-    // Search filter
+    // Search filter (case-insensitive)
     if ($request->filled('search')) {
         $searchTerm = $request->search;
         $escapedSearchTerm = addcslashes($searchTerm, '%_');
-        $query->where(function($q) use ($escapedSearchTerm) {
-            $q->where('id', 'like', "%{$escapedSearchTerm}%")
-              ->orWhereHas('user', function($userQuery) use ($escapedSearchTerm) {
-                  $userQuery->where('name', 'like', "%{$escapedSearchTerm}%");
+        $searchTermLower = strtolower($escapedSearchTerm);
+        $query->where(function($q) use ($searchTermLower) {
+            $q->whereRaw('CAST(id AS CHAR) LIKE ?', ["%{$searchTermLower}%"])
+              ->orWhereHas('user', function($userQuery) use ($searchTermLower) {
+                  $userQuery->whereRaw('LOWER(name) LIKE ?', ["%{$searchTermLower}%"]);
               });
         });
     }
@@ -50,8 +51,9 @@ class CoinController extends Controller
         ->when($request->filled('search'), function($q) use ($request) {
             $searchTerm = $request->search;
             $escapedSearchTerm = addcslashes($searchTerm, '%_');
-            $q->where(function($q2) use ($escapedSearchTerm) {
-                $q2->where('id', 'like', "%{$escapedSearchTerm}%");
+            $searchTermLower = strtolower($escapedSearchTerm);
+            $q->where(function($q2) use ($searchTermLower) {
+                $q2->whereRaw('CAST(id AS CHAR) LIKE ?', ["%{$searchTermLower}%"]);
             });
         })
         ->when($request->filled('type') && $request->type !== 'Type', function($q) use ($request) {
@@ -76,8 +78,9 @@ class CoinController extends Controller
         ->when($request->filled('search'), function($q) use ($request) {
             $searchTerm = $request->search;
             $escapedSearchTerm = addcslashes($searchTerm, '%_');
-            $q->where(function($q2) use ($escapedSearchTerm) {
-                $q2->where('id', 'like', "%{$escapedSearchTerm}%");
+            $searchTermLower = strtolower($escapedSearchTerm);
+            $q->where(function($q2) use ($searchTermLower) {
+                $q2->whereRaw('CAST(id AS CHAR) LIKE ?', ["%{$searchTermLower}%"]);
             });
         })
         ->when($request->filled('type') && $request->type !== 'Type', function($q) use ($request) {

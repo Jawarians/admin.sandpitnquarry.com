@@ -26,23 +26,22 @@ class CustomerAccountController extends Controller
                 'document:id,documentable_id,documentable_type,path' // Select only needed fields from document
             ]);
         
-        // Apply search if it exists - using LIKE with indexes when possible
+        // Apply search if it exists - using LIKE with indexes when possible (case-insensitive)
         if ($request->has('search') && $request->search) {
             $search = $request->search;
-            
             // For ID search, check if it's numeric for more efficient query
             if (is_numeric($search)) {
                 $query->where('id', $search);
             } else {
-                // Use indexed columns first if possible
-                $query->where(function($q) use ($search) {
-                    $search = '%' . $search . '%'; // Create search pattern once
-                    $q->where('name', 'like', $search)
-                      ->orWhere('number', 'like', $search)
-                      ->orWhere('bank', 'like', $search)
-                      ->orWhereHas('customer', function($q2) use ($search) {
-                          $q2->where('name', 'like', $search);
-                      }, '>', 0); // Using the > 0 parameter improves performance for whereHas
+                $searchLower = strtolower($search);
+                $query->where(function($q) use ($searchLower) {
+                    $pattern = '%' . $searchLower . '%';
+                    $q->whereRaw('LOWER(name) LIKE ?', [$pattern])
+                      ->orWhereRaw('LOWER(number) LIKE ?', [$pattern])
+                      ->orWhereRaw('LOWER(bank) LIKE ?', [$pattern])
+                      ->orWhereHas('customer', function($q2) use ($pattern) {
+                          $q2->whereRaw('LOWER(name) LIKE ?', [$pattern]);
+                      }, '>', 0);
                 });
             }
         }

@@ -15,12 +15,14 @@ class EmployeesController extends Controller
                 $query->withPivot('company_id');
             }]);
         
-        // Handle search
+        // Handle search (case-insensitive)
         if ($request->has('search') && !empty($request->search)) {
             $searchTerm = $request->search;
-            $query->where(function($q) use ($searchTerm) {
-                $q->where('name', 'ILIKE', "%{$searchTerm}%")
-                  ->orWhere('email', 'ILIKE', "%{$searchTerm}%");
+            $searchTermLower = strtolower($searchTerm);
+            $pattern = "%{$searchTermLower}%";
+            $query->where(function($q) use ($pattern) {
+                $q->whereRaw('LOWER(name) LIKE ?', [$pattern])
+                  ->orWhereRaw('LOWER(email) LIKE ?', [$pattern]);
             });
         }
         

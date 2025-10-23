@@ -31,21 +31,22 @@ class JobController extends Controller
         // Add the JobEvent scope to get trip statistics like assigned, completed, ongoing counts
         $query->jobEvent();
         
-        // Handle search with parameter binding to prevent SQL injection
+        // Handle search with parameter binding to prevent SQL injection (case-insensitive)
         if ($request->filled('search')) {
             $searchTerm = $request->search;
-            $query->where(function($q) use ($searchTerm) {
-                // Use parameter binding for all search conditions
-                $q->where('id', 'LIKE', "%".addcslashes($searchTerm, '%_')."%")
-                  ->orWhere('order_id', 'LIKE', "%".addcslashes($searchTerm, '%_')."%")
-                  ->orWhereHas('customer', function($subQ) use ($searchTerm) {
-                      $subQ->where('name', 'LIKE', "%".addcslashes($searchTerm, '%_')."%");
+            $searchTermLower = strtolower(addcslashes($searchTerm, '%_'));
+            $query->where(function($q) use ($searchTermLower) {
+                $pattern = "%{$searchTermLower}%";
+                $q->whereRaw('CAST(id AS CHAR) LIKE ?', [$pattern])
+                  ->orWhereRaw('CAST(order_id AS CHAR) LIKE ?', [$pattern])
+                  ->orWhereHas('customer', function($subQ) use ($pattern) {
+                      $subQ->whereRaw('LOWER(name) LIKE ?', [$pattern]);
                   })
-                  ->orWhereHas('order.product', function($subQ) use ($searchTerm) {
-                      $subQ->where('name', 'LIKE', "%".addcslashes($searchTerm, '%_')."%");
+                  ->orWhereHas('order.product', function($subQ) use ($pattern) {
+                      $subQ->whereRaw('LOWER(name) LIKE ?', [$pattern]);
                   })
-                  ->orWhereHas('order.oldest.site', function($subQ) use ($searchTerm) {
-                      $subQ->where('name', 'LIKE', "%".addcslashes($searchTerm, '%_')."%");
+                  ->orWhereHas('order.oldest.site', function($subQ) use ($pattern) {
+                      $subQ->whereRaw('LOWER(name) LIKE ?', [$pattern]);
                   });
             });
         }
@@ -111,11 +112,11 @@ class JobController extends Controller
             $query->withCount('jobs');
         }
 
-        // Handle search with secure parameter binding
+        // Handle search with secure parameter binding (case-insensitive)
         if ($request->filled('search')) {
             $searchTerm = $request->search;
-            // Escape LIKE wildcards to prevent LIKE injection attacks
-            $query->where('status', 'LIKE', '%' . addcslashes($searchTerm, '%_') . '%');
+            $pattern = '%' . strtolower(addcslashes($searchTerm, '%_')) . '%';
+            $query->whereRaw('LOWER(status) LIKE ?', [$pattern]);
         }
 
         // Consider caching the results if they don't change often

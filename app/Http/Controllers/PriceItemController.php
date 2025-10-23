@@ -28,10 +28,10 @@ class PriceItemController extends Controller
         
         $query = PriceItem::with(['product']);
         
-        // Apply search if provided
+        // Apply search if provided (case-insensitive)
         if ($search) {
             $query->whereHas('product', function($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%");
+                $q->whereRaw('LOWER(name) LIKE ?', ["%" . strtolower($search) . "%"]);
             });
         }
         
@@ -86,11 +86,11 @@ class PriceItemController extends Controller
             ->orderByDesc('state')
             ->orderBy('name');
         
-        // Apply search if provided
+        // Apply search if provided (case-insensitive)
         if ($search) {
             $sitesQuery->where(function($query) use ($search) {
-                $query->where('name', 'like', "%{$search}%")
-                      ->orWhere('state', 'like', "%{$search}%");
+                $query->whereRaw('LOWER(name) LIKE ?', ["%" . strtolower($search) . "%"])
+                      ->orWhereRaw('LOWER(state) LIKE ?', ["%" . strtolower($search) . "%"]);
             });
         }
         
@@ -156,11 +156,11 @@ class PriceItemController extends Controller
             ->orderByDesc('state')
             ->orderBy('name');
         
-        // Apply search if provided
+        // Apply search if provided (case-insensitive)
         if ($search) {
             $zonesQuery->where(function($query) use ($search) {
-                $query->where('name', 'like', "%{$search}%")
-                      ->orWhere('state', 'like', "%{$search}%");
+                $query->whereRaw('LOWER(name) LIKE ?', ["%" . strtolower($search) . "%"])
+                      ->orWhereRaw('LOWER(state) LIKE ?', ["%" . strtolower($search) . "%"]);
             });
         }
         
@@ -412,11 +412,11 @@ class PriceItemController extends Controller
         // Base query
         $query = Zone::query();
         
-        // Apply search if provided
+        // Apply search if provided (case-insensitive)
         if ($search) {
             $query->where(function($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('state', 'like', "%{$search}%");
+                $q->whereRaw('LOWER(name) LIKE ?', ["%" . strtolower($search) . "%"])
+                  ->orWhereRaw('LOWER(state) LIKE ?', ["%" . strtolower($search) . "%"]);
             });
         }
         

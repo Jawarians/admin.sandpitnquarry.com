@@ -13,8 +13,9 @@ class BusinessPriceController extends Controller
         $search = $request->input('search');
         $query = BusinessPrice::with(['user', 'address', 'creator', 'latest']);
         if ($search) {
-            $query->whereHas('user', function($q) use ($search) {
-                $q->where('name', 'like', "%$search%");
+            $searchLower = strtolower($search);
+            $query->whereHas('user', function($q) use ($searchLower) {
+                $q->whereRaw('LOWER(name) LIKE ?', ["%{$searchLower}%"]);
             });
         }
         $businessPrices = $query->orderByDesc('id')->paginate($perPage)->appends($request->all());

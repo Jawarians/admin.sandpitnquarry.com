@@ -20,16 +20,15 @@ class TruckController extends Controller
             'latest',
         ]);
         
-        // Filter by search term using parameter binding to prevent SQL injection
+        // Filter by search term using parameter binding to prevent SQL injection (case-insensitive)
         if ($request->filled('search')) {
             $searchTerm = $request->search;
-            // Escape LIKE wildcards to prevent LIKE injection attacks
-            $escapedSearchTerm = addcslashes($searchTerm, '%_');
-            
-            $query->where(function ($q) use ($escapedSearchTerm) {
-                $q->where('registration_plate_number', 'like', '%' . $escapedSearchTerm . '%')
-                  ->orWhereHas('transporter', function ($subQuery) use ($escapedSearchTerm) {
-                      $subQuery->where('name', 'like', '%' . $escapedSearchTerm . '%');
+            $escapedSearchTerm = strtolower(addcslashes($searchTerm, '%_'));
+            $pattern = '%' . $escapedSearchTerm . '%';
+            $query->where(function ($q) use ($pattern) {
+                $q->whereRaw('LOWER(registration_plate_number) LIKE ?', [$pattern])
+                  ->orWhereHas('transporter', function ($subQuery) use ($pattern) {
+                      $subQuery->whereRaw('LOWER(name) LIKE ?', [$pattern]);
                   });
             });
         }
