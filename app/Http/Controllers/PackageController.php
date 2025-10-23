@@ -11,7 +11,8 @@ class PackageController extends Controller
     {
         $query = Package::query();
         if ($request->filled('search')) {
-            $query->where('name', 'like', '%'.$request->search.'%');
+            $searchLower = strtolower($request->search);
+            $query->whereRaw('LOWER(name) LIKE ?', ['%' . $searchLower . '%']);
         }
         $packages = $query->orderBy('id', 'desc')->paginate($request->get('per_page', 10));
         return view('packages.index', compact('packages'));

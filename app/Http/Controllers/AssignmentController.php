@@ -16,18 +16,19 @@ class AssignmentController extends Controller
         'driver.user'
     ]);
 
-    // Filter by search term
+    // Filter by search term (case-insensitive)
     if ($request->filled('search')) {
         $searchTerm = addcslashes($request->search, '%_');
-        $query->where(function ($q) use ($searchTerm) {
-            $q->whereHas('truck', function ($subQuery) use ($searchTerm) {
-                $subQuery->where('registration_plate_number', 'like', '%' . $searchTerm . '%');
+        $searchTermLower = strtolower($searchTerm);
+        $query->where(function ($q) use ($searchTermLower) {
+            $q->whereHas('truck', function ($subQuery) use ($searchTermLower) {
+                $subQuery->whereRaw('LOWER(registration_plate_number) LIKE ?', ['%' . $searchTermLower . '%']);
             })
-            ->orWhereHas('driver.user', function ($subQuery) use ($searchTerm) {
-                $subQuery->where('name', 'like', '%' . $searchTerm . '%');
+            ->orWhereHas('driver.user', function ($subQuery) use ($searchTermLower) {
+                $subQuery->whereRaw('LOWER(name) LIKE ?', ['%' . $searchTermLower . '%']);
             })
-            ->orWhereHas('truck.transporter', function ($subQuery) use ($searchTerm) {
-                $subQuery->where('name', 'like', '%' . $searchTerm . '%');
+            ->orWhereHas('truck.transporter', function ($subQuery) use ($searchTermLower) {
+                $subQuery->whereRaw('LOWER(name) LIKE ?', ['%' . $searchTermLower . '%']);
             });
         });
     }

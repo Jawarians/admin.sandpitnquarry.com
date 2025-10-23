@@ -42,19 +42,21 @@ class OrderController extends Controller
             'jobs.trips'
         ]);
 
-        // Apply search filter if provided
+        // Apply search filter if provided (case-insensitive)
         if ($request->filled('search')) {
             $search = $request->input('search');
-            $query->where(function($q) use ($search) {
-                $q->where('id', 'like', "%{$search}%")
-                  ->orWhereHas('user', function($q) use ($search) {
-                      $q->where('name', 'like', "%{$search}%");
+            $searchLower = strtolower($search);
+            $pattern = "%{$searchLower}%";
+            $query->where(function($q) use ($pattern) {
+                $q->whereRaw('CAST(id AS CHAR) LIKE ?', [$pattern])
+                  ->orWhereHas('user', function($q) use ($pattern) {
+                      $q->whereRaw('LOWER(name) LIKE ?', [$pattern]);
                   })
-                  ->orWhereHas('product', function($q) use ($search) {
-                      $q->where('name', 'like', "%{$search}%");
+                  ->orWhereHas('product', function($q) use ($pattern) {
+                      $q->whereRaw('LOWER(name) LIKE ?', [$pattern]);
                   })
-                  ->orWhereHas('creator', function($q) use ($search) {
-                      $q->where('name', 'like', "%{$search}%");
+                  ->orWhereHas('creator', function($q) use ($pattern) {
+                      $q->whereRaw('LOWER(name) LIKE ?', [$pattern]);
                   });
             });
         }
@@ -163,11 +165,11 @@ class OrderController extends Controller
     {
     $query = OrderStatus::withCount('orders');
         
-        // Handle search
+        // Handle search (case-insensitive)
         if ($request->has('search') && !empty($request->search)) {
             $searchTerm = $request->search;
-            // OrderStatus stores status in 'status' column
-            $query->where('status', 'LIKE', "%{$searchTerm}%");
+            $pattern = '%' . strtolower($searchTerm) . '%';
+            $query->whereRaw('LOWER(status) LIKE ?', [$pattern]);
         }
 
     // Paginate results
@@ -194,34 +196,36 @@ public function freeDeliveries(Request $request)
             'transportation_amount.order_amountable.route',
         ])->where('address_id', '>', 0);
         
-        // Handle search - broadened to more relations/fields
+        // Handle search - broadened to more relations/fields (case-insensitive)
         if ($request->filled('search')) {
             $searchTerm = trim($request->input('search'));
-            $query->where(function($q) use ($searchTerm) {
+            $searchLower = strtolower($searchTerm);
+            $pattern = "%{$searchLower}%";
+            $query->where(function($q) use ($searchTerm, $searchLower, $pattern) {
                 // numeric id search
                 if (is_numeric($searchTerm)) {
-                    $q->where('id', 'LIKE', "%{$searchTerm}%");
+                    $q->whereRaw('CAST(id AS CHAR) LIKE ?', [$pattern]);
                 } else {
                     // cast id to text for non-numeric partial matches (Postgres-safe)
-                    $q->whereRaw("CAST(id AS TEXT) LIKE ?", ["%{$searchTerm}%"]);
+                    $q->whereRaw("CAST(id AS CHAR) LIKE ?", [$pattern]);
                 }
 
                 // only add order_number clause if column exists to avoid SQL errors on PG
                 if (Schema::hasColumn('orders', 'order_number')) {
-                    $q->orWhere('order_number', 'LIKE', "%{$searchTerm}%");
+                    $q->orWhereRaw('LOWER(order_number) LIKE ?', [$pattern]);
                 }
 
-                $q->orWhereHas('user', function($subQ) use ($searchTerm) {
-                      $subQ->where('name', 'LIKE', "%{$searchTerm}%");
+                $q->orWhereHas('user', function($subQ) use ($pattern) {
+                      $subQ->whereRaw('LOWER(name) LIKE ?', [$pattern]);
                   })
-                  ->orWhereHas('product', function($subQ) use ($searchTerm) {
-                      $subQ->where('name', 'LIKE', "%{$searchTerm}%");
+                  ->orWhereHas('product', function($subQ) use ($pattern) {
+                      $subQ->whereRaw('LOWER(name) LIKE ?', [$pattern]);
                   })
-                  ->orWhereHas('creator', function($subQ) use ($searchTerm) {
-                      $subQ->where('name', 'LIKE', "%{$searchTerm}%");
+                  ->orWhereHas('creator', function($subQ) use ($pattern) {
+                      $subQ->whereRaw('LOWER(name) LIKE ?', [$pattern]);
                   })
-                  ->orWhereHas('oldest.site', function($subQ) use ($searchTerm) {
-                      $subQ->where('name', 'LIKE', "%{$searchTerm}%");
+                  ->orWhereHas('oldest.site', function($subQ) use ($pattern) {
+                      $subQ->whereRaw('LOWER(name) LIKE ?', [$pattern]);
                   });
             });
         }
@@ -296,21 +300,23 @@ public function freeDeliveries(Request $request)
                     $q->where('address_id', '<=', 0);
                 });
         
-        // Handle search
+        // Handle search (case-insensitive)
         if ($request->has('search') && !empty($request->search)) {
             $searchTerm = $request->search;
-            $query->where(function($q) use ($searchTerm) {
-                $q->where('order_number', 'LIKE', "%{$searchTerm}%")
-                  ->orWhereHas('customer', function($subQ) use ($searchTerm) {
-                      $subQ->where('name', 'LIKE', "%{$searchTerm}%")
-                          ->orWhere('email', 'LIKE', "%{$searchTerm}%")
-                          ->orWhere('phone', 'LIKE', "%{$searchTerm}%");
+            $searchLower = strtolower($searchTerm);
+            $pattern = "%{$searchLower}%";
+            $query->where(function($q) use ($pattern) {
+                $q->whereRaw('LOWER(order_number) LIKE ?', [$pattern])
+                  ->orWhereHas('customer', function($subQ) use ($pattern) {
+                      $subQ->whereRaw('LOWER(name) LIKE ?', [$pattern])
+                          ->orWhereRaw('LOWER(email) LIKE ?', [$pattern])
+                          ->orWhereRaw('LOWER(phone) LIKE ?', [$pattern]);
                   })
-                  ->orWhereHas('product', function($subQ) use ($searchTerm) {
-                      $subQ->where('name', 'LIKE', "%{$searchTerm}%");
+                  ->orWhereHas('product', function($subQ) use ($pattern) {
+                      $subQ->whereRaw('LOWER(name) LIKE ?', [$pattern]);
                   })
-                  ->orWhereHas('quarry', function($subQ) use ($searchTerm) {
-                      $subQ->where('name', 'LIKE', "%{$searchTerm}%");
+                  ->orWhereHas('quarry', function($subQ) use ($pattern) {
+                      $subQ->whereRaw('LOWER(name) LIKE ?', [$pattern]);
                   });
             });
         }

@@ -11,13 +11,14 @@ class ReloadController extends Controller
     {
         $query = Reload::query()->with('customer');
         
-        // Handle search
+        // Handle search (case-insensitive)
         if ($request->has('search') && !empty($request->search)) {
-            $searchTerm = $request->search;
-            $query->where(function($q) use ($searchTerm) {
-                $q->where('billplz_id', 'ILIKE', "%{$searchTerm}%")
-                  ->orWhere('name', 'ILIKE', "%{$searchTerm}%")
-                  ->orWhere('email', 'ILIKE', "%{$searchTerm}%");
+            $searchTerm = strtolower($request->search);
+            $pattern = "%{$searchTerm}%";
+            $query->where(function($q) use ($pattern) {
+                $q->whereRaw('LOWER(billplz_id) LIKE ?', [$pattern])
+                  ->orWhereRaw('LOWER(name) LIKE ?', [$pattern])
+                  ->orWhereRaw('LOWER(email) LIKE ?', [$pattern]);
             });
         }
         

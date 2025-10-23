@@ -25,18 +25,19 @@ class AccountController extends Controller
 {
     $query = Account::with(['latest.latest', 'user']);
 
-    // Filter by search term (e.g., code or user name)
+    // Filter by search term (e.g., code or user name, case-insensitive)
     if ($request->filled('search')) {
         $searchTerm = $request->search;
         $escapedSearchTerm = addcslashes($searchTerm, '%_');
-        $query->where(function ($q) use ($escapedSearchTerm) {
-    $q->orWhereHas('latest', function ($subQuery) use ($escapedSearchTerm) {
-        $subQuery->where('code', 'like', '%' . $escapedSearchTerm . '%');
-    })
-    ->orWhereHas('user', function ($subQuery) use ($escapedSearchTerm) {
-        $subQuery->where('name', 'like', '%' . $escapedSearchTerm . '%');
-    });
-});
+        $searchTermLower = strtolower($escapedSearchTerm);
+        $query->where(function ($q) use ($searchTermLower) {
+            $q->orWhereHas('latest', function ($subQuery) use ($searchTermLower) {
+                $subQuery->whereRaw('LOWER(code) LIKE ?', ['%' . $searchTermLower . '%']);
+            })
+            ->orWhereHas('user', function ($subQuery) use ($searchTermLower) {
+                $subQuery->whereRaw('LOWER(name) LIKE ?', ['%' . $searchTermLower . '%']);
+            });
+        });
     }
 
     // Filter by status

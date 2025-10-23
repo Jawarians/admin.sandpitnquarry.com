@@ -18,13 +18,14 @@ class TransporterController extends Controller
 {
     $query = Transporter::with(['owner']);
 
-    // Filter by search term using parameter binding to prevent SQL injection
+    // Filter by search term using parameter binding to prevent SQL injection (case-insensitive)
     if ($request->filled('search')) {
         $searchTerm = $request->search;
-        $escapedSearchTerm = addcslashes($searchTerm, '%_');
-        $query->where(function ($q) use ($escapedSearchTerm) {
-            $q->where('name', 'like', '%' . $escapedSearchTerm . '%')
-              ->orWhere('registration_number', 'like', '%' . $escapedSearchTerm . '%');
+        $escapedSearchTerm = strtolower(addcslashes($searchTerm, '%_'));
+        $pattern = '%' . $escapedSearchTerm . '%';
+        $query->where(function ($q) use ($pattern) {
+            $q->whereRaw('LOWER(name) LIKE ?', [$pattern])
+              ->orWhereRaw('LOWER(registration_number) LIKE ?', [$pattern]);
         });
     }
 

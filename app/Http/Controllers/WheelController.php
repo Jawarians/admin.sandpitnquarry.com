@@ -17,12 +17,14 @@ class WheelController extends Controller
     {
         $query = Wheel::where('wheel', '>', 0);
         
-        // Apply search filters if provided
+        // Apply search filters if provided (case-insensitive)
         if ($request->filled('search')) {
             $search = $request->input('search');
-            $query->where(function ($q) use ($search) {
-                $q->where('wheel', 'like', "%{$search}%")
-                  ->orWhere('capacity', 'like', "%{$search}%");
+            $searchLower = strtolower($search);
+            $pattern = "%{$searchLower}%";
+            $query->where(function ($q) use ($pattern) {
+                $q->whereRaw('CAST(wheel AS CHAR) LIKE ?', [$pattern])
+                  ->orWhereRaw('CAST(capacity AS CHAR) LIKE ?', [$pattern]);
             });
         }
         

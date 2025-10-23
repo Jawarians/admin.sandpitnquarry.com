@@ -13,14 +13,15 @@ class WithdrawalController extends Controller
     {
         $query = Withdrawal::with(['user', 'latest', 'bank', 'withdrawal_details']);
         
-        // Handle search
+        // Handle search (case-insensitive)
         if ($request->has('search') && !empty($request->search)) {
-            $searchTerm = $request->search;
-            $query->where(function($q) use ($searchTerm) {
-                $q->where('id', 'ILIKE', "%{$searchTerm}%")
-                  ->orWhereHas('user', function($userQuery) use ($searchTerm) {
-                      $userQuery->where('name', 'ILIKE', "%{$searchTerm}%")
-                                ->orWhere('email', 'ILIKE', "%{$searchTerm}%");
+            $searchTerm = strtolower($request->search);
+            $pattern = "%{$searchTerm}%";
+            $query->where(function($q) use ($pattern) {
+                $q->whereRaw('CAST(id AS CHAR) LIKE ?', [$pattern])
+                  ->orWhereHas('user', function($userQuery) use ($pattern) {
+                      $userQuery->whereRaw('LOWER(name) LIKE ?', [$pattern])
+                                ->orWhereRaw('LOWER(email) LIKE ?', [$pattern]);
                   });
             });
         }

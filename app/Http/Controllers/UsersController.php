@@ -47,12 +47,13 @@ class UsersController extends Controller
     {
         $query = User::query();
         
-        // Handle search
+        // Handle search (case-insensitive)
         if ($request->has('search') && !empty($request->search)) {
-            $searchTerm = $request->search;
-            $query->where(function($q) use ($searchTerm) {
-                $q->where('name', 'ILIKE', "%{$searchTerm}%")
-                  ->orWhere('email', 'ILIKE', "%{$searchTerm}%");
+            $searchTerm = strtolower($request->search);
+            $pattern = "%{$searchTerm}%";
+            $query->where(function($q) use ($pattern) {
+                $q->whereRaw('LOWER(name) LIKE ?', [$pattern])
+                  ->orWhereRaw('LOWER(email) LIKE ?', [$pattern]);
             });
         }
         
@@ -67,12 +68,13 @@ class UsersController extends Controller
     {
         $query = User::query();
         
-        // Handle search
+        // Handle search (case-insensitive)
         if ($request->has('search') && !empty($request->search)) {
-            $searchTerm = $request->search;
-            $query->where(function($q) use ($searchTerm) {
-                $q->where('name', 'ILIKE', "%{$searchTerm}%")
-                  ->orWhere('email', 'ILIKE', "%{$searchTerm}%");
+            $searchTerm = strtolower($request->search);
+            $pattern = "%{$searchTerm}%";
+            $query->where(function($q) use ($pattern) {
+                $q->whereRaw('LOWER(name) LIKE ?', [$pattern])
+                  ->orWhereRaw('LOWER(email) LIKE ?', [$pattern]);
             });
         }
         

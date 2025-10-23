@@ -24,41 +24,42 @@ class TripController extends Controller
             'latest.assignment.truck.transporter'
         ]);
         
-        // Handle search
+        // Handle search (case-insensitive)
         if ($request->has('search') && !empty($request->search)) {
-            $searchTerm = $request->search;
-            $query->where(function($q) use ($searchTerm) {
-                $q->where('id', 'LIKE', "%{$searchTerm}%")
-                  ->orWhere('code', 'LIKE', "%{$searchTerm}%");
+            $searchTerm = strtolower($request->search);
+            $pattern = "%{$searchTerm}%";
+            $query->where(function($q) use ($pattern) {
+                $q->whereRaw('CAST(id AS CHAR) LIKE ?', [$pattern])
+                  ->orWhereRaw('LOWER(code) LIKE ?', [$pattern]);
 
                 // Transporter: job.transporter (name, registration_number)
-                $q->orWhereHas('job.transporter', function($subQ) use ($searchTerm) {
-                    $subQ->where('name', 'LIKE', "%{$searchTerm}%")
-                         ->orWhere('registration_number', 'LIKE', "%{$searchTerm}%");
+                $q->orWhereHas('job.transporter', function($subQ) use ($pattern) {
+                    $subQ->whereRaw('LOWER(name) LIKE ?', [$pattern])
+                         ->orWhereRaw('LOWER(registration_number) LIKE ?', [$pattern]);
                 });
 
                 // Transporter via latest.assignment.truck.transporter
-                $q->orWhereHas('latest.assignment.truck.transporter', function($subQ) use ($searchTerm) {
-                    $subQ->where('name', 'LIKE', "%{$searchTerm}%")
-                         ->orWhere('registration_number', 'LIKE', "%{$searchTerm}%");
+                $q->orWhereHas('latest.assignment.truck.transporter', function($subQ) use ($pattern) {
+                    $subQ->whereRaw('LOWER(name) LIKE ?', [$pattern])
+                         ->orWhereRaw('LOWER(registration_number) LIKE ?', [$pattern]);
                 });
 
                 // Driver name via latest assignment
-                $q->orWhereHas('latest.assignment.driver.user', function($subQ) use ($searchTerm) {
-                    $subQ->where('name', 'LIKE', "%{$searchTerm}%");
+                $q->orWhereHas('latest.assignment.driver.user', function($subQ) use ($pattern) {
+                    $subQ->whereRaw('LOWER(name) LIKE ?', [$pattern]);
                 });
 
                 // Truck plate/registration via latest.assignment.truck or truck.latest
-                $q->orWhereHas('latest.assignment.truck', function($subQ) use ($searchTerm) {
-                    $subQ->where('registration_plate_number', 'LIKE', "%{$searchTerm}%");
+                $q->orWhereHas('latest.assignment.truck', function($subQ) use ($pattern) {
+                    $subQ->whereRaw('LOWER(registration_plate_number) LIKE ?', [$pattern]);
                 });
 
-                $q->orWhereHas('job.order.oldest.site', function($subQ) use ($searchTerm) {
-                    $subQ->where('name', 'LIKE', "%{$searchTerm}%");
+                $q->orWhereHas('job.order.oldest.site', function($subQ) use ($pattern) {
+                    $subQ->whereRaw('LOWER(name) LIKE ?', [$pattern]);
                 });
 
-                $q->orWhereHas('job.order.latest.site', function($subQ) use ($searchTerm) {
-                    $subQ->where('name', 'LIKE', "%{$searchTerm}%");
+                $q->orWhereHas('job.order.latest.site', function($subQ) use ($pattern) {
+                    $subQ->whereRaw('LOWER(name) LIKE ?', [$pattern]);
                 });
             });
         }
@@ -134,11 +135,11 @@ class TripController extends Controller
     {
         $query = TripStatus::withCount('trips');
         
-        // Handle search
+        // Handle search (case-insensitive)
         if ($request->has('search') && !empty($request->search)) {
-            $searchTerm = $request->search;
-            // TripStatus uses 'status' column
-            $query->where('status', 'LIKE', "%{$searchTerm}%");
+            $searchTerm = strtolower($request->search);
+            $pattern = "%{$searchTerm}%";
+            $query->whereRaw('LOWER(status) LIKE ?', [$pattern]);
         }
 
         // Paginate results
