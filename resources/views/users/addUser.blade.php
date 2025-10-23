@@ -66,10 +66,6 @@ $script = '<script>
                                 <label for="number" class="form-label fw-semibold text-primary-light text-sm mb-8">Phone</label>
                                 <input type="text" class="form-control radius-8" id="number" name="number" placeholder="Enter phone number">
                             </div>
-                            <div class="mb-20">
-                                <label for="desc" class="form-label fw-semibold text-primary-light text-sm mb-8">Description</label>
-                                <textarea class="form-control radius-8" id="desc" name="desc" placeholder="Write description..."></textarea>
-                            </div>
                             <a href="javascript:history.back()" class="border border-danger-600 bg-hover-danger-200 text-danger-600 text-md px-56 py-11 radius-8">
                                 Cancel
                             </a>
