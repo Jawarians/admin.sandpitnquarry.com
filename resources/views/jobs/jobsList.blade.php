@@ -95,6 +95,7 @@ $script ='<script>
                 <input type="hidden" name="search" value="{{ request('search') }}">
                 <input type="hidden" name="start_date" value="{{ request('start_date') }}">
                 <input type="hidden" name="end_date" value="{{ request('end_date') }}">
+                    <input type="hidden" name="status" value="{{ request('status') }}">
             </form>
             <form class="navbar-search" method="GET">
                 <input type="text" class="bg-base h-40-px w-auto" name="search" placeholder="Search jobs..." value="{{ request('search') }}">
@@ -102,7 +103,26 @@ $script ='<script>
                 <input type="hidden" name="per_page" value="{{ request('per_page', 10) }}">
                 <input type="hidden" name="start_date" value="{{ request('start_date') }}">
                 <input type="hidden" name="end_date" value="{{ request('end_date') }}">
+                    <input type="hidden" name="status" value="{{ request('status') }}">
             </form>
+
+                <!-- Status filter -->
+                <form class="d-flex align-items-center gap-2" method="GET">
+                    <div class="input-group">
+                        <span class="input-group-text bg-base h-40-px">Status</span>
+                        <select class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px" name="status" onchange="this.form.submit()">
+                            <option value="">All</option>
+                            <option value="Accepted" {{ request('status') == 'Accepted' ? 'selected' : '' }}>Accepted</option>
+                            <option value="Assigned" {{ request('status') == 'Assigned' ? 'selected' : '' }}>Assigned</option>
+                            <option value="Ongoing" {{ request('status') == 'Ongoing' ? 'selected' : '' }}>Ongoing</option>
+                            <option value="Completed" {{ request('status') == 'Completed' ? 'selected' : '' }}>Completed</option>
+                        </select>
+                    </div>
+                    <input type="hidden" name="search" value="{{ request('search') }}">
+                    <input type="hidden" name="per_page" value="{{ request('per_page', 10) }}">
+                    <input type="hidden" name="start_date" value="{{ request('start_date') }}">
+                    <input type="hidden" name="end_date" value="{{ request('end_date') }}">
+                </form>
 
             <!-- Date filter -->
             <form class="d-flex align-items-center gap-2" method="GET">
@@ -118,6 +138,7 @@ $script ='<script>
                 <button type="button" id="clearDateFilter" class="btn btn-sm btn-outline-secondary h-40-px">Clear</button>
                 <input type="hidden" name="search" value="{{ request('search') }}">
                 <input type="hidden" name="per_page" value="{{ request('per_page', 10) }}">
+                    <input type="hidden" name="status" value="{{ request('status') }}">
             </form>
         </div>
         <div class="d-flex align-items-center gap-2">

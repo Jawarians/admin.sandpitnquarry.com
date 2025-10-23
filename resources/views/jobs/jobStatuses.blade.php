@@ -44,7 +44,11 @@
                             <div class="d-flex align-items-center gap-2">
                                 <iconify-icon icon="mdi:briefcase" class="text-secondary-light"></iconify-icon>
                                 <span class="text-sm text-secondary-light">
-                                    {{ $status->jobs->count() ?? 0 }} jobs
+                                    @php
+                                        $virtualName = $status->name;
+                                        $count = $statusCounts[$virtualName] ?? 0;
+                                    @endphp
+                                    {{ $count }} jobs
                                 </span>
                             </div>
                             @if($status->created_at)
@@ -55,11 +59,21 @@
                         </div>
                         
                         <!-- Status Progress Indicator -->
+                        @php
+                            $virtualName = $status->name;
+                        @endphp
                         @if($status->is_completed ?? false)
                         <div class="mt-12">
                             <div class="d-flex align-items-center gap-2">
                                 <iconify-icon icon="mdi:check-circle" class="text-success-600"></iconify-icon>
                                 <span class="text-xs text-success-600">Final Status</span>
+                            </div>
+                        </div>
+                        @elseif($virtualName === 'Assigned')
+                        <div class="mt-12">
+                            <div class="d-flex align-items-center gap-2">
+                                <iconify-icon icon="mdi:account-arrow-right" class="text-primary-600"></iconify-icon>
+                                <span class="text-xs text-primary-600">Assigned</span>
                             </div>
                         </div>
                         @elseif($status->is_in_progress ?? false)
@@ -98,23 +112,15 @@
                     <div class="d-flex align-items-center gap-2">
                         <div class="w-16-px h-16-px bg-success-600 rounded-circle"></div>
                         <span class="text-sm text-secondary-light">
-                            Active Statuses: {{ $statuses->where('is_active', true)->count() ?? $statuses->count() }}
+                            Accepted: {{ $statusCounts['Accepted'] ?? 0 }}
                         </span>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="d-flex align-items-center gap-2">
-                        <div class="w-16-px h-16-px bg-neutral-400 rounded-circle"></div>
+                        <div class="w-16-px h-16-px bg-primary-600 rounded-circle"></div>
                         <span class="text-sm text-secondary-light">
-                            Inactive Statuses: {{ $statuses->where('is_active', false)->count() ?? 0 }}
-                        </span>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="d-flex align-items-center gap-2">
-                        <div class="w-16-px h-16-px bg-info-600 rounded-circle"></div>
-                        <span class="text-sm text-secondary-light">
-                            Total Jobs: {{ $statuses->sum(function($status) { return $status->jobs->count() ?? 0; }) }}
+                            Assigned: {{ $statusCounts['Assigned'] ?? 0 }}
                         </span>
                     </div>
                 </div>
@@ -122,7 +128,15 @@
                     <div class="d-flex align-items-center gap-2">
                         <div class="w-16-px h-16-px bg-warning-600 rounded-circle"></div>
                         <span class="text-sm text-secondary-light">
-                            Completed: {{ $statuses->where('is_completed', true)->sum(function($status) { return $status->jobs->count() ?? 0; }) }}
+                            Ongoing: {{ $statusCounts['Ongoing'] ?? 0 }}
+                        </span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="w-16-px h-16-px bg-info-600 rounded-circle"></div>
+                        <span class="text-sm text-secondary-light">
+                            Completed: {{ $statusCounts['Completed'] ?? 0 }}
                         </span>
                     </div>
                 </div>
