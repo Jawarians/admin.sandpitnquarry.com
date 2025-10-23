@@ -32,8 +32,9 @@ class CoinController extends Controller
         $query->where('coinable_type', $request->type);
     }
 
-    // Clone query for all-coins (for totals/chart)
-    $allCoinsQuery = clone $query;
+    // Prepare for efficient totals and chart data
+    $insideTypes = ['reload', 'tonne_refund', 'refund', 'bonus', 'order'];
+    $outsideTypes = ['waiting_charges', 'withdrawal', 'purchase'];
 
     // Pagination: allow only 5, 10, 25, 50, 100
     $allowedPerPage = [5, 10, 25, 50, 100];
@@ -43,7 +44,56 @@ class CoinController extends Controller
     }
 
     $coins = $query->paginate($perPage);
-    $allCoins = $allCoinsQuery->get();
+
+    // Totals (sum amounts by type, in cents)
+    $totals = DB::table('coins')
+        ->when($request->filled('search'), function($q) use ($request) {
+            $searchTerm = $request->search;
+            $escapedSearchTerm = addcslashes($searchTerm, '%_');
+            $q->where(function($q2) use ($escapedSearchTerm) {
+                $q2->where('id', 'like', "%{$escapedSearchTerm}%");
+            });
+        })
+        ->when($request->filled('type') && $request->type !== 'Type', function($q) use ($request) {
+            $q->where('coinable_type', $request->type);
+        })
+        ->selectRaw('coinable_type, SUM(amount) as total_amount')
+        ->groupBy('coinable_type')
+        ->get();
+
+    $totalInside = 0;
+    $totalOutside = 0;
+    foreach ($totals as $row) {
+        if (in_array($row->coinable_type, $insideTypes)) {
+            $totalInside += $row->total_amount;
+        } elseif (in_array($row->coinable_type, $outsideTypes)) {
+            $totalOutside += $row->total_amount;
+        }
+    }
+
+    // Chart data: only fetch needed fields, order by created_at
+    $chartRecords = DB::table('coins')
+        ->when($request->filled('search'), function($q) use ($request) {
+            $searchTerm = $request->search;
+            $escapedSearchTerm = addcslashes($searchTerm, '%_');
+            $q->where(function($q2) use ($escapedSearchTerm) {
+                $q2->where('id', 'like', "%{$escapedSearchTerm}%");
+            });
+        })
+        ->when($request->filled('type') && $request->type !== 'Type', function($q) use ($request) {
+            $q->where('coinable_type', $request->type);
+        })
+        ->select(['created_at', 'coinable_type as type', 'amount'])
+        ->orderBy('created_at', 'asc')
+        ->get()
+        ->map(function($row) {
+            return [
+                'date' => (new \Carbon\Carbon($row->created_at))->format('Y-m-d H:i:s'),
+                'type' => $row->type,
+                'amount' => ($row->amount ?? 0) / 100
+            ];
+        })
+        ->toArray();
 
     // Distinct coin types for filter dropdown
     $coinTypes = DB::table('coins')
@@ -52,7 +102,7 @@ class CoinController extends Controller
         ->pluck('coinable_type')
         ->toArray();
 
-    return view('coins.index', compact('coins', 'allCoins', 'coinTypes', 'perPage'));
+    return view('coins.index', compact('coins', 'coinTypes', 'perPage', 'totalInside', 'totalOutside', 'chartRecords'));
 }
     
     public function create()

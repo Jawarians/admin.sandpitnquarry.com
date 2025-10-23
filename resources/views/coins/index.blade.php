@@ -18,36 +18,9 @@ $script ='<script>
 
 @section('content')
 @php
-    // Define which coin types are considered inside (inflow) and outside (outflow)
-    $insideTypes = ['reload', 'tonne_refund', 'refund', 'bonus', 'order'];
-    $outsideTypes = ['waiting_charges', 'withdrawal', 'purchase'];
-
-    $totalInside = 0;
-    $totalOutside = 0;
-    $totalIn = 0; // alias for totalInside
-    $totalOut = 0; // alias for totalOutside
-
-    // Use $allCoins for totals and chart
-    foreach ($allCoins as $c) {
-        $amt = ($c->amount ?? 0) / 100;
-        if (in_array($c->coinable_type, $insideTypes)) {
-            $totalInside += $amt;
-            $totalIn += $amt;
-        } elseif (in_array($c->coinable_type, $outsideTypes)) {
-            $totalOutside += $amt;
-            $totalOut += $amt;
-        }
-    }
-
-    // Prepare lightweight payload for client-side aggregation
-    $chartRecords = [];
-    foreach ($allCoins as $c) {
-        $chartRecords[] = [
-            'date' => $c->created_at->format('Y-m-d H:i:s'),
-            'type' => $c->coinable_type,
-            'amount' => ($c->amount ?? 0) / 100
-        ];
-    }
+    // $totalInside, $totalOutside, $chartRecords are now provided by the controller for efficiency
+    // $chartRecords is already an array of ['date', 'type', 'amount']
+    $allTypes = array_values(array_unique(array_map(function($r){ return $r['type']; }, $chartRecords)));
 @endphp
 <div class="card h-100 p-0 radius-12">
     {{-- Chart area will sit inside card-body above the table to match table width --}}
@@ -102,10 +75,10 @@ $script ='<script>
                     </select>
             <div class="d-flex align-items-center gap-4 mb-2">
                 <div class="card p-2 px-3 bg-success-light text-success fw-bold radius-8">
-                    Total Inside: {{ number_format($totalInside, 2) }}
+                    Total Inside: {{ number_format(($totalInside ?? 0) / 100, 2) }}
                 </div>
                 <div class="card p-2 px-3 bg-danger-light text-danger fw-bold radius-8">
-                    Total Outside: {{ number_format($totalOutside, 2) }}
+                    Total Outside: {{ number_format(($totalOutside ?? 0) / 100, 2) }}
                 </div>
             </div>
                     <label class="text-sm fw-medium ms-12">Stacked</label>
@@ -117,9 +90,6 @@ $script ='<script>
             </div>
 
             <div class="w-100 card p-3">
-                @php
-                    $allTypes = array_values(array_unique(array_map(function($r){ return $r['type']; }, $chartRecords)));
-                @endphp
                 <canvas id="coinsAuditBarChart" style="width:100%;height:320px;display:block;" data-records="{{ base64_encode(json_encode($chartRecords)) }}" data-types="{{ base64_encode(json_encode($allTypes)) }}"></canvas>
             </div>
         </div>
