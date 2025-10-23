@@ -93,10 +93,20 @@ $script ='<script>
                 <div class="d-flex align-items-center gap-3">
                     <label class="text-sm fw-medium">Group by</label>
                     <select id="coinsGroupBy" class="form-select form-select-sm w-auto">
-                        <option value="day">Day</option>
-                        <option value="week">Week</option>
+                        <option value="total">Total</option>
+                        <option value="year">Year</option>
                         <option value="month" selected>Month</option>
+                        <option value="week">Week</option>
+                        <option value="day">Day</option>
                     </select>
+            <div class="d-flex align-items-center gap-4 mb-2">
+                <div class="card p-2 px-3 bg-success-light text-success fw-bold radius-8">
+                    Total Inside: {{ number_format($totalInside, 2) }}
+                </div>
+                <div class="card p-2 px-3 bg-danger-light text-danger fw-bold radius-8">
+                    Total Outside: {{ number_format($totalOutside, 2) }}
+                </div>
+            </div>
                     <label class="text-sm fw-medium ms-12">Stacked</label>
                     <input type="checkbox" id="coinsStacked" />
                     <label class="text-sm fw-medium ms-12">Show by Type</label>
@@ -296,6 +306,8 @@ $script ='<script>
             const y = dateObj.getFullYear();
             const m = dateObj.getMonth() + 1;
             const d = dateObj.getDate();
+            if (mode === 'total') return 'Total';
+            if (mode === 'year') return `${y}`;
             if (mode === 'month') return `${y}-${String(m).padStart(2,'0')}`;
             if (mode === 'week') {
                 // Week label as YYYY-WW
@@ -308,45 +320,69 @@ $script ='<script>
         }
 
         function aggregate(records, mode) {
-            const map = new Map();
-            records.forEach(r => {
-                const dt = new Date(r.date);
-                const key = groupKey(dt, mode);
-                if (!map.has(key)) map.set(key, {inside: 0, outside: 0});
-                const amt = parseFloat(r.amount) || 0;
-                const type = r.type;
-                // same inside/outside mapping as server
+            if (mode === 'total') {
+                let inside = 0, outside = 0;
                 const insideTypes = ['reload', 'tonne_refund', 'refund', 'bonus', 'order'];
                 const outsideTypes = ['waiting_charges', 'withdrawal', 'purchase'];
-                if (insideTypes.indexOf(type) !== -1) map.get(key).inside += amt;
-                else if (outsideTypes.indexOf(type) !== -1) map.get(key).outside += amt;
-            });
-            // sort keys
-            const keys = Array.from(map.keys()).sort();
-            const labels = keys;
-            const inside = keys.map(k => map.get(k).inside);
-            const outside = keys.map(k => map.get(k).outside);
-            return {labels, inside, outside};
+                records.forEach(r => {
+                    const amt = parseFloat(r.amount) || 0;
+                    const type = r.type;
+                    if (insideTypes.indexOf(type) !== -1) inside += amt;
+                    else if (outsideTypes.indexOf(type) !== -1) outside += amt;
+                });
+                return {labels: ['Total'], inside: [inside], outside: [outside]};
+            } else {
+                const map = new Map();
+                records.forEach(r => {
+                    const dt = new Date(r.date);
+                    const key = groupKey(dt, mode);
+                    if (!map.has(key)) map.set(key, {inside: 0, outside: 0});
+                    const amt = parseFloat(r.amount) || 0;
+                    const type = r.type;
+                    const insideTypes = ['reload', 'tonne_refund', 'refund', 'bonus', 'order'];
+                    const outsideTypes = ['waiting_charges', 'withdrawal', 'purchase'];
+                    if (insideTypes.indexOf(type) !== -1) map.get(key).inside += amt;
+                    else if (outsideTypes.indexOf(type) !== -1) map.get(key).outside += amt;
+                });
+                // sort keys
+                const keys = Array.from(map.keys()).sort();
+                const labels = keys;
+                const inside = keys.map(k => map.get(k).inside);
+                const outside = keys.map(k => map.get(k).outside);
+                return {labels, inside, outside};
+            }
         }
 
         // aggregate per-type when requested
         function aggregateByType(records, mode, types) {
-            const map = new Map();
-            records.forEach(r => {
-                const dt = new Date(r.date);
-                const key = groupKey(dt, mode);
-                if (!map.has(key)) map.set(key, {});
-                const amt = parseFloat(r.amount) || 0;
-                const t = r.type;
-                const row = map.get(key);
-                row[t] = (row[t] || 0) + amt;
-            });
-            const keys = Array.from(map.keys()).sort();
-            const labels = keys;
-            const datasets = types.map(function(type) {
-                return keys.map(k => map.get(k)[type] || 0);
-            });
-            return {labels, datasets};
+            if (mode === 'total') {
+                // sum all types for total
+                const sums = {};
+                types.forEach(t => sums[t] = 0);
+                records.forEach(r => {
+                    const amt = parseFloat(r.amount) || 0;
+                    const t = r.type;
+                    if (sums.hasOwnProperty(t)) sums[t] += amt;
+                });
+                return {labels: ['Total'], datasets: types.map(t => [sums[t]])};
+            } else {
+                const map = new Map();
+                records.forEach(r => {
+                    const dt = new Date(r.date);
+                    const key = groupKey(dt, mode);
+                    if (!map.has(key)) map.set(key, {});
+                    const amt = parseFloat(r.amount) || 0;
+                    const t = r.type;
+                    const row = map.get(key);
+                    row[t] = (row[t] || 0) + amt;
+                });
+                const keys = Array.from(map.keys()).sort();
+                const labels = keys;
+                const datasets = types.map(function(type) {
+                    return keys.map(k => map.get(k)[type] || 0);
+                });
+                return {labels, datasets};
+            }
         }
 
     // initialize chart
