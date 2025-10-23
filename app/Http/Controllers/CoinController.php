@@ -32,6 +32,9 @@ class CoinController extends Controller
         $query->where('coinable_type', $request->type);
     }
 
+    // Clone query for all-coins (for totals/chart)
+    $allCoinsQuery = clone $query;
+
     // Pagination: allow only 5, 10, 25, 50, 100
     $allowedPerPage = [5, 10, 25, 50, 100];
     $perPage = (int) ($request->per_page ?? 10);
@@ -40,6 +43,7 @@ class CoinController extends Controller
     }
 
     $coins = $query->paginate($perPage);
+    $allCoins = $allCoinsQuery->get();
 
     // Distinct coin types for filter dropdown
     $coinTypes = DB::table('coins')
@@ -48,7 +52,7 @@ class CoinController extends Controller
         ->pluck('coinable_type')
         ->toArray();
 
-    return view('coins.index', compact('coins', 'coinTypes', 'perPage'));
+    return view('coins.index', compact('coins', 'allCoins', 'coinTypes', 'perPage'));
 }
     
     public function create()

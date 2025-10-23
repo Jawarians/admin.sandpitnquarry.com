@@ -27,7 +27,8 @@ $script ='<script>
     $totalIn = 0; // alias for totalInside
     $totalOut = 0; // alias for totalOutside
 
-    foreach ($coins as $c) {
+    // Use $allCoins for totals and chart
+    foreach ($allCoins as $c) {
         $amt = ($c->amount ?? 0) / 100;
         if (in_array($c->coinable_type, $insideTypes)) {
             $totalInside += $amt;
@@ -40,7 +41,7 @@ $script ='<script>
 
     // Prepare lightweight payload for client-side aggregation
     $chartRecords = [];
-    foreach ($coins as $c) {
+    foreach ($allCoins as $c) {
         $chartRecords[] = [
             'date' => $c->created_at->format('Y-m-d H:i:s'),
             'type' => $c->coinable_type,
