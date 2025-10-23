@@ -48,22 +48,27 @@ $script = '<script>
                         </div>
                         <!-- Upload Image End -->
 
-                        <form action="POST">
+                        <form method="POST" action="{{ route('storeUser') }}">
+                            @csrf
                             <div class="mb-20">
                                 <label for="name" class="form-label fw-semibold text-primary-light text-sm mb-8">Full Name <span class="text-danger-600">*</span></label>
-                                <input type="text" class="form-control radius-8" id="name" placeholder="Enter Full Name">
+                                <input type="text" class="form-control radius-8" id="name" name="name" placeholder="Enter Full Name" required>
                             </div>
                             <div class="mb-20">
                                 <label for="email" class="form-label fw-semibold text-primary-light text-sm mb-8">Email <span class="text-danger-600">*</span></label>
-                                <input type="email" class="form-control radius-8" id="email" placeholder="Enter email address">
+                                <input type="email" class="form-control radius-8" id="email" name="email" placeholder="Enter email address" required>
+                            </div>
+                            <div class="mb-20">
+                                <label for="password" class="form-label fw-semibold text-primary-light text-sm mb-8">Password <span class="text-danger-600">*</span></label>
+                                <input type="password" class="form-control radius-8" id="password" name="password" placeholder="Enter password" required>
                             </div>
                             <div class="mb-20">
                                 <label for="number" class="form-label fw-semibold text-primary-light text-sm mb-8">Phone</label>
-                                <input type="email" class="form-control radius-8" id="number" placeholder="Enter phone number">
+                                <input type="text" class="form-control radius-8" id="number" name="number" placeholder="Enter phone number">
                             </div>
                             <div class="mb-20">
                                 <label for="desc" class="form-label fw-semibold text-primary-light text-sm mb-8">Description</label>
-                                <textarea name="#0" class="form-control radius-8" id="desc" placeholder="Write description..."></textarea>
+                                <textarea class="form-control radius-8" id="desc" name="desc" placeholder="Write description..."></textarea>
                             </div>
                             <a href="javascript:history.back()" class="border border-danger-600 bg-hover-danger-200 text-danger-600 text-md px-56 py-11 radius-8">
                                 Cancel
@@ -71,8 +76,8 @@ $script = '<script>
                             <button type="submit" class="btn btn-primary border border-primary-600 text-md px-56 py-12 radius-8">
                                 Save
                             </button>
+                        </form>
                     </div>
-                    </form>
                 </div>
             </div>
         </div>

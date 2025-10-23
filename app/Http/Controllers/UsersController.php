@@ -11,6 +11,37 @@ class UsersController extends Controller
     {
         return view('users/addUser');
     }
+
+    public function storeUser(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => [
+                'required',
+                'string',
+                'email',
+                'max:255',
+                'unique:users,email',
+                function ($attribute, $value, $fail) {
+                    if (!str_ends_with($value, '@sandpitnquarry.com')) {
+                        $fail('The email must be a @sandpitnquarry.com address.');
+                    }
+                },
+            ],
+            'password' => 'required|string|min:8',
+            'number' => 'nullable|string|max:30',
+            'desc' => 'nullable|string|max:1000',
+        ]);
+
+        $user = new User();
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = bcrypt($request->password);
+        $user->phone = $request->number;
+        $user->save();
+
+        return redirect()->route('usersList')->with('success', 'User created successfully!');
+    }
     
     public function usersGrid(Request $request)
     {

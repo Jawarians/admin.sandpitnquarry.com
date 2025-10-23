@@ -118,6 +118,7 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('users')->group(function () {
         Route::controller(UsersController::class)->group(function () {
             Route::get('/add-user', 'addUser')->name('addUser');
+            Route::post('/store-user', 'storeUser')->name('storeUser');
             Route::get('/users-grid', 'usersGrid')->name('usersGrid');
             Route::get('/users-list', 'usersList')->name('usersList');
             Route::get('/view-profile/{id?}', 'viewProfile')->name('viewProfile');
@@ -381,9 +382,8 @@ Route::middleware(['auth'])->group(function () {
                 Route::delete('/{package}', 'destroy')->name('packages.destroy');
             });
         });
-
-        // Packages
-        Route::prefix('permissions')->group(function () {
+        // Permissions
+         Route::prefix('permissions')->group(function () {
             Route::controller(PermissionController::class)->group(function () {
                 Route::get('/', 'index')->name('permissions.index');
                 Route::post('/assign', 'assign')->name('permissions.assign');
