@@ -15,7 +15,24 @@ class SiteController extends Controller
      */
     public function index()
     {
-        $sites = Site::with(['city', 'state'])->latest()->paginate(10);
+        $query = Site::with(['city', 'state']);
+        $request = request();
+        if ($request->filled('search')) {
+            $search = strtolower($request->input('search'));
+            $pattern = "%{$search}%";
+            $query->where(function($q) use ($pattern) {
+                $q->whereRaw('LOWER(name) LIKE ?', [$pattern])
+                  ->orWhereRaw('LOWER(address) LIKE ?', [$pattern])
+                  ->orWhereRaw('LOWER(CAST(postcode AS TEXT)) LIKE ?', [$pattern])
+                  ->orWhereHas('city', function($subQ) use ($pattern) {
+                      $subQ->whereRaw('LOWER(name) LIKE ?', [$pattern]);
+                  })
+                  ->orWhereHas('state', function($subQ) use ($pattern) {
+                      $subQ->whereRaw('LOWER(name) LIKE ?', [$pattern]);
+                  });
+            });
+        }
+        $sites = $query->latest()->paginate(10);
         return view('sites.index', compact('sites'));
     }
 

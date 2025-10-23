@@ -46,21 +46,24 @@ class CoinController extends Controller
 
     $coins = $query->paginate($perPage);
 
-    // Totals (sum amounts by type, in cents)
-    $totals = DB::table('coins')
-        ->when($request->filled('search'), function($q) use ($request) {
-            $searchTerm = $request->search;
-            $escapedSearchTerm = addcslashes($searchTerm, '%_');
-            $searchTermLower = strtolower($escapedSearchTerm);
-            $q->where(function($q2) use ($searchTermLower) {
-                $q2->whereRaw('CAST(id AS CHAR) LIKE ?', ["%{$searchTermLower}%"]);
-            });
-        })
-        ->when($request->filled('type') && $request->type !== 'Type', function($q) use ($request) {
-            $q->where('coinable_type', $request->type);
-        })
-        ->selectRaw('coinable_type, SUM(amount) as total_amount')
-        ->groupBy('coinable_type')
+    // Totals (sum amounts by type, in cents) - match Eloquent search logic
+    $totalsQuery = DB::table('coins')
+        ->leftJoin('users', 'coins.user_id', '=', 'users.id');
+    if ($request->filled('search')) {
+        $searchTerm = $request->search;
+        $escapedSearchTerm = addcslashes($searchTerm, '%_');
+        $searchTermLower = strtolower($escapedSearchTerm);
+        $totalsQuery->where(function($q2) use ($searchTermLower) {
+            $q2->whereRaw('CAST(coins.id AS TEXT) LIKE ?', ["%{$searchTermLower}%"])
+                ->orWhereRaw('LOWER(users.name) LIKE ?', ["%{$searchTermLower}%"]);
+        });
+    }
+    if ($request->filled('type') && $request->type !== 'Type') {
+        $totalsQuery->where('coins.coinable_type', $request->type);
+    }
+    $totals = $totalsQuery
+        ->selectRaw('coins.coinable_type, SUM(coins.amount) as total_amount')
+        ->groupBy('coins.coinable_type')
         ->get();
 
     $totalInside = 0;
@@ -73,21 +76,24 @@ class CoinController extends Controller
         }
     }
 
-    // Chart data: only fetch needed fields, order by created_at
-    $chartRecords = DB::table('coins')
-        ->when($request->filled('search'), function($q) use ($request) {
-            $searchTerm = $request->search;
-            $escapedSearchTerm = addcslashes($searchTerm, '%_');
-            $searchTermLower = strtolower($escapedSearchTerm);
-            $q->where(function($q2) use ($searchTermLower) {
-                $q2->whereRaw('CAST(id AS CHAR) LIKE ?', ["%{$searchTermLower}%"]);
-            });
-        })
-        ->when($request->filled('type') && $request->type !== 'Type', function($q) use ($request) {
-            $q->where('coinable_type', $request->type);
-        })
-        ->select(['created_at', 'coinable_type as type', 'amount'])
-        ->orderBy('created_at', 'asc')
+    // Chart data: only fetch needed fields, order by created_at - match Eloquent search logic
+    $chartQuery = DB::table('coins')
+        ->leftJoin('users', 'coins.user_id', '=', 'users.id');
+    if ($request->filled('search')) {
+        $searchTerm = $request->search;
+        $escapedSearchTerm = addcslashes($searchTerm, '%_');
+        $searchTermLower = strtolower($escapedSearchTerm);
+        $chartQuery->where(function($q2) use ($searchTermLower) {
+            $q2->whereRaw('CAST(coins.id AS TEXT) LIKE ?', ["%{$searchTermLower}%"])
+                ->orWhereRaw('LOWER(users.name) LIKE ?', ["%{$searchTermLower}%"]);
+        });
+    }
+    if ($request->filled('type') && $request->type !== 'Type') {
+        $chartQuery->where('coins.coinable_type', $request->type);
+    }
+    $chartRecords = $chartQuery
+        ->select(['coins.created_at', 'coins.coinable_type as type', 'coins.amount'])
+        ->orderBy('coins.created_at', 'asc')
         ->get()
         ->map(function($row) {
             return [
