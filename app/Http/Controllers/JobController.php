@@ -105,10 +105,11 @@ class JobController extends Controller
         $query = JobStatus::query();
 
         // Handle search (case-insensitive)
+
         if ($request->filled('search')) {
             $searchTerm = strtolower(addcslashes($request->search, '%_'));
             $pattern = '%' . $searchTerm . '%';
-            $query->whereRaw('LOWER(name) LIKE ?', [$pattern]);
+            $query->whereRaw('LOWER(status) LIKE ?', [$pattern]);
         }
 
         // Consider caching the results if they don't change often
@@ -116,10 +117,10 @@ class JobController extends Controller
         $perPage = (int) $request->get('per_page', 10);
         if (config('app.debug') === false && $request->missing('search')) {
             $statuses = cache()->remember($cacheKey, now()->addHour(), function() use ($query, $perPage) {
-                return $query->orderBy('name', 'asc')->paginate($perPage);
+                return $query->orderBy('status', 'asc')->paginate($perPage);
             });
         } else {
-            $statuses = $query->orderBy('name', 'asc')->paginate($perPage);
+            $statuses = $query->orderBy('status', 'asc')->paginate($perPage);
         }
 
         // Efficient status counts using DB queries
