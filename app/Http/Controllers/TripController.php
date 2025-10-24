@@ -28,9 +28,13 @@ class TripController extends Controller
         if ($request->has('search') && !empty($request->search)) {
             $searchTerm = strtolower($request->search);
             $pattern = "%{$searchTerm}%";
-                        $query->where(function($q) use ($pattern) {
-                                $q->whereRaw('CAST(id AS TEXT) LIKE ?', [$pattern])
-                                    ->orWhereRaw('LOWER(CAST(code AS TEXT)) LIKE ?', [$pattern]);
+            $query->where(function($q) use ($pattern) {
+                $q->whereRaw('CAST(id AS TEXT) LIKE ?', [$pattern])
+                  ->orWhereRaw('LOWER(CAST(code AS TEXT)) LIKE ?', [$pattern]);
+                // User: job.order.customer.name
+                $q->orWhereHas('job.order.customer', function($subQ) use ($pattern) {
+                    $subQ->whereRaw('LOWER(name) LIKE ?', [$pattern]);
+                });
 
                 // Transporter: job.transporter (name, registration_number)
                 $q->orWhereHas('job.transporter', function($subQ) use ($pattern) {
