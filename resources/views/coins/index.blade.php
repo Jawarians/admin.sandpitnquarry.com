@@ -1,6 +1,6 @@
 @extends('layout.layout')
 @php
-$title='Coins List';
+$title='Coins';
 $subTitle = 'Coins List';
 $script ='<script>
     $(document).ready(function() {

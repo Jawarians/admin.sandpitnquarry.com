@@ -1,6 +1,6 @@
 @extends('layout.layout')
 @php
-$title='Reloads List';
+$title='Reloads';
 $subTitle = 'Reloads List';
 $script ='<script>
     document.querySelectorAll(".copy-id").forEach(el => {
