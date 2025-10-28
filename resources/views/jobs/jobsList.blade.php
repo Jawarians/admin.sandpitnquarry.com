@@ -1,6 +1,6 @@
 @extends('layout.layout')
 @php
-$title='Jobs List';
+$title='Jobs;
 $subTitle = 'Jobs Management';
 $script ='<script>
     $(document).ready(function() {

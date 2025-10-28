@@ -1,6 +1,6 @@
 @extends('layout.layout')
 @php
-$title='Packages List';
+$title='Packages';
 $subTitle = 'Packages List';
 @endphp
 

@@ -13,6 +13,10 @@ class Price extends Model
         'published_at',
         'creator_id'
     ];
+    
+    protected $casts = [
+        'published_at' => 'datetime',
+    ];
 
     public function creator(): BelongsTo
     {

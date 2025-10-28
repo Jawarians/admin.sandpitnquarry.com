@@ -1,6 +1,6 @@
 @extends('layout.layout')
 @php
-$title='Trucks List';
+$title='Trucks';
 $subTitle = 'Trucks List';
 $script ='<script>
     $(".remove-item-btn").on("click", function() {
@@ -72,7 +72,6 @@ $script ='<script>
                         <th scope="col">Transporter</th>
                         <th scope="col">Driver</th>
                         <th scope="col" class="text-center">Status</th>
-                        <th scope="col">Remark</th>
                         <th scope="col">Created At</th>
                         <th scope="col" class="text-center">Action</th>
                     </tr>
@@ -135,7 +134,6 @@ $script ='<script>
                             @endphp
                             <span class="{{ $statusClass }} {{ $textClass }} border {{ $borderClass }} px-24 py-4 radius-4 fw-medium text-sm">{{ $status ?? 'N/A' }}</span>
                         </td>
-                        <td><span class="text-md mb-0 fw-normal text-secondary-light">{{ optional($truck->latest)->remark ?? 'N/A' }}</span></td>
                         <td>{{ $truck->created_at ? $truck->created_at->format('d M Y') : 'N/A' }}</td>
                         <td class="text-center">
                             <div class="d-flex align-items-center gap-10 justify-content-center">

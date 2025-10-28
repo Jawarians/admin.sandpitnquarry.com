@@ -1,6 +1,6 @@
 @extends('layout.layout')
 @php
-$title='Users List';
+$title='Users';
 $subTitle = 'Users List';
 $script ='<script>
     $(".remove-item-btn").on("click", function() {

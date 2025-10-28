@@ -70,7 +70,6 @@ $prices = $query->orderByDesc('id')->paginate($perPage)->withQueryString();
                             <div class="d-flex gap-2">
                                 <a href="{{ route('prices.tonne', $price->id) }}" class="btn btn-sm btn-link">Tonne</a>
                                 <a href="{{ route('prices.load', $price->id) }}" class="btn btn-sm btn-link">Load</a>
-                                <a href="#" class="btn btn-sm btn-link">•••</a>
                             </div>
                         </td>
                     </tr>
