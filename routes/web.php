@@ -59,10 +59,12 @@ Route::middleware(['auth'])->group(function () {
 
     // Prices and Zones
     Route::prefix('prices')->group(function () {
-        // Price item routes
-        Route::get('/prices', 'App\Http\Controllers\PriceItemController@index')->name('prices');
-        Route::get('/prices/create', 'App\Http\Controllers\PriceItemController@createPrice')->name('prices.create');
-        Route::post('/prices', 'App\Http\Controllers\PriceItemController@storePrice')->name('prices.store');
+    // Price item routes
+    Route::get('/prices', 'App\Http\Controllers\PriceItemController@index')->name('prices');
+    Route::get('/prices/create', 'App\Http\Controllers\PriceItemController@createPrice')->name('prices.create');
+    Route::post('/prices', 'App\Http\Controllers\PriceItemController@storePrice')->name('prices.store');
+    Route::get('/{price}/edit', 'App\Http\Controllers\PriceItemController@editPrice')->name('prices.edit');
+    Route::put('/{price}', 'App\Http\Controllers\PriceItemController@updatePrice')->name('prices.update');
         Route::get('/tonne/{priceId}', 'App\Http\Controllers\PriceItemController@tonnePrices')->name('prices.tonne');
         Route::get('/load/{priceId}', 'App\Http\Controllers\PriceItemController@loadPrices')->name('prices.load');
         Route::post('/tonne/update', 'App\Http\Controllers\PriceItemController@updateTonnePrice')->name('prices.tonne.update');
