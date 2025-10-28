@@ -1,7 +1,7 @@
 @extends('layout.layout')
 @php
 $title='Products List';
-$subTitle = 'Products List';
+$subTitle = 'Products Management';
 $script = '';
 @endphp
 
@@ -106,15 +106,20 @@ $script = '';
                         </td>
                         <td class="text-center">
                             <div class="d-flex align-items-center gap-10 justify-content-center">
-                                <a href="javascript:void(0)" class="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle" title="View">
+                                <a href="{{ route('products.show', $p->id) }}" class="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle" title="View">
                                     <iconify-icon icon="majesticons:eye-line" class="icon text-xl"></iconify-icon>
                                 </a>
-                                <a href="javascript:void(0)" class="bg-success-focus text-success-600 bg-hover-success-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle" title="Edit">
+                                <a href="{{ route('products.edit', $p->id) }}" class="bg-success-focus text-success-600 bg-hover-success-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle" title="Edit">
                                     <iconify-icon icon="lucide:edit" class="menu-icon"></iconify-icon>
                                 </a>
-                                <button type="button" class="bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle border-0" title="Delete">
-                                    <iconify-icon icon="fluent:delete-24-regular" class="menu-icon"></iconify-icon>
-                                </button>
+
+                                <form action="#" method="POST" style="display:inline;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle border-0" title="Delete" onclick="return confirm('Are you sure you want to delete this product?')">
+                                        <iconify-icon icon="fluent:delete-24-regular" class="menu-icon"></iconify-icon>
+                                    </button>
+                                </form>
                             </div>
                         </td>
                     </tr>
