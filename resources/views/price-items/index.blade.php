@@ -68,6 +68,7 @@ $prices = $query->orderByDesc('id')->paginate($perPage)->withQueryString();
                         <td>{{ optional($price->updated_at)->format('Y-m-d H:i') }}</td>
                         <td>
                             <div class="d-flex gap-2">
+                                <a href="{{ route('prices.edit', $price->id) }}" class="btn btn-sm btn-warning">Edit</a>
                                 <a href="{{ route('prices.tonne', $price->id) }}" class="btn btn-sm btn-link">Tonne</a>
                                 <a href="{{ route('prices.load', $price->id) }}" class="btn btn-sm btn-link">Load</a>
                             </div>

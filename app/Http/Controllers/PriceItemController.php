@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\PriceItem;
@@ -12,6 +11,35 @@ use Illuminate\Support\Facades\Log;
 
 class PriceItemController extends Controller
 {
+    /**
+     * Show the form for editing the specified Price.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function editPrice($id)
+    {
+        $price = Price::findOrFail($id);
+        return view('prices.edit', compact('price'));
+    }
+
+    /**
+     * Update the specified Price in storage.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function updatePrice(Request $request, $id)
+    {
+        $price = Price::findOrFail($id);
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'published_at' => 'nullable|date',
+        ]);
+        $price->update($data);
+        return redirect()->route('prices')->with('success', 'Price updated successfully');
+    }
     /**
      * Display a listing of the price items
      *
