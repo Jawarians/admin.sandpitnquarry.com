@@ -87,6 +87,7 @@
 
                     <!-- Order Items -->
                     @if($order->orderDetails && $order->orderDetails->count() > 0)
+                    @php $orderSubtotal = 0; @endphp
                     <div class="col-12">
                         <h6 class="text-xl mb-16">Order Items</h6>
                         <div class="table-responsive">
@@ -101,11 +102,17 @@
                                 </thead>
                                 <tbody>
                                     @foreach($order->orderDetails as $detail)
+                                    @php
+                                        $unitPrice = isset($detail->unit_price) ? $detail->unit_price : 0;
+                                        $quantity = isset($detail->quantity) ? $detail->quantity : 0;
+                                        $rowTotal = $unitPrice * $quantity;
+                                        $orderSubtotal += $rowTotal;
+                                    @endphp
                                     <tr>
                                         <td>{{ $detail->item_name ?? 'N/A' }}</td>
-                                        <td>{{ $detail->quantity ?? 0 }}</td>
-                                        <td>${{ number_format($detail->unit_price ?? 0, 2) }}</td>
-                                        <td>${{ number_format(($detail->quantity ?? 0) * ($detail->unit_price ?? 0), 2) }}</td>
+                                        <td>{{ $quantity }}</td>
+                                        <td>${{ number_format($unitPrice, 2) }}</td>
+                                        <td>${{ number_format($rowTotal, 2) }}</td>
                                     </tr>
                                     @endforeach
                                 </tbody>
@@ -138,11 +145,13 @@
                                 <span class="text-sm text-secondary-light">Customer</span>
                             </div>
                         </div>
-                        <ul class="list-group list-group-flush">
+                       <div>
                             @if($order->customer->email)
                             <li class="list-group-item px-0 py-8 border-0">
                                 <div class="d-flex align-items-center gap-2">
-                                    <iconify-icon icon="mdi:email" class="text-primary-600"></iconify-icon>
+                                    <span class="w-44-px d-flex justify-content-center align-items-center flex-shrink-0">
+                                        <iconify-icon icon="mdi:email" class="text-primary-600"></iconify-icon>
+                                    </span>
                                     <span class="text-secondary-light text-sm">{{ $order->customer->email }}</span>
                                 </div>
                             </li>
@@ -150,12 +159,14 @@
                             @if($order->customer->phone)
                             <li class="list-group-item px-0 py-8 border-0">
                                 <div class="d-flex align-items-center gap-2">
-                                    <iconify-icon icon="mdi:phone" class="text-primary-600"></iconify-icon>
+                                    <span class="w-44-px d-flex justify-content-center align-items-center flex-shrink-0">
+                                        <iconify-icon icon="mdi:phone" class="text-primary-600"></iconify-icon>
+                                    </span>
                                     <span class="text-secondary-light text-sm">{{ $order->customer->phone }}</span>
                                 </div>
                             </li>
                             @endif
-                        </ul>
+                        <div>
                     </div>
                 </div>
             </div>
@@ -204,18 +215,22 @@
                     </div>
                     <div class="card-body p-24">
                         <div class="d-flex justify-content-between align-items-center mb-12">
+                            @php
+                                // Use calculated subtotal if available, else fallback
+                                $displaySubtotal = isset($orderSubtotal) && $orderSubtotal > 0 ? $orderSubtotal : ($order->subtotal ?? $order->total_amount ?? 0);
+                                $taxAmount = $order->tax_amount ?? 0;
+                                $transportationAmount = $order->order_amounts->where('order_amountable_type', 'transportation')->sum('amount') ?? 0;
+                                $totalAmount = $displaySubtotal + $taxAmount + $transportationAmount;
+                            @endphp
                             <span class="text-secondary-light">Subtotal:</span>
-                            <span class="fw-medium">${{ number_format($order->subtotal ?? $order->total_amount ?? 0, 2) }}</span>
+                            <span class="fw-medium">${{ number_format($displaySubtotal, 2) }}</span>
                         </div>
-                        @if($order->tax_amount)
+                        @if($order->tax_amount && $taxAmount)
                         <div class="d-flex justify-content-between align-items-center mb-12">
                             <span class="text-secondary-light">Tax:</span>
-                            <span class="fw-medium">${{ number_format($order->tax_amount, 2) }}</span>
+                            <span class="fw-medium">${{ number_format($taxAmount, 2) }}</span>
                         </div>
                         @endif
-                        @php
-                            $transportationAmount = $order->order_amounts->where('order_amountable_type', 'transportation')->sum('amount') ?? null;
-                        @endphp
                         @if($transportationAmount)
                         <div class="d-flex justify-content-between align-items-center mb-12">
                             <span class="text-secondary-light">Delivery Fee:</span>
@@ -225,7 +240,7 @@
                         <hr class="my-12">
                         <div class="d-flex justify-content-between align-items-center">
                             <span class="text-lg fw-bold">Total:</span>
-                            <span class="text-lg fw-bold text-success-600">${{ number_format($order->total_amount ?? 0, 2) }}</span>
+                            <span class="text-lg fw-bold text-success-600">${{ number_format($totalAmount, 2) }}</span>
                         </div>
                     </div>
                 </div>

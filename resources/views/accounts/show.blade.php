@@ -1,6 +1,9 @@
 @extends('layout.layout')
 
-@section('title', 'Account Details')
+@php
+$title = 'Account Details';
+$subTitle = 'Account Details';
+@endphp
 
 @section('content')
 <div class="content-wrapper">
@@ -8,9 +11,6 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="page-title-wrap">
-                    <div class="page-title">
-                        <h1>Account Details</h1>
-                    </div>
                     <div class="page-button">
                         <a href="{{ route('accounts.index') }}" class="btn btn-secondary me-2">
                             <i class="ri-arrow-left-line me-2"></i>
@@ -124,14 +124,14 @@
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-bordered">
-                                <thead>
+                            <table class="table table-striped table-hover align-middle mb-0">
+                                <thead class="table-light">
                                     <tr>
-                                        <th>Date</th>
-                                        <th>Status</th>
-                                        <th>Term</th>
-                                        <th>Limit</th>
-                                        <th>Remarks</th>
+                                        <th scope="col">Date</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col">Term</th>
+                                        <th scope="col">Limit</th>
+                                        <th scope="col">Remarks</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -142,7 +142,6 @@
                                                 @php
                                                     $detailStatus = $detail->status;
                                                     $detailStatusClass = 'badge bg-info';
-                                                    
                                                     if ($detailStatus == 'Approve') {
                                                         $detailStatusClass = 'badge bg-success';
                                                     } elseif ($detailStatus == 'Pending') {
@@ -155,16 +154,16 @@
                                             </td>
                                             <td>
                                                 @if(optional($detail->latest)->term > 0)
-                                                    {{ $detail->latest->term }} days
+                                                    <span class="badge bg-primary">{{ $detail->latest->term }} days</span>
                                                 @else
-                                                    Cash
+                                                    <span class="badge bg-secondary">Cash</span>
                                                 @endif
                                             </td>
                                             <td>
                                                 @if(optional($detail->latest)->limit > 0)
-                                                    RM {{ number_format($detail->latest->limit, 2) }}
+                                                    <span class="badge bg-primary">RM {{ number_format($detail->latest->limit, 2) }}</span>
                                                 @else
-                                                    Cash
+                                                    <span class="badge bg-secondary">Cash</span>
                                                 @endif
                                             </td>
                                             <td>{{ $detail->remark ?? 'N/A' }}</td>

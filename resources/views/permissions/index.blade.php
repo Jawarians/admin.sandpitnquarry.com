@@ -6,9 +6,6 @@ $subTitle = 'Permissions Matrix';
 
 @section('content')
 <div class="card h-100 p-0 radius-12">
-    <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-between">
-        <h5 class="mb-0 fw-bold">Permissions</h5>
-    </div>
     <div class="card-body p-24">
         <div class="table-responsive scroll-sm">
             <table class="table bordered-table sm-table mb-0">
@@ -34,6 +31,17 @@ $subTitle = 'Permissions Matrix';
                                         data-permission="{{ $permission->permission }}"
                                         data-role="{{ $role->role }}"
                                     >
+                                </td>
+                            @endforeach
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@endsection
+
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function () {
@@ -54,25 +62,15 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(data => {
                 if (!data.success) {
                     alert(data.message || 'Failed to update permission.');
-                    this.checked = !checked;
+                    checkbox.checked = !checked;
                 }
             })
             .catch(() => {
                 alert('Failed to update permission.');
-                this.checked = !checked;
+                checkbox.checked = !checked;
             });
         });
     });
 });
 </script>
 @endpush
-                                </td>
-                            @endforeach
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-@endsection

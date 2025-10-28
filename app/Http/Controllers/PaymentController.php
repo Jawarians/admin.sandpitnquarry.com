@@ -118,7 +118,10 @@ class PaymentController extends Controller
      */
     public function destroy(Payment $payment)
     {
-        $payment->delete();
+
+    // Delete related payment_details first to avoid foreign key violation
+    $payment->payment_details()->delete();
+    $payment->delete();
 
         return redirect()->route('payments.index')
             ->with('success', 'Payment deleted successfully.');
