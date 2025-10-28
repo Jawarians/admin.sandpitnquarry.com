@@ -89,7 +89,7 @@
                                         </td>
                                         <td><span class="text-md mb-0 fw-normal text-secondary-light">{{ $payment->reference_number }}</span></td>
                                         <td><span class="text-md mb-0 fw-normal text-secondary-light">{{ $payment->remark }}</span></td>
-                                        <td><span class="text-md mb-0 fw-normal text-secondary-light">{{ optional($payment->paid_at)->format('Y-m-d H:i') ?? '-' }}</span></td>
+                                        <td><span class="text-md mb-0 fw-normal text-secondary-light">{{ optional($payment->paid_at)->format('Y-m-d H:i') ?? 'N/A' }}</span></td>
                                         <td class="text-center">
                                             @php
                                                 $status = optional($payment->latest)->status;

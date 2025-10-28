@@ -18,6 +18,7 @@ class Payment extends Model
         'id' => 'integer',
         'creator_id' => 'integer',
         'created_at' => 'datetime',
+        'paid_at'  => 'datetime',
     ];
 
     protected $fillable = [
