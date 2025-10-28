@@ -140,9 +140,10 @@ class DriverController extends Controller
     
     public function destroy(Driver $driver)
     {
-        // You might want to add logic here to check if the driver can be deleted
-        $driver->delete();
-        
-        return redirect()->route('drivers.index')->with('success', 'Driver deleted successfully');
+    // Delete related driver_details and assignments first to avoid foreign key violation
+    $driver->driver_details()->delete();
+    $driver->assignments()->delete();
+    $driver->delete();
+    return redirect()->route('drivers.index')->with('success', 'Driver deleted successfully');
     }
 }

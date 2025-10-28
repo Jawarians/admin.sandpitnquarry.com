@@ -6,196 +6,248 @@
 
 @section('content')
 
-<div class="row">
+
+<div class="row g-24">
     <div class="col-12">
         <div class="card h-100 p-0 radius-12">
-            <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-between">
+            <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between flex-wrap gap-3">
                 <h5 class="mb-0">Withdrawal Details</h5>
-                <div class="d-flex">
-                    <form method="POST" action="{{ route('withdrawals.update', $withdrawal->id) }}" class="me-2">
+                <div class="d-flex gap-2">
+                    <form method="POST" action="{{ route('withdrawals.update', $withdrawal->id) }}">
                         @csrf
                         <input type="hidden" name="action" value="approve">
-                        <button type="submit" class="btn btn-success-main text-white" 
-                                onclick="return confirm('Are you sure you want to approve this withdrawal?')">
+                        <button type="submit" class="btn btn-success btn-sm radius-8 text-white" onclick="return confirm('Are you sure you want to approve this withdrawal?')">
+                            <iconify-icon icon="material-symbols:check-circle" class="me-1"></iconify-icon>
                             Approve
                         </button>
                     </form>
-                    
-                    <form method="POST" action="{{ route('withdrawals.update', $withdrawal->id) }}" class="me-2">
+                    <form method="POST" action="{{ route('withdrawals.update', $withdrawal->id) }}">
                         @csrf
                         <input type="hidden" name="action" value="verify">
-                        <button type="submit" class="btn btn-primary-main text-white"
-                                onclick="return confirm('Are you sure you want to verify this withdrawal?')">
+                        <button type="submit" class="btn btn-primary btn-sm radius-8 text-white" onclick="return confirm('Are you sure you want to verify this withdrawal?')">
+                            <iconify-icon icon="material-symbols:verified" class="me-1"></iconify-icon>
                             Verify
                         </button>
                     </form>
-                    
                     <form method="POST" action="{{ route('withdrawals.update', $withdrawal->id) }}">
                         @csrf
                         <input type="hidden" name="action" value="reject">
-                        <button type="submit" class="btn btn-danger-main text-white"
-                                onclick="return confirm('Are you sure you want to reject this withdrawal?')">
+                        <button type="submit" class="btn btn-danger btn-sm radius-8 text-white" onclick="return confirm('Are you sure you want to reject this withdrawal?')">
+                            <iconify-icon icon="material-symbols:cancel" class="me-1"></iconify-icon>
                             Reject
                         </button>
                     </form>
+                    <a href="{{ route('withdrawals.index') }}" class="btn btn-secondary btn-sm radius-8 text-white">
+                        <iconify-icon icon="material-symbols:arrow-back" class="me-1"></iconify-icon>
+                        Back to List
+                    </a>
                 </div>
             </div>
-            
             <div class="card-body p-24">
                 @if(session('success'))
                     <div class="alert alert-success">
                         {{ session('success') }}
                     </div>
                 @endif
-                
                 @if(session('error'))
                     <div class="alert alert-danger">
                         {{ session('error') }}
                     </div>
                 @endif
-                
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="card h-100 p-0 radius-12">
-                            <div class="card-header bg-base">
-                                <h6 class="mb-0">Withdrawal Information</h6>
+                <div class="row g-24">
+                    <!-- Withdrawal Info -->
+                    <div class="col-lg-6 col-md-6">
+                        <div class="card bg-neutral-100 radius-12 mb-4">
+                            <div class="card-header bg-neutral-100 border-bottom-0 pt-24 px-24 pb-0">
+                                <h6 class="mb-0 fw-semibold">Withdrawal Information</h6>
                             </div>
-                            <div class="card-body">
-                                <table class="table">
-                                    <tr>
-                                        <th class="border-0 ps-0" width="40%">ID</th>
-                                        <td class="border-0">{{ $withdrawal->id }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th class="border-0 ps-0">Customer</th>
-                                        <td class="border-0">{{ $withdrawal->user->name ?? 'N/A' }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th class="border-0 ps-0">Amount</th>
-                                        <td class="border-0">RM {{ number_format($withdrawal->amounts, 2) }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th class="border-0 ps-0">SQ Tokens</th>
-                                        <td class="border-0">{{ $withdrawal->coins }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th class="border-0 ps-0">Current Status</th>
-                                        <td class="border-0">
+                            <div class="card-body p-24">
+                                <div class="d-flex flex-column gap-3">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <span class="text-sm text-neutral-600">ID:</span>
+                                        <span class="text-sm fw-medium text-secondary-light">{{ $withdrawal->id }}</span>
+                                    </div>
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <span class="text-sm text-neutral-600">Customer:</span>
+                                        <span class="text-sm fw-medium text-secondary-light">{{ $withdrawal->user->name ?? 'N/A' }}</span>
+                                    </div>
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <span class="text-sm text-neutral-600">Amount:</span>
+                                        <span class="text-sm fw-medium text-secondary-light">RM {{ number_format($withdrawal->amounts, 2) }}</span>
+                                    </div>
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <span class="text-sm text-neutral-600">SQ Tokens:</span>
+                                        <span class="text-sm fw-medium text-secondary-light">{{ $withdrawal->coins }}</span>
+                                    </div>
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <span class="text-sm text-neutral-600">Current Status:</span>
+                                        <span class="text-sm fw-medium">
                                             @if($withdrawal->latest)
-                                                <span class="badge {{ $withdrawal->latest->status == 'Approved' ? 'bg-success-main' : 
-                                                     ($withdrawal->latest->status == 'Pending' ? 'bg-warning-main' : 
-                                                     ($withdrawal->latest->status == 'Verified' ? 'bg-info-main' : 'bg-danger-main')) }} py-4 px-10 text-sm fw-medium text-white">
-                                                    {{ $withdrawal->latest->status }}
-                                                </span>
+                                                @php
+                                                    $status = $withdrawal->latest->status;
+                                                    $statusClass = '';
+                                                    $textClass = '';
+                                                    $borderClass = '';
+                                                    if ($status == 'Approved') {
+                                                        $statusClass = 'bg-success-focus';
+                                                        $textClass = 'text-success-600';
+                                                        $borderClass = 'border-success-main';
+                                                    } elseif ($status == 'Pending') {
+                                                        $statusClass = 'bg-warning-focus';
+                                                        $textClass = 'text-warning-600';
+                                                        $borderClass = 'border-warning-main';
+                                                    } elseif ($status == 'Verified') {
+                                                        $statusClass = 'bg-info-focus';
+                                                        $textClass = 'text-info-600';
+                                                        $borderClass = 'border-info-main';
+                                                    } else {
+                                                        $statusClass = 'bg-danger-focus';
+                                                        $textClass = 'text-danger-600';
+                                                        $borderClass = 'border-danger-main';
+                                                    }
+                                                @endphp
+                                                <span class="{{ $statusClass }} {{ $textClass }} border {{ $borderClass }} px-24 py-4 radius-4 fw-medium text-sm">{{ $status }}</span>
                                             @else
                                                 N/A
                                             @endif
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th class="border-0 ps-0">Created At</th>
-                                        <td class="border-0">{{ $withdrawal->created_at->format('Y-m-d H:i:s') }}</td>
-                                    </tr>
-                                </table>
+                                        </span>
+                                    </div>
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <span class="text-sm text-neutral-600">Created At:</span>
+                                        <span class="text-sm fw-medium text-secondary-light">{{ $withdrawal->created_at->format('Y-m-d H:i:s') }}</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="col-md-6">
-                        <div class="card h-100 p-0 radius-12">
-                            <div class="card-header bg-base">
-                                <h6 class="mb-0">Bank Account Details</h6>
+                    <!-- Bank Info -->
+                    <div class="col-lg-6 col-md-6">
+                        <div class="card bg-neutral-100 radius-12 mb-4">
+                            <div class="card-header bg-neutral-100 border-bottom-0 pt-24 px-24 pb-0">
+                                <h6 class="mb-0 fw-semibold">Bank Account Details</h6>
                             </div>
-                            <div class="card-body">
-                                <table class="table">
-                                    <tr>
-                                        <th class="border-0 ps-0" width="40%">Account Holder</th>
-                                        <td class="border-0">{{ $withdrawal->bank->name ?? 'N/A' }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th class="border-0 ps-0">Account Number</th>
-                                        <td class="border-0">{{ $withdrawal->bank->number ?? 'N/A' }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th class="border-0 ps-0">Bank</th>
-                                        <td class="border-0">{{ $withdrawal->bank->bank ?? 'N/A' }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th class="border-0 ps-0">Bank Status</th>
-                                        <td class="border-0">
+                            <div class="card-body p-24">
+                                <div class="d-flex flex-column gap-3">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <span class="text-sm text-neutral-600">Account Holder:</span>
+                                        <span class="text-sm fw-medium text-secondary-light">{{ $withdrawal->bank->name ?? 'N/A' }}</span>
+                                    </div>
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <span class="text-sm text-neutral-600">Account Number:</span>
+                                        <span class="text-sm fw-medium text-secondary-light">{{ $withdrawal->bank->number ?? 'N/A' }}</span>
+                                    </div>
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <span class="text-sm text-neutral-600">Bank:</span>
+                                        <span class="text-sm fw-medium text-secondary-light">{{ $withdrawal->bank->bank ?? 'N/A' }}</span>
+                                    </div>
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <span class="text-sm text-neutral-600">Bank Status:</span>
+                                        <span class="text-sm fw-medium">
                                             @if($withdrawal->bank)
-                                                <span class="badge {{ $withdrawal->bank->status == 'Approved' ? 'bg-success-main' : 
-                                                     ($withdrawal->bank->status == 'Pending' ? 'bg-warning-main' : 'bg-danger-main') }} py-4 px-10 text-sm fw-medium text-white">
-                                                    {{ $withdrawal->bank->status }}
-                                                </span>
+                                                @php
+                                                    $status = $withdrawal->bank->status;
+                                                    $statusClass = '';
+                                                    $textClass = '';
+                                                    $borderClass = '';
+                                                    if ($status == 'Approved') {
+                                                        $statusClass = 'bg-success-focus';
+                                                        $textClass = 'text-success-600';
+                                                        $borderClass = 'border-success-main';
+                                                    } elseif ($status == 'Pending') {
+                                                        $statusClass = 'bg-warning-focus';
+                                                        $textClass = 'text-warning-600';
+                                                        $borderClass = 'border-warning-main';
+                                                    } else {
+                                                        $statusClass = 'bg-danger-focus';
+                                                        $textClass = 'text-danger-600';
+                                                        $borderClass = 'border-danger-main';
+                                                    }
+                                                @endphp
+                                                <span class="{{ $statusClass }} {{ $textClass }} border {{ $borderClass }} px-24 py-4 radius-4 fw-medium text-sm">{{ $status }}</span>
                                             @else
                                                 N/A
                                             @endif
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th class="border-0 ps-0">Bank Statement</th>
-                                        <td class="border-0">
+                                        </span>
+                                    </div>
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <span class="text-sm text-neutral-600">Bank Statement:</span>
+                                        <span class="text-sm fw-medium">
                                             @if($withdrawal->bank && isset($withdrawal->bank->document))
-                                                <a href="{{ route('withdrawals.bank-statement', $withdrawal->id) }}" 
-                                                   class="btn btn-sm btn-info-main text-white" target="_blank">
-                                                   <i class="ri-bank-line me-1"></i> View Statement
+                                                <a href="{{ route('withdrawals.bank-statement', $withdrawal->id) }}" class="btn btn-sm btn-info-main text-white" target="_blank">
+                                                    <iconify-icon icon="ri:bank-line" class="me-1"></iconify-icon> View Statement
                                                 </a>
                                             @else
                                                 <span class="text-muted">No statement available</span>
                                             @endif
-                                        </td>
-                                    </tr>
-                                </table>
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                
-                <div class="card h-100 p-0 radius-12 mt-4">
-                    <div class="card-header bg-base">
-                        <h6 class="mb-0">Status History</h6>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table">
-                                <thead class="bg-base text-secondary-light text-uppercase text-13">
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Status</th>
-                                        <th>Created By</th>
-                                        <th>Date</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse($withdrawal->withdrawal_details as $detail)
-                                    <tr>
-                                        <td>{{ $detail->id }}</td>
-                                        <td>
-                                            <span class="badge {{ $detail->status == 'Approved' ? 'bg-success-main' : 
-                                                 ($detail->status == 'Pending' ? 'bg-warning-main' : 
-                                                 ($detail->status == 'Verified' ? 'bg-info-main' : 'bg-danger-main')) }} py-4 px-10 text-sm fw-medium text-white">
-                                                {{ $detail->status }}
-                                            </span>
-                                        </td>
-                                        <td>{{ $detail->creator->name ?? 'N/A' }}</td>
-                                        <td>{{ $detail->created_at->format('Y-m-d H:i:s') }}</td>
-                                    </tr>
-                                    @empty
-                                    <tr>
-                                        <td colspan="4" class="text-center py-4">No history found</td>
-                                    </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
+                <!-- Status History -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="card bg-neutral-100 radius-12">
+                            <div class="card-header bg-neutral-100 border-bottom-0 pt-24 px-24 pb-0">
+                                <h6 class="mb-0 fw-semibold">Status History</h6>
+                            </div>
+                            <div class="card-body p-24">
+                                <div class="table-responsive">
+                                    <table class="table bordered-table sm-table">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Status</th>
+                                                <th>Created By</th>
+                                                <th>Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @forelse($withdrawal->withdrawal_details as $detail)
+                                                <tr>
+                                                    <td>{{ $detail->id }}</td>
+                                                    <td>
+                                                        @php
+                                                            $status = $detail->status;
+                                                            $statusClass = '';
+                                                            $textClass = '';
+                                                            $borderClass = '';
+                                                            if ($status == 'Approved') {
+                                                                $statusClass = 'bg-success-focus';
+                                                                $textClass = 'text-success-600';
+                                                                $borderClass = 'border-success-main';
+                                                            } elseif ($status == 'Pending') {
+                                                                $statusClass = 'bg-warning-focus';
+                                                                $textClass = 'text-warning-600';
+                                                                $borderClass = 'border-warning-main';
+                                                            } elseif ($status == 'Verified') {
+                                                                $statusClass = 'bg-info-focus';
+                                                                $textClass = 'text-info-600';
+                                                                $borderClass = 'border-info-main';
+                                                            } else {
+                                                                $statusClass = 'bg-danger-focus';
+                                                                $textClass = 'text-danger-600';
+                                                                $borderClass = 'border-danger-main';
+                                                            }
+                                                        @endphp
+                                                        <span class="{{ $statusClass }} {{ $textClass }} border {{ $borderClass }} px-24 py-4 radius-4 fw-medium text-sm">{{ $status }}</span>
+                                                    </td>
+                                                    <td>{{ $detail->creator->name ?? 'N/A' }}</td>
+                                                    <td>{{ $detail->created_at->format('Y-m-d H:i:s') }}</td>
+                                                </tr>
+                                            @empty
+                                                <tr>
+                                                    <td colspan="4" class="text-center">No history found</td>
+                                                </tr>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                
-                <div class="d-flex justify-content-start mt-4">
-                    <a href="{{ route('withdrawals.index') }}" class="btn btn-secondary-light text-white">
-                        <i class="ri-arrow-left-line me-1"></i> Back to List
-                    </a>
                 </div>
             </div>
         </div>

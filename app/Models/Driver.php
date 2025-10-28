@@ -66,7 +66,7 @@ class Driver extends Model
 
     public function driver_details(): HasMany
     {
-        return $this->hasMany(AccountDetail::class);
+        return $this->hasMany(DriverDetail::class);
     }
 
     public function banned_drivers(): HasMany
