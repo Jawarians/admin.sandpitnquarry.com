@@ -19,7 +19,34 @@ $subTitle = 'Add Package';
                     <div class="text-danger">{{ $message }}</div>
                 @enderror
             </div>
-            <!-- Add more fields as needed -->
+            <div class="mb-3">
+                <label for="order_delay_minutes" class="form-label">Delay (minutes)</label>
+                <input type="number" class="form-control" id="order_delay_minutes" name="order_delay_minutes" value="{{ old('order_delay_minutes') }}" min="0">
+                @error('order_delay_minutes')
+                    <div class="text-danger">{{ $message }}</div>
+                @enderror
+            </div>
+            <div class="mb-3">
+                <label for="payment_term" class="form-label">Payment Term</label>
+                <input type="number" class="form-control" id="payment_term" name="payment_term" value="{{ old('payment_term') }}" min="0">
+                @error('payment_term')
+                    <div class="text-danger">{{ $message }}</div>
+                @enderror
+            </div>
+            <div class="mb-3">
+                <label for="period" class="form-label">Period</label>
+                <input type="text" class="form-control" id="period" name="period" value="{{ old('period') }}">
+                @error('period')
+                    <div class="text-danger">{{ $message }}</div>
+                @enderror
+            </div>
+            <div class="mb-3">
+                <label for="service_charge" class="form-label">Service Charge</label>
+                <input type="number" step="0.01" class="form-control" id="service_charge" name="service_charge" value="{{ old('service_charge') }}" min="0">
+                @error('service_charge')
+                    <div class="text-danger">{{ $message }}</div>
+                @enderror
+            </div>
             <button type="submit" class="btn btn-primary">Save</button>
             <a href="{{ route('packages.index') }}" class="btn btn-secondary">Cancel</a>
         </form>

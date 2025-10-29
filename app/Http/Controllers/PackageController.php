@@ -27,7 +27,10 @@ class PackageController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            // Add other fields as needed
+            'order_delay_minutes' => 'nullable|integer|min:0',
+            'payment_term' => 'nullable|integer|min:0',
+            'period' => 'nullable|string|max:255',
+            'service_charge' => 'nullable|numeric|min:0',
         ]);
         Package::create($validated);
         return redirect()->route('packages.index')->with('success', 'Package created successfully.');
@@ -42,7 +45,10 @@ class PackageController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            // Add other fields as needed
+            'order_delay_minutes' => 'nullable|integer|min:0',
+            'payment_term' => 'nullable|integer|min:0',
+            'period' => 'nullable|string|max:255',
+            'service_charge' => 'nullable|numeric|min:0',
         ]);
         $package->update($validated);
         return redirect()->route('packages.index')->with('success', 'Package updated successfully.');
