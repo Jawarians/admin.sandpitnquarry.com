@@ -30,6 +30,8 @@ use App\Http\Controllers\BusinessPriceController;
 use App\Http\Controllers\TransporterWithdrawalController;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\PriceItemController;
+
 
 // Authentication
 Route::controller(AuthenticationController::class)->prefix('authentication')->group(function () {
@@ -59,20 +61,22 @@ Route::middleware(['auth'])->group(function () {
 
     // Prices and Zones
     Route::prefix('prices')->group(function () {
-    // Price item routes
-    Route::get('/prices', 'App\Http\Controllers\PriceItemController@index')->name('prices');
-    Route::get('/prices/create', 'App\Http\Controllers\PriceItemController@createPrice')->name('prices.create');
-    Route::post('/prices', 'App\Http\Controllers\PriceItemController@storePrice')->name('prices.store');
-    Route::get('/{price}/edit', 'App\Http\Controllers\PriceItemController@editPrice')->name('prices.edit');
-    Route::put('/{price}', 'App\Http\Controllers\PriceItemController@updatePrice')->name('prices.update');
-        Route::get('/tonne/{priceId}', 'App\Http\Controllers\PriceItemController@tonnePrices')->name('prices.tonne');
-        Route::get('/load/{priceId}', 'App\Http\Controllers\PriceItemController@loadPrices')->name('prices.load');
-        Route::post('/tonne/update', 'App\Http\Controllers\PriceItemController@updateTonnePrice')->name('prices.tonne.update');
-        Route::post('/load/update', 'App\Http\Controllers\PriceItemController@updateLoadPrice')->name('prices.load.update');
-        Route::get('/prices/item', 'App\Http\Controllers\PriceItemController@getPriceItem')->name('prices.item.get');
-        Route::get('/zones', 'App\Http\Controllers\PriceItemController@zones')->name('zones');
-        Route::post('/zones/postcodes/update', 'App\Http\Controllers\PriceItemController@updatePostcodes')->name('zones.postcodes.update');
-        Route::post('/zones/postcodes/add', 'App\Http\Controllers\PriceItemController@addPostcode')->name('zones.postcodes.add');
+        Route::controller(PriceItemController::class)->group(function () {
+            Route::get('/prices', 'index')->name('prices');
+            Route::get('/prices/create', 'createPrice')->name('prices.create');
+            Route::post('/prices', 'storePrice')->name('prices.store');
+            Route::get('/{price}/edit', 'editPrice')->name('prices.edit');
+            Route::put('/{price}', 'updatePrice')->name('prices.update');
+            Route::get('/tonne/{priceId}', 'tonnePrices')->name('prices.tonne');
+            Route::get('/load/{priceId}', 'loadPrices')->name('prices.load');
+            Route::post('/tonne/update', 'updateTonnePrice')->name('prices.tonne.update');
+            Route::post('/load/update', 'updateLoadPrice')->name('prices.load.update');
+            Route::get('/prices/item', 'getPriceItem')->name('prices.item.get');
+            Route::get('/zones', 'zones')->name('zones');
+            Route::post('/zones/postcodes/update', 'updatePostcodes')->name('zones.postcodes.update');
+            Route::post('/zones/postcodes/add', 'addPostcode')->name('zones.postcodes.add');
+            Route::post('/zones/postcodes/remove', 'removePostcode')->name('zones.postcodes.remove');
+        });
     });
 
     // Forms
