@@ -16,6 +16,7 @@ class JobController extends Controller
         $query = Job::with([
             'jobDetails',
             'latest',
+            'order.customer',
             'order.product',
             'order.wheel',
             'order.oldest.site',
@@ -36,6 +37,9 @@ class JobController extends Controller
                   ->orWhereHas('order.product', function($subQ) use ($pattern) {
                       $subQ->whereRaw('LOWER(name) LIKE ?', [$pattern]);
                   })
+                  ->orWhereHas('order.customer', function($subQ) use ($pattern) {
+                    $subQ->whereRaw('LOWER(name) LIKE ?', [$pattern]);
+                })
                   ->orWhereHas('order.oldest.site', function($subQ) use ($pattern) {
                       $subQ->whereRaw('LOWER(name) LIKE ?', [$pattern]);
                   });
