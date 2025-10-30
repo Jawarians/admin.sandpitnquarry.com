@@ -5,10 +5,6 @@ use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\ChartController;
 use App\Http\Controllers\CustomerAccountController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\FormsController;
-use App\Http\Controllers\InvoiceController;
-use App\Http\Controllers\SettingsController;
-use App\Http\Controllers\PaymentGatewayController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\TransporterController;
 use App\Http\Controllers\ReloadController;
@@ -31,6 +27,8 @@ use App\Http\Controllers\TransporterWithdrawalController;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PriceItemController;
+use App\Http\Controllers\EmployeesController;
+use App\Http\Controllers\SiteController;
 
 
 // Authentication
@@ -79,47 +77,6 @@ Route::middleware(['auth'])->group(function () {
         });
     });
 
-    // Forms
-    Route::prefix('forms')->group(function () {
-        Route::controller(FormsController::class)->group(function () {
-            Route::get('/form-layout', 'formLayout')->name('formLayout');
-            Route::get('/form-validation', 'formValidation')->name('formValidation');
-            Route::get('/form', 'form')->name('form');
-            Route::get('/wizard', 'wizard')->name('wizard');
-        });
-    });
-
-    // invoice/invoiceList
-    Route::prefix('invoice')->group(function () {
-        Route::controller(InvoiceController::class)->group(function () {
-            Route::get('/invoice-add', 'invoiceAdd')->name('invoiceAdd');
-            Route::get('/invoice-edit', 'invoiceEdit')->name('invoiceEdit');
-            Route::get('/invoice-list', 'invoiceList')->name('invoiceList');
-            Route::get('/invoice-preview', 'invoicePreview')->name('invoicePreview');
-        });
-    });
-
-    // Settings
-    Route::prefix('settings')->group(function () {
-        Route::controller(SettingsController::class)->group(function () {
-            Route::get('/company', 'company')->name('company');
-            Route::get('/currencies', 'currencies')->name('currencies');
-            Route::get('/language', 'language')->name('language');
-            Route::get('/notification', 'notification')->name('notification');
-            Route::get('/notification-alert', 'notificationAlert')->name('notificationAlert');
-            Route::get('/payment-gateway', 'paymentGateway')->name('paymentGateway');
-        });
-
-        // Payment Gateway secure routes
-        Route::controller(PaymentGatewayController::class)->group(function () {
-            Route::get('/payment-gateway-secure', 'index')->name('paymentGatewaySecure');
-            Route::post('/payment-gateway-secure', 'update')->name('paymentGatewayUpdate');
-            Route::get('/payment-config', 'getPublicConfig')->name('paymentConfig');
-            Route::get('/theme', 'theme')->name('theme');
-        });
-    });
-
-
     // Users
     Route::prefix('users')->group(function () {
         Route::controller(UsersController::class)->group(function () {
@@ -149,7 +106,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Employees Routes
     Route::prefix('employees')->group(function () {
-        Route::controller(\App\Http\Controllers\EmployeesController::class)->group(function () {
+        Route::controller(EmployeesController::class)->group(function () {
             Route::get('/', 'index')->name('employees.index');
             Route::get('/create', 'create')->name('employees.create');
             Route::post('/', 'store')->name('employees.store');
@@ -204,13 +161,16 @@ Route::middleware(['auth'])->group(function () {
 
     // Sites/Quarries
     Route::prefix('sites')->group(function () {
-        Route::get('/', 'App\Http\Controllers\SiteController@index')->name('sites.index');
-        Route::get('/create', 'App\Http\Controllers\SiteController@create')->name('sites.create');
-        Route::post('/', 'App\Http\Controllers\SiteController@store')->name('sites.store');
-        Route::get('/{id}', 'App\Http\Controllers\SiteController@show')->name('sites.show');
-        Route::get('/{id}/edit', 'App\Http\Controllers\SiteController@edit')->name('sites.edit');
-        Route::put('/{id}', 'App\Http\Controllers\SiteController@update')->name('sites.update');
-        Route::delete('/{id}', 'App\Http\Controllers\SiteController@destroy')->name('sites.destroy');
+        Route::controller(SiteController::class)->group(function () {
+        Route::get('/', 'index')->name('sites.index');
+        Route::get('/create', 'create')->name('sites.create');
+        Route::post('/', 'store')->name('sites.store');
+        Route::get('/{id}', 'show')->name('sites.show');
+        Route::get('/{id}/edit', 'edit')->name('sites.edit');
+        Route::put('/{id}', 'update')->name('sites.update');
+        Route::delete('/{id}', 'destroy')->name('sites.destroy');
+        });
+
     });
 
     // Accounts
