@@ -145,7 +145,7 @@ $dashboardPayload = [
     </div>
     <div class="col">
         <div class="card shadow-none border bg-gradient-start-4 h-100">
-            <a href="{{ route('invoiceList') }}" class="card-body p-20 text-decoration-none dashboard-card-link">
+            <a href="{{ route('ordersList') }}" class="card-body p-20 text-decoration-none dashboard-card-link">
                 <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
                     <div>
                         <p class="fw-medium text-primary-light mb-1">Total Revenue</p>
@@ -202,7 +202,7 @@ $dashboardPayload = [
             <div class="card-body">
                 <div class="d-flex flex-wrap align-items-center justify-content-between">
                     <h6 class="text-lg mb-0">
-                        <a href="{{ route('invoiceList') }}" class="text-decoration-none d-flex align-items-center gap-1 dashboard-title-link">
+                        <a href="{{ route('ordersList') }}" class="text-decoration-none d-flex align-items-center gap-1 dashboard-title-link">
                             Order Revenue
                             <iconify-icon icon="heroicons:arrow-right-20-solid" class="text-primary"></iconify-icon>
                         </a>
